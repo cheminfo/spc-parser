@@ -16,12 +16,17 @@ export function getFlagParameters(flag) {
   return parameters;
 }
 
+/**
+ * Gets the date encoded in binary in a long number
+ * @param {number} long Binary date
+ * @return {object} Object containing the minutes, the hour, the day, the month and the year
+ */
 export function longToDate(long) {
   const date = {};
-  date.minutes = (long >> 26) & 63; //6 MSBs
-  date.hour = (long >> 21) & 31; //5 next bits
-  date.day = (long >> 16) & 31; //5 next bits
-  date.month = (long >> 12) & 15; //4 next bits
   date.year = long & 4095; //12 LSBs
+  date.month = (long /= Math.pow(2, 12)) & 15; //4 next bits
+  date.day = (long /= Math.pow(2, 4)) & 31; //5 next bits
+  date.hour = (long /= Math.pow(2, 5)) & 31; //5 next bits
+  date.minutes = (long /= Math.pow(2, 5)) & 63; //6 MSBs
   return date;
 }
