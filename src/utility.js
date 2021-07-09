@@ -5,7 +5,7 @@
  */
 export function getFlagParameters(flag) {
   const parameters = {};
-  parameters.y16BitPrecision = (flag & 1) !== 0;
+  parameters.y16BitPrecision = (flag & 2) !== 0;
   parameters.useExperimentExtension = (flag & 2) !== 0;
   parameters.multiFile = (flag & 4) !== 0;
   parameters.zValuesRandom = (flag & 8) !== 0;
@@ -23,10 +23,10 @@ export function getFlagParameters(flag) {
  */
 export function longToDate(long) {
   const date = {};
-  date.year = long & 4095; //12 LSBs
-  date.month = (long /= Math.pow(2, 12)) & 15; //4 next bits
-  date.day = (long /= Math.pow(2, 4)) & 31; //5 next bits
-  date.hour = (long /= Math.pow(2, 5)) & 31; //5 next bits
-  date.minutes = (long /= Math.pow(2, 5)) & 63; //6 MSBs
+  date.year = Math.floor(long % 4096); //12 LSBs
+  date.month = Math.floor((long /= Math.pow(2, 12)) % 16); //4 next bits
+  date.day = Math.floor((long /= Math.pow(2, 4)) % 32); //5 next bits
+  date.hour = Math.floor((long /= Math.pow(2, 5)) % 32); //5 next bits
+  date.minutes = Math.floor((long /= Math.pow(2, 5)) % 64); //6 MSBs
   return date;
 }
