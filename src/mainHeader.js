@@ -1,10 +1,9 @@
 import { getFlagParameters, longToDate } from './utility';
 
 //const mainHeaderLength = 512; //Length in bytes
-
 export function mainHeader(buffer) {
   const header = {};
-  header.typeParameters = getFlagParameters(buffer.readByte()); //Each bit contains a parameter
+  header.typeParameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
   header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   header.experimentType = buffer.readUint8(); //Experiment type code (See SPC.h)
   header.exponentY = buffer.readChar(); //Exponent for Y values (80h = as floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit

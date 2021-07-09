@@ -5,7 +5,7 @@
  */
 export function getFlagParameters(flag) {
   const parameters = {};
-  parameters.y16BitPrecision = (flag & 2) !== 0;
+  parameters.y16BitPrecision = (flag & 1) !== 0;
   parameters.useExperimentExtension = (flag & 2) !== 0;
   parameters.multiFile = (flag & 4) !== 0;
   parameters.zValuesRandom = (flag & 8) !== 0;
@@ -113,9 +113,21 @@ class Date {
     }
   }
   toISOString() {
-    return `${
-      this.year <= 9999 && this.year >= 0 ? '' : this.year > 0 ? '+' : '-'
-    }${this.year}-${this.month < 10 ? 0 : ''}${this.month}-${
+    let yearString = `${this.year}`;
+    if (this.year <= 9999 && this.year >= 0) {
+      if (this.year < 1000) {
+        if (this.year < 100) {
+          if (this.year < 10) {
+            yearString = `0${yearString}`;
+          }
+          yearString = `0${yearString}`;
+        }
+        yearString = `0${yearString}`;
+      }
+    } else {
+      yearString = `${this.year < 0 ? '' : '+'}${yearString}`;
+    }
+    return `${yearString}-${this.month < 10 ? 0 : ''}${this.month}-${
       this.day < 10 ? 0 : ''
     }${this.day}T${this.hour < 10 ? 0 : ''}${this.hour}-${
       this.minutes < 10 ? 0 : ''
