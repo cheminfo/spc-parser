@@ -131,7 +131,6 @@ class Date {
     };
   }
 }
-//OH MY GOD THERE'S ALREADY A DATE CLASS IN JAVASCRIPT
 
 /**
  * Gets the date encoded in binary in a long number
