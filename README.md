@@ -22,6 +22,12 @@ const result = library(args);
 
 ## [API Documentation](https://cheminfo.github.io/spc-parser/)
 
+## Credits and useful information
+
+[Thermo Scientific SPC File Developer's Kit ](https://web.archive.org/web/20150131073636/http://ftirsearch.com/features/converters/spcfileformat.HTM)
+
+[A Brief Guide to SPC File Format and Using GSPCIO](https://docuri.com/download/spc-file-format_59c1d322f581710b28653306_pdf)
+
 ## License
 
 [MIT](./LICENSE)
