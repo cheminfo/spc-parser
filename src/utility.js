@@ -151,10 +151,10 @@ class Date {
  */
 export function longToDate(long) {
   const date = new Date();
-  date.setYear(Math.floor(long % 4096)); //12 LSBs
-  date.setMonth(Math.floor((long /= Math.pow(2, 12)) % 16)); //4 next bits
-  date.setDay(Math.floor((long /= Math.pow(2, 4)) % 32)); //5 next bits
-  date.setHour(Math.floor((long /= Math.pow(2, 5)) % 32)); //5 next bits
-  date.setMinutes(Math.floor((long /= Math.pow(2, 5)) % 64)); //6 MSBs
+  date.setMinutes(long % 64);
+  date.setHour(Math.floor((long /= Math.pow(2, 6)) % 32));
+  date.setDay(Math.floor((long /= Math.pow(2, 5)) % 32));
+  date.setMonth(Math.floor((long /= Math.pow(2, 5)) % 16));
+  date.setYear(Math.floor((long /= Math.pow(2, 4))));
   return date.toISOString();
 }
