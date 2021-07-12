@@ -13,5 +13,7 @@ test('Flag parameters', () => {
   });
 });
 test('Long to date', () => {
-  expect(longToDate(2102092692)).toStrictEqual('2004-11-12T14-20'); //4B 63 94 07 = 1001011 01100011 10010100 00000111
+  expect(longToDate(2102092692)).toStrictEqual('2004-11-12T14-20');
+  expect(longToDate(2091439149)).toStrictEqual('1994-08-26T16-45');
+  expect(longToDate(0)).toStrictEqual('0000-00-00T00-00');
 });

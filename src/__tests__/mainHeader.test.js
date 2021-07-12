@@ -7,11 +7,14 @@ const { IOBuffer } = require('iobuffer');
 const pathFiles = `${__dirname}/files/`;
 
 test('mainHeader parsing test', () => {
-  let data = fs.readFileSync(`${pathFiles}m_xyxy.spc`);
-  let buffer = new IOBuffer(data);
-  buffer.setBigEndian();
-  const mxyxy = mainHeader(buffer);
+  const mxyxy = mainHeader(
+    new IOBuffer(fs.readFileSync(`${pathFiles}m_xyxy.spc`)),
+  );
+  const raman = mainHeader(
+    new IOBuffer(fs.readFileSync(`${pathFiles}RAMAN.SPC`)),
+  );
   expect(mxyxy.typeParameters.xyxy).toStrictEqual(true);
   expect(mxyxy.typeParameters.multiFile).toStrictEqual(true);
-  expect(mxyxy.date).toStrictEqual('2001-06-23T16-43');
+  expect(mxyxy.date).toStrictEqual('1986-01-09T08-47');
+  expect(raman.date).toStrictEqual('1994-08-26T16-45');
 });
