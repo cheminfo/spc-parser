@@ -15,133 +15,35 @@ export function getFlagParameters(flag) {
   parameters.xy = (flag & 128) !== 0;
   return parameters;
 }
+
 /**
  *
- * Date with leap years compatibility and ISO 8601:2019 format
- * @class Date
+ * Gets the Subfile flags
+ * @param {number} flag First byte of the subheader
+ * @return {object} The parameters
  */
-class Date {
-  constructor() {
-    this.year = 0;
-    this.month = 0;
-    this.day = 0;
-    this.hour = 0;
-    this.minutes = 0;
-  }
+export function getSubFlagParameters(flag) {
+  const parameters = {};
+  parameters.changed = (flag & 1) !== 0;
+  parameters.noPeakTable = (flag & 8) !== 0;
+  parameters.modifiedArithmetic = (flag & 128) !== 0;
+  return parameters;
+}
 
-  setYear(year) {
-    this.year = year;
-    if (this.month === 2) {
-      if (
-        (year % 4 === 0 &&
-          (year % 100 !== 0 || year % 400 === 0) &&
-          this.day > 29) ||
-        this.day >= 29
-      ) {
-        this.day = 0;
-      }
-    }
+/**
+ * Generates a list of points on the X axis
+ * @param {number} minimum Lower bound
+ * @param {number} maximum Upper bound
+ * @param {number} numberPoints Number of points
+ * @return {array} X axis
+ */
+export function xPoints(minimum, maximum, numberPoints) {
+  const xPoints = [];
+  const step = (maximum - minimum) / numberPoints;
+  for (let i = minimum; i <= maximum; i += step) {
+    xPoints.push(i);
   }
-  setMonth(month) {
-    if (month < 12 && month > 0) {
-      this.month = month;
-    }
-    if (this.day !== 0) {
-      switch (this.month) {
-        case 1 || 3 || 5 || 7 || 8 || 10 || 12:
-          if (month > 31) {
-            this.day = 0;
-          }
-          break;
-        case 4 || 6 || 9 || 11:
-          if (month >= 31) {
-            this.day = 0;
-          }
-          break;
-        case 2:
-          if (
-            (this.year % 4 === 0 &&
-              (this.year % 100 !== 0 || this.year % 400 === 0) &&
-              this.day > 29) ||
-            this.day >= 29
-          ) {
-            this.day = 0;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-  }
-  setDay(day) {
-    if (day > 0) {
-      switch (this.month) {
-        case 1 || 3 || 5 || 7 || 8 || 10 || 12:
-          if (day <= 31) {
-            this.day = day;
-          }
-          break;
-        case 4 || 6 || 9 || 11:
-          if (day < 31) {
-            this.day = day;
-          }
-          break;
-        case 2:
-          if (
-            (this.year % 4 === 0 &&
-              (this.year % 100 !== 0 || this.year % 400 === 0) &&
-              this.day <= 29) ||
-            this.day < 29
-          ) {
-            this.day = day;
-          }
-          break;
-        default:
-          this.day = day < 32 ? day : this.day;
-          break;
-      }
-    }
-  }
-  setHour(hour) {
-    if (hour <= 24 && hour >= 0) {
-      this.hour = hour;
-    }
-  }
-  setMinutes(minutes) {
-    if (minutes < 60 && minutes >= 0) {
-      this.minutes = minutes;
-    }
-  }
-  toISOString() {
-    let yearString = `${this.year}`;
-    if (this.year <= 9999 && this.year >= 0) {
-      if (this.year < 1000) {
-        if (this.year < 100) {
-          if (this.year < 10) {
-            yearString = `0${yearString}`;
-          }
-          yearString = `0${yearString}`;
-        }
-        yearString = `0${yearString}`;
-      }
-    } else {
-      yearString = `${this.year < 0 ? '' : '+'}${yearString}`;
-    }
-    return `${yearString}-${this.month < 10 ? 0 : ''}${this.month}-${
-      this.day < 10 ? 0 : ''
-    }${this.day}T${this.hour < 10 ? 0 : ''}${this.hour}-${
-      this.minutes < 10 ? 0 : ''
-    }${this.minutes}`;
-  }
-  toJson() {
-    return {
-      year: this.year,
-      month: this.month,
-      day: this.day,
-      hour: this.hour,
-      minutes: this.minutes,
-    };
-  }
+  return xPoints;
 }
 
 /**
@@ -151,10 +53,12 @@ class Date {
  */
 export function longToDate(long) {
   const date = new Date();
-  date.setMinutes(long % 64);
-  date.setHour(Math.floor((long /= Math.pow(2, 6)) % 32));
-  date.setDay(Math.floor((long /= Math.pow(2, 5)) % 32));
-  date.setMonth(Math.floor((long /= Math.pow(2, 5)) % 16));
-  date.setYear(Math.floor((long /= Math.pow(2, 4))));
+  date.setUTCFullYear(Math.floor(long >> 20));
+  date.setUTCMonth(Math.floor((long >> 16) & 0x0f) - 1);
+  date.setUTCDate(Math.floor((long >> 11) & 0x1f));
+  date.setUTCHours(Math.floor((long >> 6) & 0x1f));
+  date.setUTCMinutes(long & 0x3f);
+  date.setUTCSeconds(0);
+  date.setUTCMilliseconds(0);
   return date.toISOString();
 }
