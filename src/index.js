@@ -7,7 +7,7 @@ import { xPoints } from './utility';
 export function parseSPC(buffer) {
   const meta = mainHeader(buffer);
   if (!meta.parameters.xyxy) {
-    meta.xPoints = xPoints();
+    meta.xPoints = xPoints(meta.startingX, meta.endingX, meta.numberPoints);
   }
   return { meta };
 }
