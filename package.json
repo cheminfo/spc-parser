@@ -1,6 +1,6 @@
 {
   "name": "spc-parser",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Thermo Galactic GRAMS SPC files parser",
   "main": "lib/index.js",
   "module": "src/index.js",
@@ -9,6 +9,7 @@
     "src"
   ],
   "scripts": {
+    "build": "cheminfo-build --entry src/index.js --root SPCParser",
     "eslint": "eslint src",
     "eslint-fix": "npm run eslint -- --fix",
     "prepack": "rollup -c",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.14.5",
     "@types/jest": "^26.0.24",
+    "cheminfo-build": "^1.1.11",
     "eslint": "^7.30.0",
     "eslint-config-cheminfo": "^5.2.4",
     "jest": "^27.0.6",
