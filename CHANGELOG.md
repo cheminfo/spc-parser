@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.1](https://www.github.com/cheminfo/spc-parser/compare/v0.1.0...v0.1.1) (2021-07-12)
+
+
+### Bug Fixes
+
+* add lactame build ([b76bb32](https://www.github.com/cheminfo/spc-parser/commit/b76bb32429bbca5b630971a98245d788b1aec87a))
+
 ## 0.1.0 (2021-07-12)
 
 
