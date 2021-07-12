@@ -17,4 +17,5 @@ test('mainHeader parsing test', () => {
   expect(mxyxy.typeParameters.multiFile).toStrictEqual(true);
   expect(mxyxy.date).toStrictEqual('1986-01-09T08-47');
   expect(raman.date).toStrictEqual('1994-08-26T16-45');
+  expect(raman.xyzLabels).toMatch(/Rmn Intensity/);
 });

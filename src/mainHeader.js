@@ -6,7 +6,7 @@ export function mainHeader(buffer) {
   header.typeParameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
   header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   header.experimentType = buffer.readUint8(); //Experiment type code (See SPC.h)
-  header.exponentY = buffer.readChar(); //Exponent for Y values (80h = as floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
+  header.exponentY = buffer.readInt8(); //Exponent for Y values (80h = as floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
   header.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)
   header.firstX = buffer.readFloat64(); //First X coordinate
   header.lastX = buffer.readFloat64(); //Last X coordinate
