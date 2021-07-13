@@ -11,10 +11,10 @@ export function mainHeader(buffer) {
   header.startingX = buffer.readFloat64(); //First X coordinate
   header.endingX = buffer.readFloat64(); //Last X coordinate
   header.subFiles = buffer.readUint32(); //Number of spectrums
-  header.xUnitsType = buffer.readUint8(); //X Units type code (See SPC.H ???)
+  header.xUnitsType = buffer.readUint8(); //X Units type code (See SPC.H)
   header.yUnitsType = buffer.readUint8(); //Y ""
   header.zUnitsType = buffer.readUint8(); //Z ""
-  header.postingDisposition = buffer.readUint8(); //Posting disposition (See GRAMSDDE.H ???)
+  header.postingDisposition = buffer.readUint8(); //Posting disposition (See GRAMSDDE.H)
   header.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
   header.resolutionDescription = buffer.readChars(9); //Resolution description text
   header.sourceInstrumentDescription = buffer.readChars(9); // Source Instrument description text

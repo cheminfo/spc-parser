@@ -5,14 +5,14 @@
  */
 export function getFlagParameters(flag) {
   const parameters = {};
-  parameters.y16BitPrecision = (flag & 1) !== 0;
-  parameters.useExperimentExtension = (flag & 2) !== 0;
-  parameters.multiFile = (flag & 4) !== 0;
-  parameters.zValuesRandom = (flag & 8) !== 0;
-  parameters.zValuesUneven = (flag & 16) !== 0;
-  parameters.customAxisLabels = (flag & 32) !== 0;
-  parameters.xyxy = (flag & 64) !== 0;
-  parameters.xy = (flag & 128) !== 0;
+  parameters.y16BitPrecision = (flag & 1) !== 0; //Y values are 16 bits instead of 32
+  parameters.useExperimentExtension = (flag & 2) !== 0; //Enable experiment mode
+  parameters.multiFile = (flag & 4) !== 0; //Multiple subfiles (spectrums)
+  parameters.zValuesRandom = (flag & 8) !== 0; //Z values in random order
+  parameters.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced
+  parameters.customAxisLabels = (flag & 32) !== 0; //Custom labels
+  parameters.xyxy = (flag & 64) !== 0; //One X array per subfile, for discontinuous curves
+  parameters.xy = (flag & 128) !== 0; // Non-evenly spaced X, X before Y
   return parameters;
 }
 

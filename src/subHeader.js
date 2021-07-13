@@ -5,7 +5,7 @@ export function subHeader(buffer) {
   subHeader.parameters = getSubFlagParameters(buffer.readUint8());
   subHeader.exponentY = buffer.readInt8();
   subHeader.indexNumber = buffer.readUint16();
-  subHeader.startingZ = buffer.reafFloat32();
+  subHeader.startingZ = buffer.readFloat32();
   subHeader.endingZ = buffer.readFloat32();
   subHeader.noiseValue = buffer.readFloat32();
   subHeader.numberPoints = buffer.readUint32();
