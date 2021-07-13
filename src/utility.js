@@ -53,10 +53,10 @@ export function xPoints(minimum, maximum, numberPoints) {
  */
 export function longToDate(long) {
   const date = new Date();
-  date.setUTCFullYear(Math.floor(long >> 20));
-  date.setUTCMonth(Math.floor((long >> 16) & 0x0f) - 1);
-  date.setUTCDate(Math.floor((long >> 11) & 0x1f));
-  date.setUTCHours(Math.floor((long >> 6) & 0x1f));
+  date.setUTCFullYear(long >> 20);
+  date.setUTCMonth(((long >> 16) & 0x0f) - 1);
+  date.setUTCDate((long >> 11) & 0x1f);
+  date.setUTCHours((long >> 6) & 0x1f);
   date.setUTCMinutes(long & 0x3f);
   date.setUTCSeconds(0);
   date.setUTCMilliseconds(0);
