@@ -1,5 +1,4 @@
 import { readDataBlock } from '../dataBlock';
-
 import { mainHeader } from '../mainHeader';
 
 const fs = require('fs');
