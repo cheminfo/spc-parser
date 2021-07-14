@@ -3,10 +3,24 @@ import { getFlagParameters, longToDate } from './utility';
 //const mainHeaderLength = 512; //Length in bytes
 export function mainHeader(buffer) {
   const header = {};
-  header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
-  header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+  header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter 0x00
+  header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format 0x01
+  switch (header.fileVer) {
+    case 0x4b:
+      break;
+    case 0x4c:
+      buffer.setBigEndian();
+      break;
+    case 0x4d:
+      return oldHeader(buffer, header);
+    default:
+      throw new Error(
+        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
+      );
+  }
+
   header.experimentType = buffer.readUint8(); //Experiment type code (See SPC.h)
-  header.exponentY = buffer.readInt8(); //Exponent for Y values (80h = as floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
+  header.exponentY = buffer.readInt8(); //Exponent for Y values (80h = floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
   header.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)
   header.startingX = buffer.readFloat64(); //First X coordinate
   header.endingX = buffer.readFloat64(); //Last X coordinate
@@ -23,7 +37,10 @@ export function mainHeader(buffer) {
   for (let i = 0; i < 8; i++) {
     header.spare.push(buffer.readFloat32());
   }
-  header.memo = buffer.readChars(130);
+  if (header.fileVer === 0x4c) {
+    header.spare.reverse();
+  }
+  header.memo = buffer.readChars(130); //0x
   header.xyzLabels = buffer.readChars(30);
   header.logOffset = buffer.readUint32(); //Byte offset to Log Block
   header.modifiedFlag = buffer.readUint32(); //File modification flag (See values in SPC.H)
@@ -36,6 +53,33 @@ export function mainHeader(buffer) {
   header.wPlanes = buffer.readUint32();
   header.wPlaneIncrement = buffer.readFloat32();
   header.wAxisUnits = buffer.readUint8(); //W axis units code
-  header.reserved = buffer.readChars(187); //Reserved space?
+  header.reserved = buffer.readChars(187); //Reserved space (Must be zero)
+  return header;
+}
+
+export function oldHeader(buffer, header) {
+  header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
+  header.numberPoints = buffer.readFloat32();
+  header.startingX = buffer.readFloat32();
+  header.endingX = buffer.readFloat32();
+  header.xUnitsType = buffer.readUint8();
+  header.yUnitsType = buffer.readUint8();
+  const date = new Date();
+  const zTypeYear = buffer.readUint16();
+  date.setUTCFullYear(zTypeYear % 4096);
+  date.setUTCMonth(Math.max(buffer.readUint8() - 1, 0));
+  date.setUTCDate(buffer.readUint8());
+  date.setUTCHours(buffer.readUint8());
+  date.setUTCMinutes(buffer.readUint8());
+  header.date = date.toISOString();
+  header.resolutionDescription = buffer.readChars(8);
+  header.peakPointNumber = buffer.readUint16();
+  header.scans = buffer.readUint16();
+  header.spare = [];
+  for (let i = 0; i < 7; i++) {
+    header.spare.push(buffer.readFloat32());
+  }
+  header.memo = buffer.readChars(130);
+  header.xyzLabels = buffer.readChars(30);
   return header;
 }
