@@ -4,60 +4,54 @@ import { xPoints } from './utility';
 export function readDataBlock(buffer, mainHeader) {
   let x;
   let y;
-  let specter;
   let subFiles = [];
-  const flags = { ...mainHeader };
-  const yFactor = Math.pow(
-    2,
-    flags.exponentY -
-      (flags.parameters.y16BitPrecision && flags.exponentY !== 0x80 ? 16 : 32),
-  );
+  const yFactor =
+    2 **
+    (mainHeader.exponentY -
+      (mainHeader.parameters.y16BitPrecision && mainHeader.exponentY !== 0x80
+        ? 16
+        : 32));
 
-  if (!flags.parameters.xyxy && flags.zValuesUneven) {
-    x = new Float32Array(flags.numberPoints);
-    for (let i = 0; i < flags.numberPoints; i++) {
+  if (!mainHeader.parameters.xyxy && mainHeader.zValuesUneven) {
+    x = new Float64Array(mainHeader.numberPoints);
+    for (let i = 0; i < mainHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();
     }
-  } else if (!flags.parameters.zValuesUneven) {
-    x = xPoints(flags.startingX, flags.endingX, flags.numberPoints);
+  } else if (!mainHeader.parameters.zValuesUneven) {
+    x = xPoints(
+      mainHeader.startingX,
+      mainHeader.endingX,
+      mainHeader.numberPoints,
+    );
   }
-  for (let i = 0; i < flags.subFiles; i++) {
-    specter = {};
-    specter.meta = subHeader(buffer);
-    if (flags.parameters.xyxy) {
-      x = new Float32Array(specter.meta.numberPoints);
-      for (let j = 0; j < specter.meta.numberPoints; j++) {
+  let spectrum;
+  const subNum = mainHeader.subFiles ? mainHeader.subFiles : 1;
+  for (let i = 0; i < subNum; i++) {
+    spectrum = {};
+    spectrum.meta = subHeader(buffer);
+    if (mainHeader.parameters.xyxy) {
+      x = new Float64Array(spectrum.meta.numberPoints);
+      for (let j = 0; j < spectrum.meta.numberPoints; j++) {
         x[j] = buffer.readFloat32();
       }
     }
-    if (flags.parameters.y16BitPrecision) {
-      if (specter.meta.numberPoints === 0) {
-        y = new Float32Array(flags.numberPoints);
-        for (let j = 0; j < flags.numberPoints; j++) {
-          y[j] = buffer.readInt16() * yFactor;
-        }
-      } else {
-        y = new Float32Array(specter.meta.numberPoints);
-        for (let j = 0; j < specter.meta.numberPoints; j++) {
-          y[j] = buffer.readInt16() * yFactor;
-        }
+    const nbPoints = spectrum.meta.numberPoints
+      ? spectrum.meta.numberPoints
+      : mainHeader.numberPoints;
+    if (mainHeader.parameters.y16BitPrecision) {
+      y = new Float64Array(nbPoints);
+      for (let j = 0; j < nbPoints; j++) {
+        y[j] = buffer.readInt16() * yFactor;
       }
     } else {
-      if (specter.meta.numberPoints === 0) {
-        y = new Float32Array(flags.numberPoints);
-        for (let j = 0; j < flags.numberPoints; j++) {
-          y[j] = buffer.readInt32() * yFactor;
-        }
-      } else {
-        y = new Float32Array(specter.meta.numberPoints);
-        for (let j = 0; j < specter.meta.numberPoints; j++) {
-          y[j] = buffer.readInt32() * yFactor;
-        }
+      y = new Float64Array(nbPoints);
+      for (let j = 0; j < nbPoints; j++) {
+        y[j] = buffer.readInt32() * yFactor;
       }
     }
-    specter.x = x;
-    specter.y = y;
-    subFiles.push(specter);
+    spectrum.x = x;
+    spectrum.y = y;
+    subFiles.push(spectrum);
   }
   return subFiles;
 }
