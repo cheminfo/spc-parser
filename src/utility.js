@@ -39,9 +39,10 @@ export function getSubFlagParameters(flag) {
  */
 export function xPoints(minimum, maximum, numberPoints) {
   const xPoints = [];
-  const step = (maximum - minimum) / numberPoints;
-  for (let i = minimum; i <= maximum; i += step) {
-    xPoints.push(i);
+  const step = (maximum - minimum) / (numberPoints - 1);
+  let i = minimum;
+  for (i = 0; i < numberPoints; i++) {
+    xPoints.push(minimum + i * step);
   }
   return xPoints;
 }
