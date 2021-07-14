@@ -38,11 +38,11 @@ export function getSubFlagParameters(flag) {
  * @return {array} X axis
  */
 export function xPoints(minimum, maximum, numberPoints) {
-  const xPoints = [];
+  const xPoints = new Float64Array(numberPoints);
   const step = (maximum - minimum) / (numberPoints - 1);
   let i = minimum;
   for (i = 0; i < numberPoints; i++) {
-    xPoints.push(minimum + i * step);
+    xPoints[i] = minimum + i * step;
   }
   return xPoints;
 }
@@ -53,6 +53,9 @@ export function xPoints(minimum, maximum, numberPoints) {
  * @return {string} Date formatted to ISO 8601:2019 convention
  */
 export function longToDate(long) {
+  if (long === 0) {
+    return '0000-00-00T00:00:00.00Z';
+  }
   const date = new Date();
   date.setUTCFullYear(long >> 20);
   date.setUTCMonth(((long >> 16) & 0x0f) - 1);
