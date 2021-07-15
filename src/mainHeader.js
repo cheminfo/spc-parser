@@ -1,6 +1,10 @@
 import { getFlagParameters, longToDate } from './utility';
 
-//const mainHeaderLength = 512; //Length in bytes
+/**
+ * Main header parsing - First 512/256 bytes (new/old format)
+ * @param {object} buffer SPC buffer
+ * @return {object} Main header
+ */
 export function mainHeader(buffer) {
   const header = {};
   header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter 0x00
@@ -38,6 +42,7 @@ export function mainHeader(buffer) {
     header.spare.push(buffer.readFloat32());
   }
   if (header.fileVer === 0x4c) {
+    //Untested case because no test files
     header.spare.reverse();
   }
   header.memo = buffer.readChars(130); //0x
@@ -56,7 +61,6 @@ export function mainHeader(buffer) {
   header.reserved = buffer.readChars(187); //Reserved space (Must be zero)
   return header;
 }
-
 export function oldHeader(buffer, header) {
   header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
   header.numberPoints = buffer.readFloat32();
@@ -66,7 +70,7 @@ export function oldHeader(buffer, header) {
   header.yUnitsType = buffer.readUint8();
   const date = new Date();
   const zTypeYear = buffer.readUint16();
-  date.setUTCFullYear(zTypeYear % 4096);
+  date.setUTCFullYear(zTypeYear % 4096); // might be wrong
   date.setUTCMonth(Math.max(buffer.readUint8() - 1, 0));
   date.setUTCDate(buffer.readUint8());
   date.setUTCHours(buffer.readUint8());

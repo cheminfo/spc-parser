@@ -13,9 +13,14 @@ test('mainHeader parsing test', () => {
   const raman = mainHeader(
     new IOBuffer(fs.readFileSync(`${pathFiles}RAMAN.SPC`)),
   );
+  const mOrdZ = mainHeader(
+    new IOBuffer(fs.readFileSync(`${pathFiles}m_ordz.spc`)),
+  );
   expect(mxyxy.parameters.xyxy).toStrictEqual(true);
   expect(mxyxy.parameters.multiFile).toStrictEqual(true);
   expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
+  expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
   expect(raman.date).toMatch(/1994-08-26T16:45/);
   expect(raman.xyzLabels).toMatch(/Rmn Intensity/);
+  expect(mOrdZ.memo).toMatch(/^Multiple [^]*ordered Z spacing/);
 });

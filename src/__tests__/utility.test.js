@@ -1,4 +1,4 @@
-import { getFlagParameters, longToDate, xPoints } from '../utility';
+import { getFlagParameters, longToDate, evenArray } from '../utility';
 
 test('Flag parameters', () => {
   expect(getFlagParameters(127)).toStrictEqual({
@@ -18,5 +18,5 @@ test('Long to date', () => {
   expect(longToDate(0)).toMatch(/0000-00-00T00:00:00.00Z/);
 });
 test('X Points', () => {
-  expect(xPoints(200, 800, 175)).toHaveLength(175);
+  expect(evenArray(200, 800, 175)).toHaveLength(175);
 });

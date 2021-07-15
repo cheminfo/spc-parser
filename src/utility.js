@@ -4,12 +4,12 @@
  * @returns {object} The parameters
  */
 export function getFlagParameters(flag) {
-  const parameters = {};
+  const parameters = {}; //Z is time
   parameters.y16BitPrecision = (flag & 1) !== 0; //Y values are 16 bits instead of 32
   parameters.useExperimentExtension = (flag & 2) !== 0; //Enable experiment mode
   parameters.multiFile = (flag & 4) !== 0; //Multiple subfiles (spectrums)
-  parameters.zValuesRandom = (flag & 8) !== 0; //Z values in random order
-  parameters.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced
+  parameters.zValuesRandom = (flag & 8) !== 0; //Z values in random order if multiFile
+  parameters.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced if multi
   parameters.customAxisLabels = (flag & 32) !== 0; //Custom labels
   parameters.xyxy = (flag & 64) !== 0; //One X array per subfile, for discontinuous curves
   parameters.xy = (flag & 128) !== 0; // Non-evenly spaced X, X before Y
@@ -31,20 +31,20 @@ export function getSubFlagParameters(flag) {
 }
 
 /**
- * Generates a list of points on the X axis
+ * Generates an array of evenly spaced numbers
  * @param {number} minimum Lower bound
  * @param {number} maximum Upper bound
  * @param {number} numberPoints Number of points
- * @return {array} X axis
+ * @return {array} Evenly spaced numbers
  */
-export function xPoints(minimum, maximum, numberPoints) {
-  const xPoints = new Float64Array(numberPoints);
+export function evenArray(minimum, maximum, numberPoints) {
+  const evenArray = new Float64Array(numberPoints);
   const step = (maximum - minimum) / (numberPoints - 1);
   let i = minimum;
   for (i = 0; i < numberPoints; i++) {
-    xPoints[i] = minimum + i * step;
+    evenArray[i] = minimum + i * step;
   }
-  return xPoints;
+  return evenArray;
 }
 
 /**
