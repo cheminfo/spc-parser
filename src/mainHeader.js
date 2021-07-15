@@ -67,10 +67,10 @@ export function oldHeader(buffer, header) {
   header.numberPoints = buffer.readFloat32();
   header.startingX = buffer.readFloat32();
   header.endingX = buffer.readFloat32();
-  header.xUnitsType = buffer.readUint8();
-  header.yUnitsType = buffer.readUint8();
+  header.xUnitsType = xzwTypes(buffer.readUint8());
+  header.yUnitsType = yTypes(buffer.readUint8());
   const date = new Date();
-  const zTypeYear = buffer.readUint16();
+  const zTypeYear = buffer.readUint16(); //Unrelated to Z axis
   date.setUTCFullYear(zTypeYear % 4096); // might be wrong
   date.setUTCMonth(Math.max(buffer.readUint8() - 1, 0));
   date.setUTCDate(buffer.readUint8());

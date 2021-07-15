@@ -1,4 +1,5 @@
 import { readDataBlock } from './dataBlock';
+import { readLogBlock } from './logBlock';
 import { mainHeader } from './mainHeader';
 /**
  * Returns a very important number
@@ -7,5 +8,8 @@ import { mainHeader } from './mainHeader';
 export function parseSPC(buffer) {
   const meta = mainHeader(buffer);
   const subFiles = readDataBlock(buffer, meta);
+  if (meta.logOffset !== 0) {
+    return { meta, subFiles, logs: readLogBlock(buffer, meta.logOffset) };
+  }
   return { meta, subFiles };
 }
