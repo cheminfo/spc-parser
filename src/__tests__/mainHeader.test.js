@@ -18,6 +18,9 @@ test('mainHeader parsing test', () => {
   );
   expect(mxyxy.parameters.xyxy).toStrictEqual(true);
   expect(mxyxy.parameters.multiFile).toStrictEqual(true);
+  expect(mxyxy.xUnitsType).toStrictEqual('Mass (M/z)');
+  expect(mxyxy.zUnitsType).toStrictEqual('Minutes');
+  expect(mxyxy.wUnitsType).toBeUndefined();
   expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
   expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
   expect(raman.date).toMatch(/1994-08-26T16:45/);

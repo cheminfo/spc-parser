@@ -73,7 +73,7 @@ export function xzwTypes(xzwType) {
 }
 /**
  * Gives meaning to y type codes
- * @param {*} yType y type code
+ * @param {number} yType y type code
  * @return {string} String corresponding to the code
  */
 export function yTypes(yType) {
@@ -134,5 +134,43 @@ export function yTypes(yType) {
       return 'Emission';
     default:
       return 'Arbitrary Intensity';
+  }
+}
+
+/**
+ * Experiment settings code converter
+ * @param {number} code
+ * @return {string}
+ */
+export function experimentSettings(code) {
+  switch (code) {
+    case 1:
+      return 'Gas Chromatogram';
+    case 2:
+      return 'General Chromatogram (same as SPCGEN with TCGRAM)';
+    case 3:
+      return 'HPLC Chromatogram';
+    case 4:
+      return 'FT-IR, FT-NIR, FT-Raman Spectrum or Igram (Can also be used for scanning IR.)';
+    case 5:
+      return 'NIR Spectrum (Usually multi-spectral data sets for calibration.)';
+    case 7:
+      return 'UV-VIS Spectrum (Can be used for single scanning UV-VIS-NIR.)';
+    case 8:
+      return 'X-ray Diffraction Spectrum';
+    case 9:
+      return 'Mass Spectrum  (Can be single, GC-MS, Continuum, Centroid or TOF.)';
+    case 10:
+      return 'NMR Spectrum or FID';
+    case 11:
+      return 'Raman Spectrum (Usually Diode Array, CCD, etc. use SPCFTIR for FT-Raman.)';
+    case 12:
+      return 'Fluorescence Spectrum';
+    case 13:
+      return 'Atomic Spectrum';
+    case 14:
+      return 'Chromatography Diode Array Spectra';
+    default:
+      return 'General SPC (could be anything)';
   }
 }

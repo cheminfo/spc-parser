@@ -1,4 +1,4 @@
-import { xzwTypes, yTypes } from './types';
+import { xzwTypes, yTypes, experimentSettings } from './types';
 import { getFlagParameters, longToDate } from './utility';
 
 /**
@@ -24,7 +24,7 @@ export function mainHeader(buffer) {
       );
   }
 
-  header.experimentType = buffer.readUint8(); //Experiment type code (See SPC.h)
+  header.experimentType = experimentSettings(buffer.readUint8()); //Experiment type code (See SPC.h)
   header.exponentY = buffer.readInt8(); //Exponent for Y values (80h = floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
   header.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)
   header.startingX = buffer.readFloat64(); //First X coordinate
