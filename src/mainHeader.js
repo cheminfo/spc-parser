@@ -62,6 +62,15 @@ export function mainHeader(buffer) {
   header.reserved = buffer.readChars(187); //Reserved space (Must be zero)
   return header;
 }
+
+/**
+ *Old version files header parsing
+ *
+ * @export
+ * @param {object} buffer SPC buffer
+ * @param {object} header Header from the previous function
+ * @return {object} Object containing the metadata of the old file
+ */
 export function oldHeader(buffer, header) {
   header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
   header.numberPoints = buffer.readFloat32();

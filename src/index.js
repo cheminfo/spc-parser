@@ -2,8 +2,10 @@ import { readDataBlock } from './dataBlock';
 import { readLogBlock } from './logBlock';
 import { mainHeader } from './mainHeader';
 /**
- * Returns a very important number
- * @return {number}
+ * Parses an SPC file
+ *
+ * @param {object} buffer SPC file buffer
+ * @return {object} Object containing every information contained in the SPC file
  */
 export function parseSPC(buffer) {
   const meta = mainHeader(buffer);

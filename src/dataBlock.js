@@ -1,5 +1,12 @@
 import { evenArray, getSubFlagParameters } from './utility';
 
+/**
+ * Parses the subheader of the current subfile
+ *
+ * @export
+ * @param {object} buffer SPC buffer
+ * @return {object} Current subfile's subheader
+ */
 export function subHeader(buffer) {
   const subHeader = {};
   subHeader.parameters = getSubFlagParameters(buffer.readUint8());
@@ -15,6 +22,14 @@ export function subHeader(buffer) {
   return subHeader;
 }
 
+/**
+ * Reads the data block of the SPC file
+ *
+ * @export
+ * @param {object} buffer spc buffer
+ * @param {object} mainHeader main header
+ * @return {array} Array containing every spectrums (subfiles)
+ */
 export function readDataBlock(buffer, mainHeader) {
   let x;
   let y;
