@@ -1,3 +1,4 @@
+import { xzwTypes, yTypes } from './types';
 import { getFlagParameters, longToDate } from './utility';
 
 /**
@@ -29,9 +30,9 @@ export function mainHeader(buffer) {
   header.startingX = buffer.readFloat64(); //First X coordinate
   header.endingX = buffer.readFloat64(); //Last X coordinate
   header.subFiles = buffer.readUint32(); //Number of spectrums
-  header.xUnitsType = buffer.readUint8(); //X Units type code (See SPC.H)
-  header.yUnitsType = buffer.readUint8(); //Y ""
-  header.zUnitsType = buffer.readUint8(); //Z ""
+  header.xUnitsType = xzwTypes(buffer.readUint8()); //X Units type code (See types.js)
+  header.yUnitsType = yTypes(buffer.readUint8()); //Y ""
+  header.zUnitsType = xzwTypes(buffer.readUint8()); //Z ""
   header.postingDisposition = buffer.readUint8(); //Posting disposition (See GRAMSDDE.H)
   header.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
   header.resolutionDescription = buffer.readChars(9); //Resolution description text
@@ -57,7 +58,7 @@ export function mainHeader(buffer) {
   header.zSubIncrement = buffer.readFloat32(); //Z subfile increment for even Z Multifiles
   header.wPlanes = buffer.readUint32();
   header.wPlaneIncrement = buffer.readFloat32();
-  header.wAxisUnits = buffer.readUint8(); //W axis units code
+  header.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
   header.reserved = buffer.readChars(187); //Reserved space (Must be zero)
   return header;
 }
