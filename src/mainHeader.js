@@ -7,8 +7,8 @@ import { getFlagParameters, longToDate } from './utility';
  */
 export function mainHeader(buffer) {
   const header = {};
-  header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter 0x00
-  header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format 0x01
+  header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
+  header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   switch (header.fileVer) {
     case 0x4b:
       break;
