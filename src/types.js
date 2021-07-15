@@ -78,6 +78,8 @@ export function xzwTypes(xzwType) {
  */
 export function yTypes(yType) {
   switch (yType) {
+    case 0:
+      return 'Arbitrary Intensity';
     case 1:
       return 'Interferogram';
     case 2:
@@ -133,7 +135,7 @@ export function yTypes(yType) {
     case 131:
       return 'Emission';
     default:
-      return 'Arbitrary Intensity';
+      return 'Reference Arbitrary Energy';
   }
 }
 
