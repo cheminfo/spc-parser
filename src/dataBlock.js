@@ -89,7 +89,12 @@ export function readDataBlock(buffer, mainHeader) {
       y = new Float32Array(nbPoints);
       for (let j = 0; j < nbPoints; j++) {
         if (mainHeader.fileVersion === 0x4d) {
-          y[j] = (buffer.readInt16() + (buffer.readInt16() << 16)) * yFactor;
+          y[j] =
+            ((buffer.readUint8() << 16) +
+              (buffer.readInt8() << 24) +
+              (buffer.readUint8() << 0) +
+              (buffer.readUint8() << 8)) *
+            yFactor;
         } else {
           y[j] = buffer.readInt32() * yFactor;
         }
