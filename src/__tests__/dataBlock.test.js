@@ -24,7 +24,8 @@ test('data block parsing test', () => {
   expect(raman[0].x[1]).toStrictEqual(3994.8946331825773);
   expect(raman[0].y[1]).toStrictEqual(0.0186002254486084);
   expect(mOrdZ[0].x[0]).toStrictEqual(698.229736328125);
-  expect(mOrdZ[0].y).toHaveLength(857);
+  expect(mOrdZ[9].y).toHaveLength(857);
+  expect(mOrdZ[10]).toBeUndefined();
   expect(ftIr).toHaveLength(1);
   expect(ftIr[0].y[0]).toStrictEqual(95.13749694824219);
   expect(mEvenZ[0].x).toStrictEqual(mEvenZ[2].x);

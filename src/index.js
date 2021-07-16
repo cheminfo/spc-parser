@@ -10,7 +10,7 @@ import { mainHeader } from './mainHeader';
 export function parseSPC(buffer) {
   const meta = mainHeader(buffer);
   const subFiles = readDataBlock(buffer, meta);
-  if (meta.logOffset !== 0) {
+  if (meta.logOffset && meta.logOffset !== 0) {
     return { meta, subFiles, logs: readLogBlock(buffer, meta.logOffset) };
   }
   return { meta, subFiles };

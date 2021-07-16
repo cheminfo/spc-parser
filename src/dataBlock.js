@@ -47,11 +47,21 @@ export function readDataBlock(buffer, mainHeader) {
       mainHeader.numberPoints,
     );
   }
+  let oldSub;
   let spectrum;
-  const subNum = mainHeader.subFiles ? mainHeader.subFiles : 1;
-  for (let i = 0; i < subNum; i++) {
+  if (mainHeader.fileVersion === 0x4d) {
+    oldSub = subHeader(buffer);
+  }
+  for (
+    let i = 0;
+    i < mainHeader.subFiles ||
+    (mainHeader.fileVersion === 0x4d &&
+      buffer.offset + mainHeader.numberPoints < buffer.length);
+    i++
+  ) {
     spectrum = {};
-    spectrum.meta = subHeader(buffer);
+    spectrum.meta =
+      mainHeader.fileVersion !== 0x4d ? subHeader(buffer) : oldSub;
     if (mainHeader.parameters.xyxy) {
       x = new Float32Array(spectrum.meta.numberPoints);
       for (let j = 0; j < spectrum.meta.numberPoints; j++) {
@@ -78,7 +88,11 @@ export function readDataBlock(buffer, mainHeader) {
     } else {
       y = new Float32Array(nbPoints);
       for (let j = 0; j < nbPoints; j++) {
-        y[j] = buffer.readInt32() * yFactor;
+        if (mainHeader.fileVersion === 0x4d) {
+          y[j] = (buffer.readInt16() + (buffer.readInt16() << 16)) * yFactor;
+        } else {
+          y[j] = buffer.readInt32() * yFactor;
+        }
       }
     }
 

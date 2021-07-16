@@ -9,8 +9,8 @@ import { getFlagParameters, longToDate } from './utility';
 export function mainHeader(buffer) {
   const header = {};
   header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
-  header.fileVer = buffer.readUint8(); //4B => New format; 4D => LabCalc format
-  switch (header.fileVer) {
+  header.fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+  switch (header.fileVersion) {
     case 0x4b:
       break;
     case 0x4c:
@@ -42,7 +42,7 @@ export function mainHeader(buffer) {
   for (let i = 0; i < 8; i++) {
     header.spare.push(buffer.readFloat32());
   }
-  if (header.fileVer === 0x4c) {
+  if (header.fileVersion === 0x4c) {
     //Untested case because no test files
     header.spare.reverse();
   }
