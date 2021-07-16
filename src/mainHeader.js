@@ -46,7 +46,7 @@ export function mainHeader(buffer) {
     //Untested case because no test files
     header.spare.reverse();
   }
-  header.memo = buffer.readChars(130).trim(); //0x
+  header.memo = buffer.readChars(130).trim();
   header.xyzLabels = buffer.readChars(30).trim();
   header.logOffset = buffer.readUint32(); //Byte offset to Log Block
   header.modifiedFlag = buffer.readUint32(); //File modification flag (See values in SPC.H)
