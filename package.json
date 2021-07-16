@@ -41,7 +41,7 @@
     "eslint-config-cheminfo": "^5.2.4",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "rollup": "^2.52.8"
+    "rollup": "^2.53.2"
   },
   "dependencies": {
     "iobuffer": "^5.0.3"
