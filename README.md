@@ -14,9 +14,13 @@ Thermo Galactic GRAMS SPC files parser.
 ## Usage
 
 ```js
-import library from 'spc-parser';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { parse } from 'spc-parser';
 
-const result = library(args);
+const arrayBuffer = readFileSync(join(__dirname, 'spectrum.spc'));
+
+const result = parse(arrayBuffer);
 // result is ...
 ```
 

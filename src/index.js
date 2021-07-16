@@ -7,7 +7,7 @@ import { mainHeader } from './mainHeader';
  * @param {object} buffer SPC file buffer
  * @return {object} Object containing every information contained in the SPC file
  */
-export function parseSPC(buffer) {
+export function parse(buffer) {
   const meta = mainHeader(buffer);
   const spectra = readDataBlock(buffer, meta);
   if (meta.logOffset && meta.logOffset !== 0) {
