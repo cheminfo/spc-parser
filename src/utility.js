@@ -7,7 +7,7 @@ export function getFlagParameters(flag) {
   const parameters = {}; //Z is time
   parameters.y16BitPrecision = (flag & 1) !== 0; //Y values are 16 bits instead of 32
   parameters.useExperimentExtension = (flag & 2) !== 0; //Enable experiment mode
-  parameters.multiFile = (flag & 4) !== 0; //Multiple subfiles (spectrums)
+  parameters.multiFile = (flag & 4) !== 0; //Multiple spectra
   parameters.zValuesRandom = (flag & 8) !== 0; //Z values in random order if multiFile
   parameters.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced if multi
   parameters.customAxisLabels = (flag & 32) !== 0; //Custom labels
@@ -37,14 +37,13 @@ export function getSubFlagParameters(flag) {
  * @param {number} numberPoints Number of points
  * @return {array} Evenly spaced numbers
  */
-export function evenArray(minimum, maximum, numberPoints) {
-  const evenArray = new Float64Array(numberPoints);
+export function equidistantArray(minimum, maximum, numberPoints) {
+  const equidistantArray = new Float64Array(numberPoints);
   const step = (maximum - minimum) / (numberPoints - 1);
-  let i = minimum;
-  for (i = 0; i < numberPoints; i++) {
-    evenArray[i] = minimum + i * step;
+  for (let i = 0; i < numberPoints; i++) {
+    equidistantArray[i] = minimum + i * step;
   }
-  return evenArray;
+  return equidistantArray;
 }
 
 /**

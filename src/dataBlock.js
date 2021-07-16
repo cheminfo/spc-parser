@@ -1,4 +1,4 @@
-import { evenArray, getSubFlagParameters } from './utility';
+import { equidistantArray, getSubFlagParameters } from './utility';
 
 /**
  * Parses the subheader of the current subfile
@@ -18,7 +18,7 @@ export function subHeader(buffer) {
   subHeader.numberPoints = buffer.readUint32();
   subHeader.numberCoAddedScans = buffer.readUint32();
   subHeader.wAxisValue = buffer.readFloat32();
-  subHeader.reserved = buffer.readChars(4);
+  subHeader.reserved = buffer.readChars(4).trim();
   return subHeader;
 }
 
@@ -28,12 +28,12 @@ export function subHeader(buffer) {
  * @export
  * @param {object} buffer spc buffer
  * @param {object} mainHeader main header
- * @return {array} Array containing every spectrums (subfiles)
+ * @return {array} Array containing the spectra
  */
 export function readDataBlock(buffer, mainHeader) {
   let x;
   let y;
-  let subFiles = [];
+  let spectra = [];
 
   if (!mainHeader.parameters.xyxy && mainHeader.xy) {
     x = new Float32Array(mainHeader.numberPoints);
@@ -41,7 +41,7 @@ export function readDataBlock(buffer, mainHeader) {
       x[i] = buffer.readFloat32();
     }
   } else if (!mainHeader.parameters.xy) {
-    x = evenArray(
+    x = equidistantArray(
       mainHeader.startingX,
       mainHeader.endingX,
       mainHeader.numberPoints,
@@ -50,7 +50,7 @@ export function readDataBlock(buffer, mainHeader) {
   let spectrum;
   for (
     let i = 0;
-    i < mainHeader.subFiles ||
+    i < mainHeader.spectra ||
     (mainHeader.fileVersion === 0x4d &&
       buffer.offset + mainHeader.numberPoints < buffer.length);
     i++
@@ -98,7 +98,7 @@ export function readDataBlock(buffer, mainHeader) {
 
     spectrum.x = x;
     spectrum.y = y;
-    subFiles.push(spectrum);
+    spectra.push(spectrum);
   }
-  return subFiles;
+  return spectra;
 }
