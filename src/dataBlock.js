@@ -47,11 +47,7 @@ export function readDataBlock(buffer, mainHeader) {
       mainHeader.numberPoints,
     );
   }
-  let oldSub;
   let spectrum;
-  if (mainHeader.fileVersion === 0x4d) {
-    oldSub = subHeader(buffer);
-  }
   for (
     let i = 0;
     i < mainHeader.subFiles ||
@@ -60,8 +56,7 @@ export function readDataBlock(buffer, mainHeader) {
     i++
   ) {
     spectrum = {};
-    spectrum.meta =
-      mainHeader.fileVersion !== 0x4d ? subHeader(buffer) : oldSub;
+    spectrum.meta = subHeader(buffer);
     if (mainHeader.parameters.xyxy) {
       x = new Float32Array(spectrum.meta.numberPoints);
       for (let j = 0; j < spectrum.meta.numberPoints; j++) {
