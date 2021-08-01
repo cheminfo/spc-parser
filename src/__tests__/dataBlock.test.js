@@ -1,3 +1,5 @@
+import { join } from 'path';
+
 import { readDataBlock } from '../dataBlock';
 import { mainHeader } from '../mainHeader';
 
@@ -5,7 +7,7 @@ const { readFileSync } = require('fs');
 
 const { IOBuffer } = require('iobuffer');
 
-const pathFiles = `${__dirname}/files/`;
+const pathFiles = join(__dirname, 'files');
 
 const mXyxyBuffer = new IOBuffer(readFileSync(`${pathFiles}m_xyxy.spc`));
 const mXyxy = readDataBlock(mXyxyBuffer, mainHeader(mXyxyBuffer));
