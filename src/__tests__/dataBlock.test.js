@@ -9,15 +9,15 @@ const { IOBuffer } = require('iobuffer');
 
 const pathFiles = join(__dirname, 'files');
 
-const mXyxyBuffer = new IOBuffer(readFileSync(`${pathFiles}m_xyxy.spc`));
+const mXyxyBuffer = new IOBuffer(readFileSync(join(pathFiles, 'm_xyxy.spc')));
 const mXyxy = readDataBlock(mXyxyBuffer, mainHeader(mXyxyBuffer));
-const ramanBuffer = new IOBuffer(readFileSync(`${pathFiles}RAMAN.SPC`));
+const ramanBuffer = new IOBuffer(readFileSync(join(pathFiles, 'RAMAN.SPC')));
 const raman = readDataBlock(ramanBuffer, mainHeader(ramanBuffer));
-const mOrdZBuffer = new IOBuffer(readFileSync(`${pathFiles}m_ordz.spc`));
+const mOrdZBuffer = new IOBuffer(readFileSync(join(pathFiles, 'm_ordz.spc')));
 const mOrdZ = readDataBlock(mOrdZBuffer, mainHeader(mOrdZBuffer));
-const ftIrBuffer = new IOBuffer(readFileSync(`${pathFiles}Ft-ir.spc`));
+const ftIrBuffer = new IOBuffer(readFileSync(join(pathFiles, 'Ft-ir.spc')));
 const ftIr = readDataBlock(ftIrBuffer, mainHeader(ftIrBuffer));
-const mEvenZBuffer = new IOBuffer(readFileSync(`${pathFiles}m_evenz.spc`));
+const mEvenZBuffer = new IOBuffer(readFileSync(join(pathFiles, 'm_evenz.spc')));
 const mEvenZ = readDataBlock(mEvenZBuffer, mainHeader(mEvenZBuffer));
 test('data block parsing test', () => {
   expect(mXyxy).toHaveLength(512);
