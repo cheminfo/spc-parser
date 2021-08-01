@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/cheminfo/spc-parser/compare/v0.2.0...v0.3.0) (2021-08-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* Parse use directly a buffer
+
+### Features
+
+* Parse use directly a buffer ([a4288a5](https://www.github.com/cheminfo/spc-parser/commit/a4288a55ba8faffe39a823a01b74efacc8d18464))
+
 ## [0.2.0](https://www.github.com/cheminfo/spc-parser/compare/v0.1.0...v0.2.0) (2021-07-16)
 
 
