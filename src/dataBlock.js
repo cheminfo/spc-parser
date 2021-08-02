@@ -96,21 +96,25 @@ export function readDataBlock(buffer, mainHeader) {
         }
       }
     }
-    const xUnit = mainHeader.xUnitsType.match(/\[(.*)\]|\((.*)\)/);
-    const yUnit = mainHeader.yUnitsType.match(/\[(.*)\]|\((.*)\)/);
+    const xAxis = mainHeader.xUnitsType.match(
+      /(?<label>.*?) ?[([](?<units>.*)[)\]]/,
+    );
+    const yAxis = mainHeader.yUnitsType.match(
+      /(?<label>.*?) ?[([](?<units>.*)[)\]]/,
+    );
     const xobj = {
       symbol: 'x',
-      label: mainHeader.xUnitsType,
-      unit: xUnit && xUnit.length >= 2 ? xUnit[1] : 'arbitrary',
+      label: (xAxis && xAxis.groups.label) || mainHeader.xUnitsType,
+      units: (xAxis && xAxis.groups.units) || '',
       data: x,
       type: 'INDEPENDENT',
     };
     const yobj = {
       symbol: 'y',
-      label: mainHeader.yUnitsType,
-      unit: yUnit && yUnit.length >= 2 ? yUnit[1] : 'arbitrary',
+      label: (yAxis && yAxis.groups.label) || mainHeader.yUnitsType,
+      units: (yAxis && yAxis.groups.units) || '',
       data: y,
-      type: 'INDEPENDENT',
+      type: 'DEPENDENT',
     };
     spectrum.variables = [xobj, yobj];
     spectra.push(spectrum);
