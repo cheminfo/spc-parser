@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://www.github.com/cheminfo/spc-parser/compare/v0.3.0...v0.4.0) (2021-08-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* spectrum structure
+
+### Bug Fixes
+
+* change spectrum objects structure ([b859bdc](https://www.github.com/cheminfo/spc-parser/commit/b859bdc5bf35701744e867263e31280a13182005)), closes [#13](https://www.github.com/cheminfo/spc-parser/issues/13) [#15](https://www.github.com/cheminfo/spc-parser/issues/15) [#16](https://www.github.com/cheminfo/spc-parser/issues/16)
+
 ## [0.3.0](https://www.github.com/cheminfo/spc-parser/compare/v0.2.0...v0.3.0) (2021-08-01)
 
 
