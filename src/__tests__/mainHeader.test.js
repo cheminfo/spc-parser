@@ -1,18 +1,20 @@
 import { mainHeader } from '../mainHeader';
 
-const { readFileSync } = require('fs');
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const { IOBuffer } = require('iobuffer');
 
-const pathFiles = `${__dirname}/files/`;
-
+const pathFiles = join(__dirname, 'files');
 test('mainHeader parsing test', () => {
   const mxyxy = mainHeader(
-    new IOBuffer(readFileSync(`${pathFiles}m_xyxy.spc`)),
+    new IOBuffer(readFileSync(join(pathFiles, 'm_xyxy.spc'))),
   );
-  const raman = mainHeader(new IOBuffer(readFileSync(`${pathFiles}RAMAN.SPC`)));
+  const raman = mainHeader(
+    new IOBuffer(readFileSync(join(pathFiles, 'RAMAN.SPC'))),
+  );
   const mOrdZ = mainHeader(
-    new IOBuffer(readFileSync(`${pathFiles}m_ordz.spc`)),
+    new IOBuffer(readFileSync(join(pathFiles, 'm_ordz.spc'))),
   );
   expect(mxyxy.parameters.xyxy).toStrictEqual(true);
   expect(mxyxy.parameters.multiFile).toStrictEqual(true);

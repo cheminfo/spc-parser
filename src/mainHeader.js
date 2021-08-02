@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import { xzwTypes, yTypes, experimentSettings } from './types';
 import { getFlagParameters, longToDate } from './utility';
 
@@ -31,12 +32,19 @@ export function mainHeader(buffer) {
   header.endingX = buffer.readFloat64(); //Last X coordinate
   header.spectra = buffer.readUint32(); //Number of spectrums
   header.xUnitsType = xzwTypes(buffer.readUint8()); //X Units type code (See types.js)
+
   header.yUnitsType = yTypes(buffer.readUint8()); //Y ""
   header.zUnitsType = xzwTypes(buffer.readUint8()); //Z ""
   header.postingDisposition = buffer.readUint8(); //Posting disposition (See GRAMSDDE.H)
   header.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
-  header.resolutionDescription = buffer.readChars(9).trim(); //Resolution description text
-  header.sourceInstrumentDescription = buffer.readChars(9).trim(); // Source Instrument description text
+  header.resolutionDescription = buffer
+    .readChars(9)
+    .trim()
+    .replace(/\x00/g, ''); //Resolution description text
+  header.sourceInstrumentDescription = buffer
+    .readChars(9)
+    .trim()
+    .replace(/\x00/g, ''); // Source Instrument description text
   header.peakPointNumber = buffer.readUint16(); //Peak point number for interferograms
   header.spare = [];
   for (let i = 0; i < 8; i++) {
@@ -46,20 +54,26 @@ export function mainHeader(buffer) {
     //Untested case because no test files
     header.spare.reverse();
   }
-  header.memo = buffer.readChars(130).trim();
-  header.xyzLabels = buffer.readChars(30).trim();
+  header.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
+  header.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
   header.logOffset = buffer.readUint32(); //Byte offset to Log Block
   header.modifiedFlag = buffer.readUint32(); //File modification flag (See values in SPC.H)
   header.processingCode = buffer.readUint8(); //Processing code (See GRAMSDDE.H)
   header.calibrationLevel = buffer.readUint8(); //Calibration level + 1
   header.subMethodSampleInjectionNumber = buffer.readUint16(); //Sub-method sample injection number
   header.concentrationFactor = buffer.readFloat32(); //Floating data multiplier concentration factor
-  header.methodFile = buffer.readChars(48).trim(); //Method file
+  header.methodFile = buffer.readChars(48).trim().replace(/\x00/g, ''); //Method file
   header.zSubIncrement = buffer.readFloat32(); //Z subfile increment for even Z Multifiles
   header.wPlanes = buffer.readUint32();
   header.wPlaneIncrement = buffer.readFloat32();
   header.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
-  header.reserved = buffer.readChars(187).trim(); //Reserved space (Must be zero)
+  header.reserved = buffer.readChars(187).trim().replace(/\x00/g, ''); //Reserved space (Must be zero)
+  if (header.xUnitsType === 0) {
+    header.xUnitsType = header.xyzLabels.substr(0, 10);
+  }
+  if (header.zUnitsType === 0) {
+    header.zUnitsType = header.xyzLabels.substr(20, 10);
+  }
   return header;
 }
 
@@ -86,14 +100,17 @@ export function oldHeader(buffer, header) {
   date.setUTCHours(buffer.readUint8());
   date.setUTCMinutes(buffer.readUint8());
   header.date = date.toISOString();
-  header.resolutionDescription = buffer.readChars(8).trim();
+  header.resolutionDescription = buffer
+    .readChars(8)
+    .trim()
+    .replace(/\x00/g, '');
   header.peakPointNumber = buffer.readUint16();
   header.scans = buffer.readUint16();
   header.spare = [];
   for (let i = 0; i < 7; i++) {
     header.spare.push(buffer.readFloat32());
   }
-  header.memo = buffer.readChars(130).trim();
-  header.xyzLabels = buffer.readChars(30).trim();
+  header.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
+  header.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
   return header;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 /**
  *
  * @param {object} buffer SPC buffer
@@ -11,11 +12,12 @@ export function readLogBlock(buffer, logOffset) {
   logHeader.textOffset = buffer.readUint32(); //Offset to Text section
   logHeader.binarySize = buffer.readUint32(); //Size of binary log block
   logHeader.diskArea = buffer.readUint32(); //Size of the disk area
-  logHeader.reserved = buffer.readChars(44).trim(); //Reserved space
+  logHeader.reserved = buffer.readChars(44).trim().replace(/\x00/g, ''); //Reserved space
   const logData = buffer.readChars(logHeader.binarySize);
   buffer.offset = logOffset + logHeader.textOffset;
   const logASCII = buffer
     .readChars(logHeader.size - logHeader.textOffset)
-    .trim();
+    .trim()
+    .replace(/\x00/g, '');
   return { meta: logHeader, data: logData, text: logASCII };
 }

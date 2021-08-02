@@ -34,7 +34,7 @@ export function xzwTypes(xzwType) {
     case 14:
       return 'eV';
     case 15:
-      return 'XYZ text labels in fcatxt (old 0x4D version only)';
+      return 0;
     case 16:
       return 'Diode Number';
     case 17:
@@ -66,7 +66,7 @@ export function xzwTypes(xzwType) {
     case 30:
       return 'Hours';
     case 255:
-      return 'Double interferogram (no display labels)';
+      return 'Double interferogram';
     default:
       return 'Arbitrary';
   }
@@ -127,7 +127,7 @@ export function yTypes(yType) {
     case 26:
       return 'Complex';
     case 128:
-      return 'Transmission (ALL HIGHER MUST HAVE VALLEYS!)';
+      return 'Transmission';
     case 129:
       return 'Reflectance';
     case 130:

@@ -1,3 +1,4 @@
+/* eslint-disable no-control-regex */
 import { equidistantArray, getSubFlagParameters } from './utility';
 
 /**
@@ -18,7 +19,7 @@ export function subHeader(buffer) {
   subHeader.numberPoints = buffer.readUint32();
   subHeader.numberCoAddedScans = buffer.readUint32();
   subHeader.wAxisValue = buffer.readFloat32();
-  subHeader.reserved = buffer.readChars(4).trim();
+  subHeader.reserved = buffer.readChars(4).trim().replace(/\x00/g, '');
   return subHeader;
 }
 
@@ -95,9 +96,23 @@ export function readDataBlock(buffer, mainHeader) {
         }
       }
     }
-
-    spectrum.x = x;
-    spectrum.y = y;
+    const xUnit = mainHeader.xUnitsType.match(/\[(.*)\]|\((.*)\)/);
+    const yUnit = mainHeader.yUnitsType.match(/\[(.*)\]|\((.*)\)/);
+    const xobj = {
+      symbol: 'x',
+      label: mainHeader.xUnitsType,
+      unit: xUnit && xUnit.length >= 2 ? xUnit[1] : 'arbitrary',
+      data: x,
+      type: 'INDEPENDENT',
+    };
+    const yobj = {
+      symbol: 'y',
+      label: mainHeader.yUnitsType,
+      unit: yUnit && yUnit.length >= 2 ? yUnit[1] : 'arbitrary',
+      data: y,
+      type: 'INDEPENDENT',
+    };
+    spectrum.variables = [xobj, yobj];
     spectra.push(spectrum);
   }
   return spectra;
