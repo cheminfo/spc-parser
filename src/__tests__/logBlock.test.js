@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const { IOBuffer } = require('iobuffer');
 
-const pathFiles = join(__dirname, 'files');
+const pathFiles = join(__dirname, 'data');
 
 const nmrBuffer = new IOBuffer(fs.readFileSync(join(pathFiles, 'NMR_SPC.SPC')));
 
