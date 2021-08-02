@@ -6,7 +6,7 @@ import { parse } from '..';
 test('parse', () => {
   const buffer = readFileSync(join(__dirname, 'data', 'Ft-ir.spc'));
   const result = parse(buffer);
-  expect(result.spectra[0].variables[0]).toMatchObject({
+  expect(result.spectra[0].variables.x).toMatchObject({
     symbol: 'x',
     label: 'Wavenumber',
     units: 'cm-1',

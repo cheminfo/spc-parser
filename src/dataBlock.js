@@ -102,21 +102,23 @@ export function readDataBlock(buffer, mainHeader) {
     const yAxis = mainHeader.yUnitsType.match(
       /(?<label>.*?) ?[([](?<units>.*)[)\]]/,
     );
-    const xobj = {
-      symbol: 'x',
-      label: (xAxis && xAxis.groups.label) || mainHeader.xUnitsType,
-      units: (xAxis && xAxis.groups.units) || '',
-      data: x,
-      type: 'INDEPENDENT',
+    const variables = {
+      x: {
+        symbol: 'x',
+        label: (xAxis && xAxis.groups.label) || mainHeader.xUnitsType,
+        units: (xAxis && xAxis.groups.units) || '',
+        data: x,
+        type: 'INDEPENDENT',
+      },
+      y: {
+        symbol: 'y',
+        label: (yAxis && yAxis.groups.label) || mainHeader.yUnitsType,
+        units: (yAxis && yAxis.groups.units) || '',
+        data: y,
+        type: 'DEPENDENT',
+      },
     };
-    const yobj = {
-      symbol: 'y',
-      label: (yAxis && yAxis.groups.label) || mainHeader.yUnitsType,
-      units: (yAxis && yAxis.groups.units) || '',
-      data: y,
-      type: 'DEPENDENT',
-    };
-    spectrum.variables = [xobj, yobj];
+    spectrum.variables = variables;
     spectra.push(spectrum);
   }
   return spectra;
