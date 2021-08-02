@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0](https://www.github.com/cheminfo/spc-parser/compare/v0.4.0...v0.5.0) (2021-08-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* return an object for variables
+
+### Features
+
+* return an object for variables ([66c1a43](https://www.github.com/cheminfo/spc-parser/commit/66c1a4327768e61b17a69776d91a28a97cc2e36a))
+
 ## [0.4.0](https://www.github.com/cheminfo/spc-parser/compare/v0.3.0...v0.4.0) (2021-08-02)
 
 
