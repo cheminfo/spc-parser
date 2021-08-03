@@ -64,6 +64,9 @@ export function readDataBlock(buffer, mainHeader) {
         x[j] = buffer.readFloat32();
       }
     }
+    if (spectrum.meta.exponentY === 0) {
+      spectrum.meta.exponentY = mainHeader.exponentY;
+    }
     const yFactor = Math.pow(
       2,
       spectrum.meta.exponentY -
