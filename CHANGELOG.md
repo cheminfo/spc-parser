@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.5.1](https://www.github.com/cheminfo/spc-parser/compare/v0.5.0...v0.5.1) (2021-08-12)
+
+
+### Bug Fixes
+
+* use mainHeader exponent if no subheader exp. ([02d5f40](https://www.github.com/cheminfo/spc-parser/commit/02d5f4040c990a2a4d88401ed5d08ba159740571))
+
 ## [0.5.0](https://www.github.com/cheminfo/spc-parser/compare/v0.4.0...v0.5.0) (2021-08-02)
 
 
