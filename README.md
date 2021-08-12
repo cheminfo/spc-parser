@@ -6,7 +6,6 @@
 [![npm download][download-image]][download-url]
 [![DOI](https://www.zenodo.org/badge/379600570.svg)](https://www.zenodo.org/badge/latestdoi/379600570)
 
-
 Thermo Galactic GRAMS SPC files parser.
 
 ## Installation
@@ -23,16 +22,35 @@ import { parse } from 'spc-parser';
 const arrayBuffer = readFileSync(join(__dirname, 'spectrum.spc'));
 
 const result = parse(arrayBuffer);
-// result is ...
+// result is a JSON object containing everything that was parsed
 ```
 
 ## [API Documentation](https://cheminfo.github.io/spc-parser/)
 
 ## Credits and useful information
 
-[Thermo Scientific SPC File Developer's Kit ](https://web.archive.org/web/20150131073636/http://ftirsearch.com/features/converters/spcfileformat.HTM)
+### SPC file format
 
-[A Brief Guide to SPC File Format and Using GSPCIO](https://docuri.com/download/spc-file-format_59c1d322f581710b28653306_pdf)
+[SPC](https://en.wikipedia.org/wiki/SPC_file_format) is a file format used in the GRAMS Software Suite for storing all kinds of spectroscopic data, including infrared spectra, Raman spectra and UV/VIS spectra.
+The data is stored in binary with some parts encoded in ASCII. As such, the file must be viewed in either a hex editor or any compatible spectroscopy software.
+
+An SPC file is organized in three blocks:
+
+1. Main Header block
+2. Data block
+3. Log block
+
+The Main Header contains information about the whole file, such as how values are read, the type of format (Old, New LSB, New MSB), the structure of the data block (**XY**, **XYY** or **XYXY**) and the number of spectra.
+
+The Data block contains the spectrum data and is composed of a subheader for each spectrum, the X values _before_ the subheader if **XY** or **XYY**, else _after_ each subheader if **XYXY**. After the subheader and X values come the Y values, which are read according to the method determined in the Main Header.
+
+The Log block contains miscellaneous information that varies for each file, with a part written in ASCII and another one in binary.
+
+[Official file specification](https://github.com/cheminfo/eln-docs/blob/main/docs/30_structural_analysis/includes/spc/spc.pdf)
+
+[Thermo Scientific SPC File Developer Kit ](https://web.archive.org/web/20150131073636/http://ftirsearch.com/features/converters/spcfileformat.HTM)
+
+[c6h6 documentation](https://docs.c6h6.org/docs/eln/structural_analysis/includes/spc/README)
 
 ## License
 
