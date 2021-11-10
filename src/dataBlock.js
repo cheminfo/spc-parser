@@ -70,15 +70,13 @@ export function readDataBlock(buffer, mainHeader) {
     const yFactor = Math.pow(
       2,
       spectrum.meta.exponentY -
-        (mainHeader.parameters.y16BitPrecision &&
-        spectrum.meta.exponentY !== 0x80
-          ? 16
-          : 32),
+        (mainHeader.parameters.y16BitPrecision ? 16 : 32),
     );
 
     const nbPoints = spectrum.meta.numberPoints
       ? spectrum.meta.numberPoints
       : mainHeader.numberPoints;
+
     if (mainHeader.parameters.y16BitPrecision) {
       y = new Float32Array(nbPoints);
       for (let j = 0; j < nbPoints; j++) {
@@ -95,7 +93,11 @@ export function readDataBlock(buffer, mainHeader) {
               (buffer.readUint8() << 8)) *
             yFactor;
         } else {
-          y[j] = buffer.readInt32() * yFactor;
+          if (spectrum.meta.exponentY !== -128) {
+            y[j] = buffer.readInt32() * yFactor;
+          } else {
+            y[j] = buffer.readFloat32();
+          }
         }
       }
     }

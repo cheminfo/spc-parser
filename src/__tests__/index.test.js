@@ -16,6 +16,21 @@ describe('parse', () => {
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(31);
   });
+  it('raman-sion.spc', () => {
+    const buffer = readFileSync(join(__dirname, 'data', 'raman-sion.spc'));
+    const result = parse(buffer);
+    expect(result.spectra[0].variables.x).toMatchObject({
+      symbol: 'x',
+      label: 'Raman Shift',
+      units: 'cm-1',
+      type: 'INDEPENDENT',
+    });
+    expect(result.spectra).toHaveLength(36);
+    expect(Object.keys(result.meta)).toHaveLength(31);
+    const dataY = result.spectra[0].variables.y.data;
+    expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
+    expect(Math.max(...dataY)).toBe(7594.40869140625);
+  });
 
   it('NDR0002.SPC', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'NDR0002.SPC'));

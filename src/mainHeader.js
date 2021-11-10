@@ -12,12 +12,12 @@ export function mainHeader(buffer) {
   header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
   header.fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   switch (header.fileVersion) {
-    case 0x4b:
+    case 0x4b: // new format
       break;
     case 0x4c:
       buffer.setBigEndian();
       break;
-    case 0x4d:
+    case 0x4d: // old LabCalc format
       return oldHeader(buffer, header);
     default:
       throw new Error(
