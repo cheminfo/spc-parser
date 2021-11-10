@@ -62,9 +62,7 @@ test('yTypes', () => {
   expect(yTypes(26)).toBe('Complex');
   expect(yTypes(128)).toBe('Transmission');
   expect(yTypes(129)).toBe('Reflectance');
-  expect(yTypes(130)).toBe(
-    'Arbitrary or Single Beam with Valley Peaks',
-  );
+  expect(yTypes(130)).toBe('Arbitrary or Single Beam with Valley Peaks');
   expect(yTypes(131)).toBe('Emission');
   expect(yTypes(177718)).toBe('Reference Arbitrary Energy');
 });
@@ -94,10 +92,6 @@ test('experimentSettings', () => {
   );
   expect(experimentSettings(12)).toBe('Fluorescence Spectrum');
   expect(experimentSettings(13)).toBe('Atomic Spectrum');
-  expect(experimentSettings(14)).toBe(
-    'Chromatography Diode Array Spectra',
-  );
-  expect(experimentSettings(1428)).toBe(
-    'General SPC (could be anything)',
-  );
+  expect(experimentSettings(14)).toBe('Chromatography Diode Array Spectra');
+  expect(experimentSettings(1428)).toBe('General SPC (could be anything)');
 });
