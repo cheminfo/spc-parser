@@ -10,10 +10,10 @@ describe('mainHeader parsing test', () => {
     const mxyxy = mainHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_xyxy.spc'))),
     );
-    expect(mxyxy.parameters.xyxy).toStrictEqual(true);
-    expect(mxyxy.parameters.multiFile).toStrictEqual(true);
-    expect(mxyxy.xUnitsType).toStrictEqual('Mass (M/z)');
-    expect(mxyxy.zUnitsType).toStrictEqual('Minutes');
+    expect(mxyxy.parameters.xyxy).toBe(true);
+    expect(mxyxy.parameters.multiFile).toBe(true);
+    expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
+    expect(mxyxy.zUnitsType).toBe('Minutes');
     expect(mxyxy.wUnitsType).toBeUndefined();
     expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
     expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);

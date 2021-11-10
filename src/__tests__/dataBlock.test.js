@@ -14,8 +14,8 @@ describe('data block parsing test', () => {
     );
     const spectra = readDataBlock(buffer, mainHeader(buffer));
     expect(spectra).toHaveLength(512);
-    expect(spectra[0].variables.y.data[1]).toStrictEqual(3188);
-    expect(spectra[511].variables.y.data[3]).toStrictEqual(11019);
+    expect(spectra[0].variables.y.data[1]).toBe(3188);
+    expect(spectra[511].variables.y.data[3]).toBe(11019);
   });
   it('RAMAN.SPC', () => {
     const buffer = new IOBuffer(
@@ -30,7 +30,7 @@ describe('data block parsing test', () => {
       readFileSync(join(__dirname, 'data/m_ordz.spc')),
     );
     const spectra = readDataBlock(buffer, mainHeader(buffer));
-    expect(spectra[0].variables.x.data[0]).toStrictEqual(698.229736328125);
+    expect(spectra[0].variables.x.data[0]).toBe(698.229736328125);
     expect(spectra[0].variables.y.data[0]).toBeCloseTo(0.02219367027282715);
     expect(spectra[0].variables.y.data[4]).toBeCloseTo(0.005127236247062683);
     expect(spectra[0].variables.y.data[800]).toBeCloseTo(0.0833737701177597);

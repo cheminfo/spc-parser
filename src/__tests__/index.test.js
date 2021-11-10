@@ -16,6 +16,7 @@ describe('parse', () => {
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(31);
   });
+
   it('NDR0002.SPC', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'NDR0002.SPC'));
     const result = parse(buffer);
