@@ -1,6 +1,6 @@
 {
   "name": "spc-parser",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Thermo Galactic GRAMS SPC files parser",
   "main": "lib/index.js",
   "module": "src/index.js",
