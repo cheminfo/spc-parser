@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.5.2](https://www.github.com/cheminfo/spc-parser/compare/v0.5.1...v0.5.2) (2021-11-10)
+
+
+### Bug Fixes
+
+* parse 0x80 yFactor correctly ([4bfda58](https://www.github.com/cheminfo/spc-parser/commit/4bfda58eb54ecfa3335e3ff5dd29ed8d9e1b176f))
+
 ### [0.5.1](https://www.github.com/cheminfo/spc-parser/compare/v0.5.0...v0.5.1) (2021-08-12)
 
 
