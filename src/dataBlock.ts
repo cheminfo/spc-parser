@@ -1,5 +1,45 @@
 /* eslint-disable no-control-regex */
-import { equidistantArray, getSubFlagParameters } from './utility';
+import { IOBuffer } from 'iobuffer';
+
+import { Header } from './mainHeader';
+import {
+  equidistantArray,
+  getSubFlagParameters,
+  SubFlagParameters,
+} from './utility';
+
+export interface Spectrum {
+  meta: SubHeader;
+  variables: {
+    x: {
+      symbol: string;
+      label: string;
+      units: string;
+      data: any;
+      type: string;
+    };
+    y: {
+      symbol: string;
+      label: string;
+      units: string;
+      data: any;
+      type: string;
+    };
+  };
+}
+
+interface SubHeader {
+  parameters: SubFlagParameters;
+  exponentY: number;
+  indexNumber: number;
+  startingZ: number;
+  endingZ: number;
+  noiseValue: number;
+  numberPoints: number;
+  numberCoAddedScans: number;
+  wAxisValue: number;
+  reserved: string;
+}
 
 /**
  * Parses the subheader of the current subfile
@@ -8,18 +48,19 @@ import { equidistantArray, getSubFlagParameters } from './utility';
  * @param {object} buffer SPC buffer
  * @return {object} Current subfile's subheader
  */
-export function subHeader(buffer) {
-  const subHeader = {};
-  subHeader.parameters = getSubFlagParameters(buffer.readUint8());
-  subHeader.exponentY = buffer.readInt8();
-  subHeader.indexNumber = buffer.readUint16();
-  subHeader.startingZ = buffer.readFloat32();
-  subHeader.endingZ = buffer.readFloat32();
-  subHeader.noiseValue = buffer.readFloat32();
-  subHeader.numberPoints = buffer.readUint32();
-  subHeader.numberCoAddedScans = buffer.readUint32();
-  subHeader.wAxisValue = buffer.readFloat32();
-  subHeader.reserved = buffer.readChars(4).trim().replace(/\x00/g, '');
+export function subHeader(buffer: IOBuffer): SubHeader {
+  const subHeader: SubHeader = {
+    parameters: getSubFlagParameters(buffer.readUint8()),
+    exponentY: buffer.readInt8(),
+    indexNumber: buffer.readUint16(),
+    startingZ: buffer.readFloat32(),
+    endingZ: buffer.readFloat32(),
+    noiseValue: buffer.readFloat32(),
+    numberPoints: buffer.readUint32(),
+    numberCoAddedScans: buffer.readUint32(),
+    wAxisValue: buffer.readFloat32(),
+    reserved: buffer.readChars(4).trim().replace(/\x00/g, ''),
+  };
   return subHeader;
 }
 
@@ -27,16 +68,19 @@ export function subHeader(buffer) {
  * Reads the data block of the SPC file
  *
  * @export
- * @param {object} buffer spc buffer
- * @param {object} mainHeader main header
+ * @param {IOBuffer} buffer spc buffer
+ * @param {Header} mainHeader main header
  * @return {array} Array containing the spectra
  */
-export function readDataBlock(buffer, mainHeader) {
+export function readDataBlock(
+  buffer: IOBuffer,
+  mainHeader: Header,
+): Spectrum[] {
   let x;
   let y;
-  let spectra = [];
+  let spectra: Spectrum[] = [];
 
-  if (!mainHeader.parameters.xyxy && mainHeader.xy) {
+  if (!mainHeader.parameters.xyxy && mainHeader.parameters.xy) {
     x = new Float32Array(mainHeader.numberPoints);
     for (let i = 0; i < mainHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();
@@ -48,7 +92,7 @@ export function readDataBlock(buffer, mainHeader) {
       mainHeader.numberPoints,
     );
   }
-  let spectrum;
+  let spectrum: any;
   for (
     let i = 0;
     i < mainHeader.spectra ||
@@ -101,30 +145,30 @@ export function readDataBlock(buffer, mainHeader) {
         }
       }
     }
-    const xAxis = mainHeader.xUnitsType.match(
-      /(?<label>.*?) ?[([](?<units>.*)[)\]]/,
+    const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+      mainHeader.xUnitsType,
     );
-    const yAxis = mainHeader.yUnitsType.match(
-      /(?<label>.*?) ?[([](?<units>.*)[)\]]/,
+    const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+      mainHeader.yUnitsType,
     );
     const variables = {
       x: {
         symbol: 'x',
-        label: (xAxis && xAxis.groups.label) || mainHeader.xUnitsType,
-        units: (xAxis && xAxis.groups.units) || '',
+        label: (xAxis && xAxis.groups?.label) || mainHeader.xUnitsType,
+        units: (xAxis && xAxis.groups?.units) || '',
         data: x,
         type: 'INDEPENDENT',
       },
       y: {
         symbol: 'y',
-        label: (yAxis && yAxis.groups.label) || mainHeader.yUnitsType,
-        units: (yAxis && yAxis.groups.units) || '',
+        label: (yAxis && yAxis.groups?.label) || mainHeader.yUnitsType,
+        units: (yAxis && yAxis.groups?.units) || '',
         data: y,
         type: 'DEPENDENT',
       },
     };
     spectrum.variables = variables;
-    spectra.push(spectrum);
+    spectra.push(spectrum as Spectrum);
   }
   return spectra;
 }

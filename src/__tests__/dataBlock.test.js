@@ -4,7 +4,6 @@ import { readDataBlock } from '../dataBlock';
 import { mainHeader } from '../mainHeader';
 
 const { readFileSync } = require('fs');
-
 const { IOBuffer } = require('iobuffer');
 
 describe('data block parsing test', () => {

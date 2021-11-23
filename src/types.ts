@@ -3,7 +3,7 @@
  * @param {number} xzwType x, z or w type code
  * @return {string} String corresponding to the code
  */
-export function xzwTypes(xzwType) {
+export function xzwTypes(xzwType: number): string {
   switch (xzwType) {
     case 1:
       return 'Wavenumber (cm-1)';
@@ -34,7 +34,7 @@ export function xzwTypes(xzwType) {
     case 14:
       return 'eV';
     case 15:
-      return 0;
+      return '0';
     case 16:
       return 'Diode Number';
     case 17:
@@ -76,7 +76,7 @@ export function xzwTypes(xzwType) {
  * @param {number} yType y type code
  * @return {string} String corresponding to the code
  */
-export function yTypes(yType) {
+export function yTypes(yType: number): string {
   switch (yType) {
     case 0:
       return 'Arbitrary Intensity';
@@ -144,7 +144,7 @@ export function yTypes(yType) {
  * @param {number} code
  * @return {string}
  */
-export function experimentSettings(code) {
+export function experimentSettings(code: number): string {
   switch (code) {
     case 1:
       return 'Gas Chromatogram';
