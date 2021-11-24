@@ -15,7 +15,7 @@ test('xzyTypes', () => {
   expect(xzwTypes(12)).toBe('Years');
   expect(xzwTypes(13)).toBe('Raman Shift (cm-1)');
   expect(xzwTypes(14)).toBe('eV');
-  expect(xzwTypes(15)).toBe('0');
+  expect(xzwTypes(15)).toBe(0);
   expect(xzwTypes(16)).toBe('Diode Number');
   expect(xzwTypes(17)).toBe('Channel ');
   expect(xzwTypes(18)).toBe('Degrees');

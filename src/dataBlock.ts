@@ -146,7 +146,7 @@ export function readDataBlock(
       }
     }
     const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-      mainHeader.xUnitsType,
+      mainHeader.xUnitsType as string,
     );
     const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
       mainHeader.yUnitsType,

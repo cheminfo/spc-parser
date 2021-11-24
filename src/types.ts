@@ -3,7 +3,7 @@
  * @param {number} xzwType x, z or w type code
  * @return {string} String corresponding to the code
  */
-export function xzwTypes(xzwType: number): string {
+export function xzwTypes(xzwType: number): string | number {
   switch (xzwType) {
     case 1:
       return 'Wavenumber (cm-1)';
@@ -34,7 +34,7 @@ export function xzwTypes(xzwType: number): string {
     case 14:
       return 'eV';
     case 15:
-      return '0';
+      return 0;
     case 16:
       return 'Diode Number';
     case 17:

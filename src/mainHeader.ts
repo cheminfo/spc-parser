@@ -14,7 +14,7 @@ export interface Header {
   startingX: number;
   endingX: number;
   spectra: number;
-  xUnitsType: string;
+  xUnitsType: string | number;
   yUnitsType: string;
   zUnitsType: string;
   postingDisposition: number;
@@ -105,10 +105,10 @@ export function mainHeader(buffer: IOBuffer): Header {
   header.wPlaneIncrement = buffer.readFloat32();
   header.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
   header.reserved = buffer.readChars(187).trim().replace(/\x00/g, ''); //Reserved space (Must be zero)
-  if (header.xUnitsType === '0') {
+  if (header.xUnitsType === 0) {
     header.xUnitsType = header.xyzLabels.substr(0, 10);
   }
-  if (header.zUnitsType === '0') {
+  if (header.zUnitsType === 0) {
     header.zUnitsType = header.xyzLabels.substr(20, 10);
   }
   return header as Header;
