@@ -1,3 +1,7 @@
 extends: cheminfo-typescript
 parserOptions:
   sourceType: module
+settings:
+  import/resolver:
+    node:
+      extensions: ['.js', '.ts']
