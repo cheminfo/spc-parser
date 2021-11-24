@@ -4,12 +4,7 @@ import { readDataBlock, Spectrum } from './dataBlock';
 import { LogBlock, readLogBlock } from './logBlock';
 import { Header, mainHeader } from './mainHeader';
 
-declare type InputData =
-  | number
-  | ArrayBufferLike
-  | ArrayBufferView
-  | IOBuffer
-  | Buffer;
+declare type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 
 interface ParseResult {
   meta: Header;
