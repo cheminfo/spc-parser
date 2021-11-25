@@ -1,10 +1,9 @@
+import { readFileSync } from 'fs';
 import { join } from 'path';
+import { IOBuffer } from 'iobuffer';
 
 import { readDataBlock } from '../dataBlock';
 import { mainHeader } from '../mainHeader';
-
-const { readFileSync } = require('fs');
-const { IOBuffer } = require('iobuffer');
 
 describe('data block parsing test', () => {
   it('m_xyxy.spc', () => {
