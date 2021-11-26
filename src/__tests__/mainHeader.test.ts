@@ -1,9 +1,8 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { IOBuffer } from 'iobuffer';
 
 import { mainHeader } from '../mainHeader';
-
-const { IOBuffer } = require('iobuffer');
 
 describe('mainHeader parsing test', () => {
   it('m_xyxy.spc', () => {
@@ -14,6 +13,7 @@ describe('mainHeader parsing test', () => {
     expect(mxyxy.parameters.multiFile).toBe(true);
     expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
     expect(mxyxy.zUnitsType).toBe('Minutes');
+    // @ts-expect-error
     expect(mxyxy.wUnitsType).toBeUndefined();
     expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
     expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);

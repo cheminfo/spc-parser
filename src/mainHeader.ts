@@ -1,14 +1,53 @@
 /* eslint-disable no-control-regex */
+
+import { IOBuffer } from 'iobuffer';
+
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import { getFlagParameters, longToDate } from './utility';
+import { getFlagParameters, longToDate, FlagParameters } from './utility';
+
+export class Header {
+  public fileVersion!: number;
+  public parameters!: FlagParameters;
+  public experimentType!: string;
+  public exponentY!: number;
+  public numberPoints!: number;
+  public startingX!: number;
+  public endingX!: number;
+  public spectra!: number;
+  public xUnitsType!: string | number;
+  public yUnitsType!: string;
+  public zUnitsType!: string | number;
+  public postingDisposition!: number;
+  public date!: string;
+  public resolutionDescription!: string;
+  public sourceInstrumentDescription!: string;
+  public peakPointNumber!: number;
+  public spare!: number[];
+  public memo!: string;
+  public xyzLabels!: string;
+  public logOffset!: number;
+  public modifiedFlag!: number;
+  public processingCode!: number;
+  public calibrationLevel!: number;
+  public subMethodSampleInjectionNumber!: number;
+  public concentrationFactor!: number;
+  public methodFile!: string;
+  public zSubIncrement!: number;
+  public wPlanes!: number;
+  public wPlaneIncrement!: number;
+  public wAxisUnits!: string | number;
+  public reserved!: string;
+  public scans?: number;
+  public constructor() {}
+}
 
 /**
  * Main header parsing - First 512/256 bytes (new/old format)
- * @param {object} buffer SPC buffer
- * @return {object} Main header
+ * @param buffer SPC buffer
+ * @return Main header
  */
-export function mainHeader(buffer) {
-  const header = {};
+export function mainHeader(buffer: IOBuffer): Header {
+  let header = new Header();
   header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
   header.fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   switch (header.fileVersion) {
@@ -32,7 +71,6 @@ export function mainHeader(buffer) {
   header.endingX = buffer.readFloat64(); //Last X coordinate
   header.spectra = buffer.readUint32(); //Number of spectrums
   header.xUnitsType = xzwTypes(buffer.readUint8()); //X Units type code (See types.js)
-
   header.yUnitsType = yTypes(buffer.readUint8()); //Y ""
   header.zUnitsType = xzwTypes(buffer.readUint8()); //Z ""
   header.postingDisposition = buffer.readUint8(); //Posting disposition (See GRAMSDDE.H)
@@ -81,11 +119,11 @@ export function mainHeader(buffer) {
  *Old version files header parsing
  *
  * @export
- * @param {object} buffer SPC buffer
- * @param {object} header Header from the previous function
- * @return {object} Object containing the metadata of the old file
+ * @param buffer SPC buffer
+ * @param  header Header from the previous function
+ * @return  Object containing the metadata of the old file
  */
-export function oldHeader(buffer, header) {
+export function oldHeader(buffer: IOBuffer, header: Header): Header {
   header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
   header.numberPoints = buffer.readFloat32();
   header.startingX = buffer.readFloat32();
