@@ -17,8 +17,8 @@ export interface FlagParameters {
 
 /**
  * Gets the parameter in each bit of the flag
- * @param {number} flag First byte of the main header
- * @returns {FlagParameters} The parameters
+ * @param  flag First byte of the main header
+ * @returns  The parameters
  */
 export function getFlagParameters(flag: number): FlagParameters {
   const parameters: FlagParameters = {
@@ -38,8 +38,8 @@ export function getFlagParameters(flag: number): FlagParameters {
 /**
  *
  * Gets the Subfile flags
- * @param {number} flag First byte of the subheader
- * @return {object} The parameters
+ * @param  flag First byte of the subheader
+ * @return The parameters
  */
 export function getSubFlagParameters(flag: number): SubFlagParameters {
   const parameters = {
@@ -52,10 +52,10 @@ export function getSubFlagParameters(flag: number): SubFlagParameters {
 
 /**
  * Generates an array of evenly spaced numbers
- * @param {number} minimum Lower bound
- * @param {number} maximum Upper bound
- * @param {number} numberPoints Number of points
- * @return {array} Evenly spaced numbers
+ * @param  minimum Lower bound
+ * @param  maximum Upper bound
+ * @param  numberPoints Number of points
+ * @return Evenly spaced numbers
  */
 export function equidistantArray(
   minimum: number,
@@ -72,8 +72,8 @@ export function equidistantArray(
 
 /**
  * Gets the date encoded in binary in a long number
- * @param {number} long Binary date
- * @return {string} Date formatted to ISO 8601:2019 convention
+ * @param  long Binary date
+ * @return  Date formatted to ISO 8601:2019 convention
  */
 export function longToDate(long: number): string {
   if (long === 0) {

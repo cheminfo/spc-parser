@@ -15,8 +15,8 @@ interface ParseResult {
 /**
  * Parses an SPC file
  *
- * @param {InputData} buffer SPC file buffer
- * @return {ParseResult} Object containing every information contained in the SPC file
+ * @param  buffer SPC file buffer
+ * @return Object containing every information contained in the SPC file
  */
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);

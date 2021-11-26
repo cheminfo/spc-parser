@@ -19,9 +19,9 @@ export interface LogBlock {
 
 /**
  *
- * @param {object} buffer SPC buffer
- * @param {number} logOffset Offset of the log (from mainHeader)
- * @return {LogBlock} Object containing log meta, data and text
+ * @param  buffer SPC buffer
+ * @param  logOffset Offset of the log (from mainHeader)
+ * @return  Object containing log meta, data and text
  */
 export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
   let logHeader: MetaData = {

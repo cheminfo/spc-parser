@@ -8,24 +8,25 @@ import {
   SubFlagParameters,
 } from './utility';
 
-export interface Spectrum {
-  meta: SubHeader;
-  variables: {
+export class Spectrum {
+  public meta!: SubHeader;
+  public variables!: {
     x: {
       symbol: string;
       label: string;
       units: string;
-      data: any;
+      data: Float32Array | Float64Array;
       type: string;
     };
     y: {
       symbol: string;
       label: string;
       units: string;
-      data: any;
+      data: Float32Array | Float64Array;
       type: string;
     };
   };
+  public constructor() {}
 }
 
 interface SubHeader {
@@ -92,7 +93,7 @@ export function readDataBlock(
       mainHeader.numberPoints,
     );
   }
-  let spectrum: any;
+  let spectrum: Spectrum;
   for (
     let i = 0;
     i < mainHeader.spectra ||
@@ -100,7 +101,7 @@ export function readDataBlock(
       buffer.offset + mainHeader.numberPoints < buffer.length);
     i++
   ) {
-    spectrum = {};
+    spectrum = new Spectrum();
     spectrum.meta = subHeader(buffer);
     if (mainHeader.parameters.xyxy) {
       x = new Float32Array(spectrum.meta.numberPoints);
@@ -154,21 +155,21 @@ export function readDataBlock(
     const variables = {
       x: {
         symbol: 'x',
-        label: (xAxis && xAxis.groups?.label) || mainHeader.xUnitsType,
-        units: (xAxis && xAxis.groups?.units) || '',
-        data: x,
+        label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
+        units: xAxis?.groups?.units || '',
+        data: x as Float32Array | Float64Array,
         type: 'INDEPENDENT',
       },
       y: {
         symbol: 'y',
-        label: (yAxis && yAxis.groups?.label) || mainHeader.yUnitsType,
-        units: (yAxis && yAxis.groups?.units) || '',
+        label: yAxis?.groups?.label || mainHeader.yUnitsType,
+        units: yAxis?.groups?.units || '',
         data: y,
         type: 'DEPENDENT',
       },
     };
     spectrum.variables = variables;
-    spectra.push(spectrum as Spectrum);
+    spectra.push(spectrum);
   }
   return spectra;
 }

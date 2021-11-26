@@ -11,7 +11,7 @@
     "src"
   ],
   "scripts": {
-    "build": "cheminfo-build --entry src/index.js --root SPCParser",
+    "build": "npm run tsc-esm && cheminfo-build --entry lib-esm/index.js --root SPCParser",
     "check-types": "tsc --noEmit",
     "clean": "rimraf lib lib-esm",
     "eslint": "eslint src",

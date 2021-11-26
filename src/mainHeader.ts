@@ -5,48 +5,49 @@ import { IOBuffer } from 'iobuffer';
 import { xzwTypes, yTypes, experimentSettings } from './types';
 import { getFlagParameters, longToDate, FlagParameters } from './utility';
 
-export interface Header {
-  fileVersion: number;
-  parameters: FlagParameters;
-  experimentType: string;
-  exponentY: number;
-  numberPoints: number;
-  startingX: number;
-  endingX: number;
-  spectra: number;
-  xUnitsType: string | number;
-  yUnitsType: string;
-  zUnitsType: string;
-  postingDisposition: number;
-  date: string;
-  resolutionDescription: string;
-  sourceInstrumentDescription: string;
-  peakPointNumber: number;
-  spare: number[];
-  memo: string;
-  xyzLabels: string;
-  logOffset: number;
-  modifiedFlag: number;
-  processingCode: number;
-  calibrationLevel: number;
-  subMethodSampleInjectionNumber: number;
-  concentrationFactor: number;
-  methodFile: string;
-  zSubIncrement: number;
-  wPlanes: number;
-  wPlaneIncrement: number;
-  wAxisUnits: string;
-  reserved: string;
-  scans?: number;
+export class Header {
+  public fileVersion!: number;
+  public parameters!: FlagParameters;
+  public experimentType!: string;
+  public exponentY!: number;
+  public numberPoints!: number;
+  public startingX!: number;
+  public endingX!: number;
+  public spectra!: number;
+  public xUnitsType!: string | number;
+  public yUnitsType!: string;
+  public zUnitsType!: string | number;
+  public postingDisposition!: number;
+  public date!: string;
+  public resolutionDescription!: string;
+  public sourceInstrumentDescription!: string;
+  public peakPointNumber!: number;
+  public spare!: number[];
+  public memo!: string;
+  public xyzLabels!: string;
+  public logOffset!: number;
+  public modifiedFlag!: number;
+  public processingCode!: number;
+  public calibrationLevel!: number;
+  public subMethodSampleInjectionNumber!: number;
+  public concentrationFactor!: number;
+  public methodFile!: string;
+  public zSubIncrement!: number;
+  public wPlanes!: number;
+  public wPlaneIncrement!: number;
+  public wAxisUnits!: string | number;
+  public reserved!: string;
+  public scans?: number;
+  public constructor() {}
 }
 
 /**
  * Main header parsing - First 512/256 bytes (new/old format)
- * @param {IOBuffer} buffer SPC buffer
- * @return {Header} Main header
+ * @param buffer SPC buffer
+ * @return Main header
  */
 export function mainHeader(buffer: IOBuffer): Header {
-  let header: any = {};
+  let header = new Header();
   header.parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
   header.fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
   switch (header.fileVersion) {
@@ -111,16 +112,16 @@ export function mainHeader(buffer: IOBuffer): Header {
   if (header.zUnitsType === 0) {
     header.zUnitsType = header.xyzLabels.substr(20, 10);
   }
-  return header as Header;
+  return header;
 }
 
 /**
  *Old version files header parsing
  *
  * @export
- * @param {IOBuffer} buffer SPC buffer
- * @param {Header} header Header from the previous function
- * @return {object} Object containing the metadata of the old file
+ * @param buffer SPC buffer
+ * @param  header Header from the previous function
+ * @return  Object containing the metadata of the old file
  */
 export function oldHeader(buffer: IOBuffer, header: Header): Header {
   header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
