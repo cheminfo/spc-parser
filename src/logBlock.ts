@@ -1,5 +1,3 @@
-/* eslint-disable no-control-regex */
-
 import { IOBuffer } from 'iobuffer';
 
 interface MetaData {
@@ -19,9 +17,9 @@ export interface LogBlock {
 
 /**
  *
- * @param  buffer SPC buffer
- * @param  logOffset Offset of the log (from mainHeader)
- * @return  Object containing log meta, data and text
+ * @param  buffer SPC buffer.
+ * @param  logOffset Offset of the log (from mainHeader).
+ * @return  Object containing log meta, data and text.
  */
 export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
   let logHeader: MetaData = {

@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
 import { IOBuffer } from 'iobuffer';
 
 import { mainHeader } from '../mainHeader';

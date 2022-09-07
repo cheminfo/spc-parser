@@ -1,5 +1,3 @@
-/* eslint-disable no-control-regex */
-
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
@@ -38,13 +36,12 @@ export class Header {
   public wAxisUnits!: string | number;
   public reserved!: string;
   public scans?: number;
-  public constructor() {}
 }
 
 /**
- * Main header parsing - First 512/256 bytes (new/old format)
- * @param buffer SPC buffer
- * @return Main header
+ * Main header parsing - First 512/256 bytes (new/old format).
+ * @param buffer SPC buffer.
+ * @return Main header.
  */
 export function mainHeader(buffer: IOBuffer): Header {
   let header = new Header();
@@ -107,21 +104,21 @@ export function mainHeader(buffer: IOBuffer): Header {
   header.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
   header.reserved = buffer.readChars(187).trim().replace(/\x00/g, ''); //Reserved space (Must be zero)
   if (header.xUnitsType === 0) {
-    header.xUnitsType = header.xyzLabels.substr(0, 10);
+    header.xUnitsType = header.xyzLabels.substring(0, 10);
   }
   if (header.zUnitsType === 0) {
-    header.zUnitsType = header.xyzLabels.substr(20, 10);
+    header.zUnitsType = header.xyzLabels.substring(20, 30);
   }
   return header;
 }
 
 /**
- *Old version files header parsing
+ *Old version files header parsing.
  *
  * @export
- * @param buffer SPC buffer
- * @param  header Header from the previous function
- * @return  Object containing the metadata of the old file
+ * @param buffer SPC buffer.
+ * @param  header Header from the previous function.
+ * @return  Object containing the metadata of the old file.
  */
 export function oldHeader(buffer: IOBuffer, header: Header): Header {
   header.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
@@ -132,7 +129,7 @@ export function oldHeader(buffer: IOBuffer, header: Header): Header {
   header.yUnitsType = yTypes(buffer.readUint8());
   const date = new Date();
   const zTypeYear = buffer.readUint16(); //Unrelated to Z axis
-  date.setUTCFullYear(zTypeYear % 4096); // todo might be wrong
+  date.setUTCFullYear(zTypeYear % 4096); // TODO: might be wrong
   date.setUTCMonth(Math.max(buffer.readUint8() - 1, 0));
   date.setUTCDate(buffer.readUint8());
   date.setUTCHours(buffer.readUint8());

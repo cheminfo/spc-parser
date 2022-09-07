@@ -1,7 +1,7 @@
 /**
- * Gives meaning to type codes
- * @param  xzwType x, z or w type code
- * @return  String corresponding to the code
+ * Gives meaning to type codes.
+ * @param  xzwType x, z or w type code.
+ * @return  String corresponding to the code.
  */
 export function xzwTypes(xzwType: number): string | number {
   switch (xzwType) {

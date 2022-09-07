@@ -1,4 +1,3 @@
-/* eslint-disable no-control-regex */
 import { IOBuffer } from 'iobuffer';
 
 import { Header } from './mainHeader';
@@ -26,7 +25,6 @@ export class Spectrum {
       type: string;
     };
   };
-  public constructor() {}
 }
 
 interface SubHeader {
@@ -43,11 +41,10 @@ interface SubHeader {
 }
 
 /**
- * Parses the subheader of the current subfile
+ * Parses the subheader of the current subfile.
  *
- * @export
- * @param {object} buffer SPC buffer
- * @return {object} Current subfile's subheader
+ * @param {object} buffer SPC buffer.
+ * @return {object} Current subfile's subheader.
  */
 export function subHeader(buffer: IOBuffer): SubHeader {
   const subHeader: SubHeader = {
@@ -66,12 +63,12 @@ export function subHeader(buffer: IOBuffer): SubHeader {
 }
 
 /**
- * Reads the data block of the SPC file
+ * Reads the data block of the SPC file.
  *
  * @export
- * @param {IOBuffer} buffer spc buffer
- * @param {Header} mainHeader main header
- * @return {array} Array containing the spectra
+ * @param {IOBuffer} buffer spc buffer.
+ * @param {Header} mainHeader main header.
+ * @return {array} Array containing the spectra.
  */
 export function readDataBlock(
   buffer: IOBuffer,
@@ -137,12 +134,10 @@ export function readDataBlock(
               (buffer.readUint8() << 0) +
               (buffer.readUint8() << 8)) *
             yFactor;
+        } else if (spectrum.meta.exponentY !== -128) {
+          y[j] = buffer.readInt32() * yFactor;
         } else {
-          if (spectrum.meta.exponentY !== -128) {
-            y[j] = buffer.readInt32() * yFactor;
-          } else {
-            y[j] = buffer.readFloat32();
-          }
+          y[j] = buffer.readFloat32();
         }
       }
     }
