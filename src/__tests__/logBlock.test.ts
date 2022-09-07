@@ -1,12 +1,11 @@
+import fs from 'fs';
 import { join } from 'path';
+
+import { IOBuffer } from 'iobuffer';
 
 import { readDataBlock } from '../dataBlock';
 import { readLogBlock } from '../logBlock';
 import { mainHeader } from '../mainHeader';
-
-const fs = require('fs');
-
-const { IOBuffer } = require('iobuffer');
 
 const pathFiles = join(__dirname, 'data');
 

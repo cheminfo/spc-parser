@@ -1,9 +1,9 @@
 /**
- * Gives meaning to type codes
- * @param {number} xzwType x, z or w type code
- * @return {string} String corresponding to the code
+ * Gives meaning to type codes.
+ * @param  xzwType x, z or w type code.
+ * @return  String corresponding to the code.
  */
-export function xzwTypes(xzwType) {
+export function xzwTypes(xzwType: number): string | number {
   switch (xzwType) {
     case 1:
       return 'Wavenumber (cm-1)';
@@ -73,10 +73,10 @@ export function xzwTypes(xzwType) {
 }
 /**
  * Gives meaning to y type codes
- * @param {number} yType y type code
- * @return {string} String corresponding to the code
+ * @param  yType y type code
+ * @return  String corresponding to the code
  */
-export function yTypes(yType) {
+export function yTypes(yType: number): string {
   switch (yType) {
     case 0:
       return 'Arbitrary Intensity';
@@ -141,10 +141,9 @@ export function yTypes(yType) {
 
 /**
  * Experiment settings code converter
- * @param {number} code
- * @return {string}
+ * @param  code
  */
-export function experimentSettings(code) {
+export function experimentSettings(code: number): string {
   switch (code) {
     case 1:
       return 'Gas Chromatogram';
