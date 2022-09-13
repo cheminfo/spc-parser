@@ -1,3 +1,6 @@
+import { Header } from './mainHeader';
+import { SpectraType } from './types';
+
 export interface SubFlagParameters {
   changed: boolean;
   noPeakTable: boolean;
@@ -90,4 +93,50 @@ export function longToDate(long: number): string {
   date.setUTCSeconds(0);
   date.setUTCMilliseconds(0);
   return date.toISOString();
+}
+
+/**
+ * Inspects properties and tries to classify the spectra
+ * For the most common spectra types
+ * @param Header
+ * @returns string describing the type of spectra or "General" if unsure.
+ */
+export function guessType(header: Partial<Header>): SpectraType {
+  let theType: SpectraType = 'General';
+  //xStart and xEnd could be used to narrow down NIR, MIR, FIR
+  //and so on. But it is not important yet.
+  const { xUnitsType: xU, yUnitsType: yU } = header;
+  switch (xU) {
+    case 'Mass (M/z)':
+      theType = 'Mass';
+      break;
+    case 'Parts per million (PPM)':
+      theType = 'NMR';
+      break;
+    case 'Raman Shift (cm-1)':
+      theType = 'Raman';
+      break;
+    case 'Wavenumber (cm-1)':
+    case 'Micrometers (um)':
+      theType = 'IR';
+      break;
+    case 'Nanometers (nm)':
+      if (yU === 'Counts') {
+        //Or Phosphorescence, but that less common analysis.
+        theType = 'Fluorescence';
+      } else if (
+        yU === 'Absorbance' ||
+        yU === 'Log(1/R)' ||
+        yU === 'Transmission'
+      ) {
+        theType = 'Atomic-UV-Vis-NIR';
+      }
+      break;
+    case 'eV':
+      theType = 'X-Ray';
+      break;
+    default:
+      theType = 'General';
+  }
+  return theType;
 }

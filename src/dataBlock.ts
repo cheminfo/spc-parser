@@ -1,6 +1,6 @@
 import { IOBuffer } from 'iobuffer';
 
-import { Header } from './mainHeader';
+import { Header, TheOldHeader, TheNewHeader } from './mainHeader';
 import {
   equidistantArray,
   getSubFlagParameters,
@@ -74,10 +74,27 @@ export function readDataBlock(
   buffer: IOBuffer,
   mainHeader: Header,
 ): Spectrum[] {
-  let x;
-  let y;
   let spectra: Spectrum[] = [];
 
+  if (mainHeader instanceof TheOldHeader) {
+    for (
+      let i = 0;
+      buffer.offset + mainHeader.numberPoints < buffer.length;
+      i++
+    ) {
+      spectra.push(genSpectra(buffer, mainHeader));
+    }
+  } else if (mainHeader instanceof TheNewHeader) {
+    for (let i = 0; i < mainHeader.spectra; i++) {
+      spectra.push(genSpectra(buffer, mainHeader));
+    }
+  }
+  return spectra;
+}
+
+export function genSpectra(buffer: IOBuffer, mainHeader: Header) {
+  let x;
+  let y;
   if (!mainHeader.parameters.xyxy && mainHeader.parameters.xy) {
     x = new Float32Array(mainHeader.numberPoints);
     for (let i = 0; i < mainHeader.numberPoints; i++) {
@@ -90,81 +107,70 @@ export function readDataBlock(
       mainHeader.numberPoints,
     );
   }
-  let spectrum: Spectrum;
-  for (
-    let i = 0;
-    i < mainHeader.spectra ||
-    (mainHeader.fileVersion === 0x4d &&
-      buffer.offset + mainHeader.numberPoints < buffer.length);
-    i++
-  ) {
-    spectrum = new Spectrum();
-    spectrum.meta = subHeader(buffer);
-    if (mainHeader.parameters.xyxy) {
-      x = new Float32Array(spectrum.meta.numberPoints);
-      for (let j = 0; j < spectrum.meta.numberPoints; j++) {
-        x[j] = buffer.readFloat32();
-      }
+  let spectrum = new Spectrum();
+  spectrum.meta = subHeader(buffer);
+  if (mainHeader.parameters.xyxy) {
+    x = new Float32Array(spectrum.meta.numberPoints);
+    for (let j = 0; j < spectrum.meta.numberPoints; j++) {
+      x[j] = buffer.readFloat32();
     }
-    if (spectrum.meta.exponentY === 0) {
-      spectrum.meta.exponentY = mainHeader.exponentY;
-    }
-    const yFactor = Math.pow(
-      2,
-      spectrum.meta.exponentY -
-        (mainHeader.parameters.y16BitPrecision ? 16 : 32),
-    );
-
-    const nbPoints = spectrum.meta.numberPoints
-      ? spectrum.meta.numberPoints
-      : mainHeader.numberPoints;
-
-    if (mainHeader.parameters.y16BitPrecision) {
-      y = new Float32Array(nbPoints);
-      for (let j = 0; j < nbPoints; j++) {
-        y[j] = buffer.readInt16() * yFactor;
-      }
-    } else {
-      y = new Float32Array(nbPoints);
-      for (let j = 0; j < nbPoints; j++) {
-        if (mainHeader.fileVersion === 0x4d) {
-          y[j] =
-            ((buffer.readUint8() << 16) +
-              (buffer.readInt8() << 24) +
-              (buffer.readUint8() << 0) +
-              (buffer.readUint8() << 8)) *
-            yFactor;
-        } else if (spectrum.meta.exponentY !== -128) {
-          y[j] = buffer.readInt32() * yFactor;
-        } else {
-          y[j] = buffer.readFloat32();
-        }
-      }
-    }
-    const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-      mainHeader.xUnitsType as string,
-    );
-    const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-      mainHeader.yUnitsType,
-    );
-    const variables = {
-      x: {
-        symbol: 'x',
-        label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
-        units: xAxis?.groups?.units || '',
-        data: x as Float32Array | Float64Array,
-        type: 'INDEPENDENT',
-      },
-      y: {
-        symbol: 'y',
-        label: yAxis?.groups?.label || mainHeader.yUnitsType,
-        units: yAxis?.groups?.units || '',
-        data: y,
-        type: 'DEPENDENT',
-      },
-    };
-    spectrum.variables = variables;
-    spectra.push(spectrum);
   }
-  return spectra;
+  if (spectrum.meta.exponentY === 0) {
+    spectrum.meta.exponentY = mainHeader.exponentY;
+  }
+  const yFactor = Math.pow(
+    2,
+    spectrum.meta.exponentY - (mainHeader.parameters.y16BitPrecision ? 16 : 32),
+  );
+
+  const nbPoints = spectrum.meta.numberPoints
+    ? spectrum.meta.numberPoints
+    : mainHeader.numberPoints;
+
+  if (mainHeader.parameters.y16BitPrecision) {
+    y = new Float32Array(nbPoints);
+    for (let j = 0; j < nbPoints; j++) {
+      y[j] = buffer.readInt16() * yFactor;
+    }
+  } else {
+    y = new Float32Array(nbPoints);
+    for (let j = 0; j < nbPoints; j++) {
+      if (mainHeader.fileVersion === 0x4d) {
+        y[j] =
+          ((buffer.readUint8() << 16) +
+            (buffer.readInt8() << 24) +
+            (buffer.readUint8() << 0) +
+            (buffer.readUint8() << 8)) *
+          yFactor;
+      } else if (spectrum.meta.exponentY !== -128) {
+        y[j] = buffer.readInt32() * yFactor;
+      } else {
+        y[j] = buffer.readFloat32();
+      }
+    }
+  }
+  const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+    mainHeader.xUnitsType as string,
+  );
+  const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+    mainHeader.yUnitsType,
+  );
+  const variables = {
+    x: {
+      symbol: 'x',
+      label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
+      units: xAxis?.groups?.units || '',
+      data: x as Float32Array | Float64Array,
+      type: 'INDEPENDENT',
+    },
+    y: {
+      symbol: 'y',
+      label: yAxis?.groups?.label || mainHeader.yUnitsType,
+      units: yAxis?.groups?.units || '',
+      data: y,
+      type: 'DEPENDENT',
+    },
+  };
+  spectrum.variables = variables;
+  return spectrum;
 }

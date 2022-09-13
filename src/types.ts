@@ -175,3 +175,15 @@ export function experimentSettings(code: number): string {
       return 'General SPC (could be anything)';
   }
 }
+
+export type SpectraType =
+  | 'IR'
+  | 'Raman'
+  | 'Chromatogram'
+  | 'Mass'
+  | 'Atomic-UV-Vis-NIR'
+  | 'NMR'
+  | 'X-Ray'
+  | 'Fluorescence'
+  | 'Atomic'
+  | 'General';
