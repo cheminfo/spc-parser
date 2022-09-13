@@ -5,13 +5,13 @@ import { IOBuffer } from 'iobuffer';
 
 import { readDataBlock } from '../dataBlock';
 import { readLogBlock } from '../logBlock';
-import { mainHeader } from '../mainHeader';
+import { mainHeader, TheNewHeader } from '../mainHeader';
 
 const pathFiles = join(__dirname, 'data');
 
 const nmrBuffer = new IOBuffer(fs.readFileSync(join(pathFiles, 'NMR_SPC.SPC')));
 
-const nmrMain = mainHeader(nmrBuffer);
+const nmrMain = mainHeader(nmrBuffer) as TheNewHeader;
 readDataBlock(nmrBuffer, nmrMain);
 const nmrLog = readLogBlock(nmrBuffer, nmrMain.logOffset);
 test('Log block parsing', () => {

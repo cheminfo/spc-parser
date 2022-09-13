@@ -33,6 +33,7 @@ export class TheOldHeader {
   public peakPointNumber: number;
   public spare: number[];
   public scans?: number;
+  public zUnitsType!: string | number;
   constructor(
     buffer: IOBuffer,
     parsed: { parameters: FlagParameters; fileVersion: number },

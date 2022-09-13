@@ -18,7 +18,7 @@ describe('mainHeader parsing test', () => {
     expect(mxyxy.wUnitsType).toBeUndefined();
     expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
     expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
-    expect(mxyxy.guessedType).toBe("Mass");
+    expect(mxyxy.guessedType).toBe('Mass');
   });
   it('RAMAN.SPC', () => {
     const raman = mainHeader(
@@ -26,13 +26,13 @@ describe('mainHeader parsing test', () => {
     );
     expect(raman.date).toMatch(/1994-08-26T16:45/);
     expect(raman.xyzLabels).toMatch(/Rmn Intensity/);
-    expect(raman.guessedType).toBe("Raman");
+    expect(raman.guessedType).toBe('Raman');
   });
   it('m_ordz', () => {
     const mOrdZ = mainHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_ordz.spc'))),
     );
     expect(mOrdZ.memo).toMatch(/^Multiple [^]*ordered Z spacing/);
-    expect(mOrdZ.guessedType).toBe("IR");
+    expect(mOrdZ.guessedType).toBe('IR');
   });
 });
