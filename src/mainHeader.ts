@@ -11,8 +11,7 @@ import {
 /**
  * Old version files header parsing.
  *
- * @export
- * @param buffer SPC buffer.
+ * @param buffer - SPC buffer.
  * @param  parsed - object to catch up with parsed bits.
  * @return  Object containing the metadata of the old file version (`0x4d`).
  */
@@ -75,7 +74,6 @@ export class TheOldHeader {
 /**
  * New version files header parsing.
  *
- * @export
  * @param buffer SPC buffer.
  * @param  parsed - object to catch up with parsed bits.
  * @return  Object containing the metadata of the new file versions (`0x4b`, `0x4c`).
@@ -176,6 +174,7 @@ export class TheNewHeader {
 
 //they can be distinguished using `instanceof`;
 export type Header = TheNewHeader | TheOldHeader;
+
 /**
  * Main header parsing - First 512/256 bytes (new/old format).
  * @param buffer SPC buffer.

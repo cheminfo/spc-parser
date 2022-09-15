@@ -27,7 +27,7 @@ export class Spectrum {
   };
 }
 
-interface SubHeader {
+export interface SubHeader {
   parameters: SubFlagParameters;
   exponentY: number;
   indexNumber: number;
@@ -43,8 +43,8 @@ interface SubHeader {
 /**
  * Parses the subheader of the current subfile.
  *
- * @param {object} buffer SPC buffer.
- * @return {object} Current subfile's subheader.
+ * @param buffer SPC buffer.
+ * @return Current subfile's subheader.
  */
 export function subHeader(buffer: IOBuffer): SubHeader {
   const subHeader: SubHeader = {
@@ -66,9 +66,9 @@ export function subHeader(buffer: IOBuffer): SubHeader {
  * Reads the data block of the SPC file.
  *
  * @export
- * @param {IOBuffer} buffer spc buffer.
- * @param {Header} mainHeader main header.
- * @return {array} Array containing the spectra.
+ * @param buffer - spc buffer.
+ * @param mainHeader -  main header.
+ * @return Array containing the spectra.
  */
 export function readDataBlock(
   buffer: IOBuffer,
