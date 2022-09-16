@@ -1,6 +1,6 @@
 import { IOBuffer } from 'iobuffer';
 
-interface MetaData {
+export interface MetaData {
   size: number;
   memorySize: number;
   textOffset: number;

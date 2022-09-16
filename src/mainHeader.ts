@@ -1,7 +1,12 @@
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import { getFlagParameters, longToDate, FlagParameters } from './utility';
+import {
+  guessType,
+  getFlagParameters,
+  longToDate,
+  FlagParameters,
+} from './utility';
 
 export class Header {
   public fileVersion!: number;
@@ -36,6 +41,7 @@ export class Header {
   public wAxisUnits!: string | number;
   public reserved!: string;
   public scans?: number;
+  public guessedType!: string;
 }
 
 /**
@@ -109,6 +115,7 @@ export function mainHeader(buffer: IOBuffer): Header {
   if (header.zUnitsType === 0) {
     header.zUnitsType = header.xyzLabels.substring(20, 30);
   }
+  header.guessedType = guessType(header);
   return header;
 }
 
@@ -147,5 +154,6 @@ export function oldHeader(buffer: IOBuffer, header: Header): Header {
   }
   header.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
   header.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
+  header.guessedType = guessType(header);
   return header;
 }
