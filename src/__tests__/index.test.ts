@@ -1,9 +1,14 @@
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 import { parse } from '..';
 
 describe('parse', () => {
+  it('snapshot of a file', () => {
+    const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
+    delete result.date;// date seems to include part of current date, so remove it
+    expect(result).toMatchSnapshot()
+  });
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'Ft-ir.spc'));
     const result = parse(buffer);
