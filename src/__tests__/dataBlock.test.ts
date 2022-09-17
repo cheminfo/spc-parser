@@ -61,7 +61,7 @@ describe('data block parsing test', () => {
       symbol: 'x',
       label: 'Nanometers',
       units: 'nm',
-      isDependent: false
+      isDependent: false,
     });
     expect(spectra[0].variables.y).toMatchObject({
       symbol: 'y',

@@ -3,12 +3,12 @@ import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import { Header, TheNewHeader, TheOldHeader } from './mainHeader';
-import { getSubFlagParameters, SubFlagParameters, } from './utility';
+import { getSubFlagParameters, SubFlagParameters } from './utility';
 
 /**
  * Use cheminfo type for better UI compatibility
  *  we add `x`, `y` under `variables`, and the `subheader` as `meta`.
-*/
+ */
 export type Spectrum = MeasurementXY;
 
 /**
@@ -70,11 +70,11 @@ export function readDataBlock(
       x[i] = buffer.readFloat32();
     }
   } else if (!mainHeader.parameters.xy) {
-    x = createFromToArray(
-      {from:mainHeader.startingX,
-      to:mainHeader.endingX,
-      length:mainHeader.numberPoints}
-    );
+    x = createFromToArray({
+      from: mainHeader.startingX,
+      to: mainHeader.endingX,
+      length: mainHeader.numberPoints,
+    });
   }
   if (mainHeader instanceof TheNewHeader) {
     for (let i = 0; i < mainHeader.spectra; i++) {
@@ -97,8 +97,7 @@ function makeSpectrum(
   y: Float64Array | undefined,
   mainHeader: Header,
   buffer: IOBuffer,
-):Spectrum {
-
+): Spectrum {
   const meta: SubHeader = subHeader(buffer);
 
   if (mainHeader.parameters.xyxy) {
@@ -147,10 +146,10 @@ function makeSpectrum(
   const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
     mainHeader.yUnitsType,
   );
-  const variables:MeasurementXYVariables = {
+  const variables: MeasurementXYVariables = {
     x: {
       symbol: 'x',
-      label: xAxis?.groups?.label || mainHeader.xUnitsType as string,
+      label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
       units: xAxis?.groups?.units || '',
       data: x as Float64Array,
       isDependent: false,
@@ -163,5 +162,5 @@ function makeSpectrum(
       isDependent: true,
     },
   };
-  return {meta, variables}
+  return { meta, variables };
 }

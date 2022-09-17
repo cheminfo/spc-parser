@@ -4,6 +4,12 @@ import { join } from 'path';
 import { parse } from '../parse';
 
 describe('parse', () => {
+  it('random format throws', () => {
+    const file = readFileSync(join(__dirname, 'data', 'nir.cfl'));
+    expect(() => parse(file)).toThrow(
+      ' file format: byte 01 must be either 4B, 4C or 4D',
+    );
+  });
   it('snapshot of a file', () => {
     const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
     expect(result).toMatchSnapshot();
@@ -15,7 +21,7 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Wavenumber',
       units: 'cm-1',
-      isDependent: false
+      isDependent: false,
     });
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(32);
@@ -27,7 +33,7 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Raman Shift',
       units: 'cm-1',
-      isDependent: false
+      isDependent: false,
     });
     expect(result.spectra).toHaveLength(36);
     expect(Object.keys(result.meta)).toHaveLength(32);
