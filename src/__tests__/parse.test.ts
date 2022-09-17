@@ -15,7 +15,7 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Wavenumber',
       units: 'cm-1',
-      type: 'INDEPENDENT',
+      isDependent: false
     });
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(32);
@@ -27,7 +27,7 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Raman Shift',
       units: 'cm-1',
-      type: 'INDEPENDENT',
+      isDependent: false
     });
     expect(result.spectra).toHaveLength(36);
     expect(Object.keys(result.meta)).toHaveLength(32);
