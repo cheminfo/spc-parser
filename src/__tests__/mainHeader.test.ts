@@ -3,19 +3,17 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
-import { mainHeader } from '../mainHeader';
+import { TheNewHeader, mainHeader } from '../mainHeader';
 
 describe('mainHeader parsing test', () => {
   it('m_xyxy.spc', () => {
     const mxyxy = mainHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_xyxy.spc'))),
-    );
+    ) as TheNewHeader;
     expect(mxyxy.parameters.xyxy).toBe(true);
     expect(mxyxy.parameters.multiFile).toBe(true);
     expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
     expect(mxyxy.zUnitsType).toBe('Minutes');
-    // @ts-expect-error
-    expect(mxyxy.wUnitsType).toBeUndefined();
     expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
     expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
     expect(mxyxy.guessedType).toBe('Mass');

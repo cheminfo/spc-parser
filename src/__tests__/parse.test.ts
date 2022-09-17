@@ -4,6 +4,10 @@ import { join } from 'path';
 import { parse } from '../parse';
 
 describe('parse', () => {
+  it('snapshot of a file', () => {
+    const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
+    expect(result).toMatchSnapshot();
+  });
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'Ft-ir.spc'));
     const result = parse(buffer);
