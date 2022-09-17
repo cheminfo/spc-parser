@@ -54,27 +54,6 @@ export function getSubFlagParameters(flag: number): SubFlagParameters {
 }
 
 /**
- * Generates an array of evenly spaced numbers
- *
- * @param  minimum Lower bound.
- * @param  maximum Upper bound.
- * @param  numberPoints Number of points.
- * @return Evenly spaced numbers.
- */
-export function equidistantArray(
-  minimum: number,
-  maximum: number,
-  numberPoints: number,
-): Float64Array {
-  const equidistantArray = new Float64Array(numberPoints);
-  const step = (maximum - minimum) / (numberPoints - 1);
-  for (let i = 0; i < numberPoints; i++) {
-    equidistantArray[i] = minimum + i * step;
-  }
-  return equidistantArray;
-}
-
-/**
  * Gets the date encoded in binary in a long number.
  * @param  long Binary date.
  * @return  Date formatted to ISO 8601:2019 convention.
