@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`parse snapshot of a file 1`] = `
+exports[`parse snapshot for comparison 1`] = `
 {
   "logs": {
     "data": "",
@@ -45,7 +45,7 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
     "experimentType": "General SPC (could be anything)",
     "exponentY": 4,
     "fileVersion": 75,
-    "guessedType": "General",
+    "guessedType": "other",
     "logOffset": 57152,
     "memo": "NIR Spectra Example",
     "methodFile": "",

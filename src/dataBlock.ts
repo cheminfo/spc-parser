@@ -7,7 +7,6 @@ import { getSubFlagParameters, SubFlagParameters } from './utility';
 
 /**
  * Use cheminfo type for better UI compatibility
- *  we add `x`, `y` under `variables`, and the `subheader` as `meta`.
  */
 export type Spectrum = MeasurementXY;
 

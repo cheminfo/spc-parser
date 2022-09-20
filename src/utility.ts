@@ -76,19 +76,12 @@ export function longToDate(long: number): string {
 /**
  * Classification of standard spectra out of basic
  * `meta` properties
+ * Fluorescence could be Atomic or molecular,
+ * IR,NIR etc could be standard or the FT ones
+ * But if they are not transformed already, they'd
+ * fall in the General category.
  */
-export type SpectraType =
-  | 'IR'
-  | 'Raman'
-  | 'Chromatogram'
-  | 'Mass'
-  | 'Atomic-UV-Vis-NIR'
-  | 'NMR'
-  | 'X-Ray'
-  | 'Fluorescence'
-  | 'Atomic'
-  | 'General';
-
+export type SpectraType = 'ir' | 'raman' | 'mass' | 'uv' | 'other';
 /**
  * Inspects properties and tries to classify the spectra
  * For the most common spectra types
@@ -96,41 +89,38 @@ export type SpectraType =
  * @returns string describing the type of spectra or "General" if unsure.
  */
 export function guessType(header: Header): SpectraType {
-  let theType: SpectraType = 'General';
   //xStart and xEnd could be used to narrow down NIR, MIR, FIR
   //and so on. But it is not important yet.
   const { xUnitsType: xU, yUnitsType: yU } = header;
   switch (xU) {
     case 'Mass (M/z)':
-      theType = 'Mass';
-      break;
-    case 'Parts per million (PPM)':
-      theType = 'NMR';
-      break;
+      return 'mass';
     case 'Raman Shift (cm-1)':
-      theType = 'Raman';
-      break;
-    case 'Wavenumber (cm-1)':
+      return 'raman';
     case 'Micrometers (um)':
-      theType = 'IR';
-      break;
+      return 'ir';
+    case 'Wavenumber (cm-1)':
+      return 'uv'; //'UV-Vis-IR';
     case 'Nanometers (nm)':
-      if (yU === 'Counts') {
-        //Or Phosphorescence, but that less common analysis.
-        theType = 'Fluorescence';
-      } else if (
-        yU === 'Absorbance' ||
-        yU === 'Log(1/R)' ||
-        yU === 'Transmission'
-      ) {
-        theType = 'Atomic-UV-Vis-NIR';
+      if (yU === 'Absorbance' || yU === 'Log(1/R)' || yU === 'Transmission') {
+        return 'uv'; // 'Atomic-UV-Vis-NIR';
       }
-      break;
-    case 'eV':
-      theType = 'X-Ray';
-      break;
+      return 'other';
     default:
-      theType = 'General';
+      return 'other';
+    /** other possible additions
+         else if (yU === 'Counts') {
+             //'Fluorescence';
+          }
+         else if(yU==='Kubelka-Monk'){
+            //'Diffuse Reflectance'
+          }
+        case 'eV':
+          //return 'X-Ray';
+        case 'Minutes':
+          //return 'Chromatogram';
+        case 'Parts per million (PPM)':
+          //theType = 'nmr';
+    */
   }
-  return theType;
 }

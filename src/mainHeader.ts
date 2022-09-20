@@ -162,20 +162,20 @@ export class TheNewHeader {
       //Untested case because no test files
       this.spare.reverse();
     }
-    this.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
-    this.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
+    this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
+    this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
     this.logOffset = buffer.readUint32(); //Byte offset to Log Block
     this.modifiedFlag = buffer.readUint32(); //File modification flag (See values in SPC.H)
     this.processingCode = buffer.readUint8(); //Processing code (See GRAMSDDE.H)
     this.calibrationLevel = buffer.readUint8(); //Calibration level + 1
     this.subMethodSampleInjectionNumber = buffer.readUint16(); //Sub-method sample injection number
     this.concentrationFactor = buffer.readFloat32(); //Floating data multiplier concentration factor
-    this.methodFile = buffer.readChars(48).trim().replace(/\x00/g, ''); //Method file
+    this.methodFile = buffer.readChars(48).replace(/\x00/g, '').trim(); //Method file
     this.zSubIncrement = buffer.readFloat32(); //Z subfile increment for even Z Multifiles
     this.wPlanes = buffer.readUint32();
     this.wPlaneIncrement = buffer.readFloat32();
     this.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
-    this.reserved = buffer.readChars(187).trim().replace(/\x00/g, ''); //Reserved space (Must be zero)
+    this.reserved = buffer.readChars(187).replace(/\x00/g, '').trim(); //Reserved space (Must be zero)
     if (this.xUnitsType === 0) {
       this.xUnitsType = this.xyzLabels.substring(0, 10);
     }
