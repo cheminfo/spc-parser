@@ -2,15 +2,21 @@ import { IOBuffer } from 'iobuffer';
 
 import { readNewDataBlock, readOldDataBlock, Spectrum } from './dataBlock';
 import { LogBlock, readLogBlock } from './logBlock';
-import { Header, TheNewHeader, mainHeader } from './mainHeader';
+import { TheOldHeader, TheNewHeader } from './fileHeader';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
-
+export type Header = TheOldHeader | TheNewHeader;
 export interface ParseResult {
   meta: Header;
   spectra: Spectrum[];
   logs?: LogBlock;
 }
+
+/**
+ * Main header parsing - First 512/256 bytes (new/old format).
+ * @param buffer SPC buffer.
+ * @return Main header.
+ */
 
 /**
  * Parses an SPC file.
@@ -20,9 +26,30 @@ export interface ParseResult {
  */
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);
-  const meta = mainHeader(ioBuffer);
-  if (meta instanceof TheNewHeader && meta.logOffset !== 0) {
-    return { meta, spectra: readNewDataBlock(ioBuffer, meta), logs: readLogBlock(ioBuffer, meta.logOffset) };
+
+  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
+  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+
+  switch (fileVersion) {
+    case 0x4b: // new format
+      break;
+    case 0x4c:
+      buffer.setBigEndian();
+      break;
+    case 0x4d: { // old LabCalc format
+      const meta =  new TheOldHeader(buffer, { parameters, fileVersion });
+      return  { meta, spectra: readOldDataBlock(ioBuffer,meta) };
+    }
+    default:
+      throw new Error(
+        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
+      );
   }
-  return { meta, spectra: readOldDataBlock };
+
+  const meta =  new TheNewHeader(buffer, { parameters, fileVersion });
+  const spectra = readNewDataBlock(ioBuffer, meta)
+  const logs = readLogBlock(ioBuffer, meta.logOffset)
+
+  return { meta, spectra , logs  };
+
 }

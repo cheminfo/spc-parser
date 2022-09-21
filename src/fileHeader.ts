@@ -7,36 +7,12 @@ import {
   longToDate,
 } from './utility';
 
-export type Header = TheNewHeader | TheOldHeader;
-/**
- * Main header parsing - First 512/256 bytes (new/old format).
- * @param buffer SPC buffer.
- * @return Main header.
- */
-export function mainHeader(buffer: IOBuffer): Header {
-  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
-  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
-  switch (fileVersion) {
-    case 0x4b: // new format
-      break;
-    case 0x4c:
-      buffer.setBigEndian();
-      break;
-    case 0x4d: // old LabCalc format
-      return new TheOldHeader(buffer, { parameters, fileVersion });
-    default:
-      throw new Error(
-        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
-      );
-  }
-  return new TheNewHeader(buffer, { parameters, fileVersion });
-}
 
 /**
- * Old version files header parsing.
- * @param buffer SPC buffer.
- * @param  prev `{parameters,fileVersion}`
- * @return  Object containing the metadata of the old file.
+ * old-format file-header parsing.
+ * @param buffer spc buffer.
+ * @param  prev `{parameters,fileversion}`
+ * @return  file metadata
  */
 export class TheOldHeader {
   public fileVersion: number;
@@ -91,6 +67,13 @@ export class TheOldHeader {
   }
 }
 
+
+/**
+ * New format file-header parsing.
+ * @param buffer spc buffer.
+ * @param  prev `{parameters,fileversion}`
+ * @return  file metadata
+ */
 export class TheNewHeader {
   public fileVersion: number;
   public parameters: FlagParameters;

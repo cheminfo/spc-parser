@@ -2,7 +2,8 @@ import { MeasurementXYVariables, MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
-import { Header, TheNewHeader, TheOldHeader } from './mainHeader';
+import { TheNewHeader, TheOldHeader } from './fileHeader';
+import { Header } from './parse';
 import { SubFlagParameters } from './utility';
 
 /**
@@ -44,26 +45,31 @@ export class SubHeader{
 
 
 /**
- * Creates the spectra given several mandatory arguments (function could be improved.)
+ * Creates the spectra given several mandatory arguments (function may need refactor.)
  * @param x - Array of x values, always coming before Y values.
  * @param meta - values explain the Y data.
  * @param mainHeader - contains extra info about how to read the data (16 or 32 bits etc.)
  * @param buffer - current file as iobuffer
  */
 export function makeSpectrum(
-  x: Float64Array|undefined,
+  x: Float64Array | undefined,
   meta:SubHeader,
   mainHeader: Header,
   buffer: IOBuffer,
 ): Spectrum {
-  let y;
+
+  const nbPoints = meta.numberPoints
+    ? meta.numberPoints
+    : mainHeader.numberPoints;
+
+  let y = new Float64Array(nbPoints)
 
   if(mainHeader.parameters.dataShape==="XYXY"){
-    x = new Float64Array(meta.numberPoints);
     for (let j = 0; j < meta.numberPoints; j++) {
       x[j] = buffer.readFloat32();
     }
   }
+
   if (meta.exponentY === 0) {
     meta.exponentY = mainHeader.exponentY;
   }
@@ -72,17 +78,12 @@ export function makeSpectrum(
     meta.exponentY - (mainHeader.parameters.y16BitPrecision ? 16 : 32),
   );
 
-  const nbPoints = meta.numberPoints
-    ? meta.numberPoints
-    : mainHeader.numberPoints;
 
   if (mainHeader.parameters.y16BitPrecision) {
-    y = new Float64Array(nbPoints);
     for (let j = 0; j < nbPoints; j++) {
       y[j] = buffer.readInt16() * yFactor;
     }
   } else {
-    y = new Float64Array(nbPoints);
     for (let j = 0; j < nbPoints; j++) {
       if (mainHeader.fileVersion === 0x4d) {
         y[j] =
@@ -116,7 +117,7 @@ export function makeSpectrum(
       symbol: 'y',
       label: yAxis?.groups?.label || mainHeader.yUnitsType,
       units: yAxis?.groups?.units || '',
-      data: y as Float64Array,
+      data: y,
       isDependent: true,
     },
   };
