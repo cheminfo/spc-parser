@@ -1,9 +1,21 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import { parse } from '..';
+import { parse } from '../parse';
 
 describe('parse', () => {
+  it('snapshot for comparison', () => {
+    const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
+    expect(result).toMatchSnapshot();
+  });
+
+  it('random format throws error', () => {
+    const file = readFileSync(join(__dirname, 'data', 'nir.cfl'));
+    expect(() => parse(file)).toThrow(
+      ' file format: byte 01 must be either 4B, 4C or 4D',
+    );
+  });
+
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'Ft-ir.spc'));
     const result = parse(buffer);
@@ -11,11 +23,12 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Wavenumber',
       units: 'cm-1',
-      type: 'INDEPENDENT',
+      isDependent: false,
     });
     expect(result.spectra).toHaveLength(1);
-    expect(Object.keys(result.meta)).toHaveLength(31);
+    expect(Object.keys(result.meta)).toHaveLength(32);
   });
+
   it('raman-sion.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'raman-sion.spc'));
     const result = parse(buffer);
@@ -23,10 +36,10 @@ describe('parse', () => {
       symbol: 'x',
       label: 'Raman Shift',
       units: 'cm-1',
-      type: 'INDEPENDENT',
+      isDependent: false,
     });
     expect(result.spectra).toHaveLength(36);
-    expect(Object.keys(result.meta)).toHaveLength(31);
+    expect(Object.keys(result.meta)).toHaveLength(32);
     const dataY = result.spectra[0].variables.y.data;
     expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
     expect(Math.max(...dataY)).toBe(7594.40869140625);

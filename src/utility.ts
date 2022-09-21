@@ -1,3 +1,5 @@
+import { Header } from './mainHeader';
+
 export interface SubFlagParameters {
   changed: boolean;
   noPeakTable: boolean;
@@ -52,27 +54,6 @@ export function getSubFlagParameters(flag: number): SubFlagParameters {
 }
 
 /**
- * Generates an array of evenly spaced numbers
- *
- * @param  minimum Lower bound.
- * @param  maximum Upper bound.
- * @param  numberPoints Number of points.
- * @return Evenly spaced numbers.
- */
-export function equidistantArray(
-  minimum: number,
-  maximum: number,
-  numberPoints: number,
-): Float64Array {
-  const equidistantArray = new Float64Array(numberPoints);
-  const step = (maximum - minimum) / (numberPoints - 1);
-  for (let i = 0; i < numberPoints; i++) {
-    equidistantArray[i] = minimum + i * step;
-  }
-  return equidistantArray;
-}
-
-/**
  * Gets the date encoded in binary in a long number.
  * @param  long Binary date.
  * @return  Date formatted to ISO 8601:2019 convention.
@@ -90,4 +71,56 @@ export function longToDate(long: number): string {
   date.setUTCSeconds(0);
   date.setUTCMilliseconds(0);
   return date.toISOString();
+}
+
+/**
+ * Classification of standard spectra out of basic
+ * `meta` properties
+ * Fluorescence could be Atomic or molecular,
+ * IR,NIR etc could be standard or the FT ones
+ * But if they are not transformed already, they'd
+ * fall in the General category.
+ */
+export type SpectraType = 'ir' | 'raman' | 'mass' | 'uv' | 'other';
+/**
+ * Inspects properties and tries to classify the spectra
+ * For the most common spectra types
+ * @param Header
+ * @returns string describing the type of spectra or "General" if unsure.
+ */
+export function guessType(header: Header): SpectraType {
+  //xStart and xEnd could be used to narrow down NIR, MIR, FIR
+  //and so on. But it is not important yet.
+  const { xUnitsType: xU, yUnitsType: yU } = header;
+  switch (xU) {
+    case 'Mass (M/z)':
+      return 'mass';
+    case 'Raman Shift (cm-1)':
+      return 'raman';
+    case 'Micrometers (um)':
+      return 'ir';
+    case 'Wavenumber (cm-1)':
+      return 'uv'; //'UV-Vis-IR';
+    case 'Nanometers (nm)':
+      if (yU === 'Absorbance' || yU === 'Log(1/R)' || yU === 'Transmission') {
+        return 'uv'; // 'Atomic-UV-Vis-NIR';
+      }
+      return 'other';
+    default:
+      return 'other';
+    /** other possible additions
+         else if (yU === 'Counts') {
+             //'Fluorescence';
+          }
+         else if(yU==='Kubelka-Monk'){
+            //'Diffuse Reflectance'
+          }
+        case 'eV':
+          //return 'X-Ray';
+        case 'Minutes':
+          //return 'Chromatogram';
+        case 'Parts per million (PPM)':
+          //theType = 'nmr';
+    */
+  }
 }

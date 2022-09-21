@@ -1,33 +1,19 @@
+import { MeasurementXYVariables, MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
+import { createFromToArray } from 'ml-spectra-processing';
 
-import { Header } from './mainHeader';
-import {
-  equidistantArray,
-  getSubFlagParameters,
-  SubFlagParameters,
-} from './utility';
+import { Header, TheNewHeader, TheOldHeader } from './mainHeader';
+import { getSubFlagParameters, SubFlagParameters } from './utility';
 
-export class Spectrum {
-  public meta!: SubHeader;
-  public variables!: {
-    x: {
-      symbol: string;
-      label: string;
-      units: string;
-      data: Float32Array | Float64Array;
-      type: string;
-    };
-    y: {
-      symbol: string;
-      label: string;
-      units: string;
-      data: Float32Array | Float64Array;
-      type: string;
-    };
-  };
-}
+/**
+ * Use cheminfo type for better UI compatibility
+ */
+export type Spectrum = MeasurementXY;
 
-interface SubHeader {
+/**
+ * Header of the subfile
+ */
+export interface SubHeader {
   parameters: SubFlagParameters;
   exponentY: number;
   indexNumber: number;
@@ -43,8 +29,8 @@ interface SubHeader {
 /**
  * Parses the subheader of the current subfile.
  *
- * @param {object} buffer SPC buffer.
- * @return {object} Current subfile's subheader.
+ * @param buffer SPC buffer.
+ * @return Current subfile's subheader.
  */
 export function subHeader(buffer: IOBuffer): SubHeader {
   const subHeader: SubHeader = {
@@ -65,10 +51,9 @@ export function subHeader(buffer: IOBuffer): SubHeader {
 /**
  * Reads the data block of the SPC file.
  *
- * @export
- * @param {IOBuffer} buffer spc buffer.
- * @param {Header} mainHeader main header.
- * @return {array} Array containing the spectra.
+ * @param buffer spc buffer.
+ * @param mainHeader main header.
+ * @return Array containing the spectra.
  */
 export function readDataBlock(
   buffer: IOBuffer,
@@ -79,92 +64,102 @@ export function readDataBlock(
   let spectra: Spectrum[] = [];
 
   if (!mainHeader.parameters.xyxy && mainHeader.parameters.xy) {
-    x = new Float32Array(mainHeader.numberPoints);
+    x = new Float64Array(mainHeader.numberPoints);
     for (let i = 0; i < mainHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();
     }
   } else if (!mainHeader.parameters.xy) {
-    x = equidistantArray(
-      mainHeader.startingX,
-      mainHeader.endingX,
-      mainHeader.numberPoints,
-    );
+    x = createFromToArray({
+      from: mainHeader.startingX,
+      to: mainHeader.endingX,
+      length: mainHeader.numberPoints,
+    });
   }
-  let spectrum: Spectrum;
-  for (
-    let i = 0;
-    i < mainHeader.spectra ||
-    (mainHeader.fileVersion === 0x4d &&
-      buffer.offset + mainHeader.numberPoints < buffer.length);
-    i++
-  ) {
-    spectrum = new Spectrum();
-    spectrum.meta = subHeader(buffer);
-    if (mainHeader.parameters.xyxy) {
-      x = new Float32Array(spectrum.meta.numberPoints);
-      for (let j = 0; j < spectrum.meta.numberPoints; j++) {
-        x[j] = buffer.readFloat32();
-      }
+  if (mainHeader instanceof TheNewHeader) {
+    for (let i = 0; i < mainHeader.spectra; i++) {
+      spectra.push(makeSpectrum(x, y, mainHeader, buffer));
     }
-    if (spectrum.meta.exponentY === 0) {
-      spectrum.meta.exponentY = mainHeader.exponentY;
+  } else if (mainHeader instanceof TheOldHeader) {
+    for (
+      let i = 0;
+      buffer.offset + mainHeader.numberPoints < buffer.length;
+      i++
+    ) {
+      spectra.push(makeSpectrum(x, y, mainHeader, buffer));
     }
-    const yFactor = Math.pow(
-      2,
-      spectrum.meta.exponentY -
-        (mainHeader.parameters.y16BitPrecision ? 16 : 32),
-    );
-
-    const nbPoints = spectrum.meta.numberPoints
-      ? spectrum.meta.numberPoints
-      : mainHeader.numberPoints;
-
-    if (mainHeader.parameters.y16BitPrecision) {
-      y = new Float32Array(nbPoints);
-      for (let j = 0; j < nbPoints; j++) {
-        y[j] = buffer.readInt16() * yFactor;
-      }
-    } else {
-      y = new Float32Array(nbPoints);
-      for (let j = 0; j < nbPoints; j++) {
-        if (mainHeader.fileVersion === 0x4d) {
-          y[j] =
-            ((buffer.readUint8() << 16) +
-              (buffer.readInt8() << 24) +
-              (buffer.readUint8() << 0) +
-              (buffer.readUint8() << 8)) *
-            yFactor;
-        } else if (spectrum.meta.exponentY !== -128) {
-          y[j] = buffer.readInt32() * yFactor;
-        } else {
-          y[j] = buffer.readFloat32();
-        }
-      }
-    }
-    const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-      mainHeader.xUnitsType as string,
-    );
-    const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-      mainHeader.yUnitsType,
-    );
-    const variables = {
-      x: {
-        symbol: 'x',
-        label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
-        units: xAxis?.groups?.units || '',
-        data: x as Float32Array | Float64Array,
-        type: 'INDEPENDENT',
-      },
-      y: {
-        symbol: 'y',
-        label: yAxis?.groups?.label || mainHeader.yUnitsType,
-        units: yAxis?.groups?.units || '',
-        data: y,
-        type: 'DEPENDENT',
-      },
-    };
-    spectrum.variables = variables;
-    spectra.push(spectrum);
   }
   return spectra;
+}
+
+function makeSpectrum(
+  x: Float64Array | undefined,
+  y: Float64Array | undefined,
+  mainHeader: Header,
+  buffer: IOBuffer,
+): Spectrum {
+  const meta: SubHeader = subHeader(buffer);
+
+  if (mainHeader.parameters.xyxy) {
+    x = new Float64Array(meta.numberPoints);
+    for (let j = 0; j < meta.numberPoints; j++) {
+      x[j] = buffer.readFloat32();
+    }
+  }
+  if (meta.exponentY === 0) {
+    meta.exponentY = mainHeader.exponentY;
+  }
+  const yFactor = Math.pow(
+    2,
+    meta.exponentY - (mainHeader.parameters.y16BitPrecision ? 16 : 32),
+  );
+
+  const nbPoints = meta.numberPoints
+    ? meta.numberPoints
+    : mainHeader.numberPoints;
+
+  if (mainHeader.parameters.y16BitPrecision) {
+    y = new Float64Array(nbPoints);
+    for (let j = 0; j < nbPoints; j++) {
+      y[j] = buffer.readInt16() * yFactor;
+    }
+  } else {
+    y = new Float64Array(nbPoints);
+    for (let j = 0; j < nbPoints; j++) {
+      if (mainHeader.fileVersion === 0x4d) {
+        y[j] =
+          ((buffer.readUint8() << 16) +
+            (buffer.readInt8() << 24) +
+            (buffer.readUint8() << 0) +
+            (buffer.readUint8() << 8)) *
+          yFactor;
+      } else if (meta.exponentY !== -128) {
+        y[j] = buffer.readInt32() * yFactor;
+      } else {
+        y[j] = buffer.readFloat32();
+      }
+    }
+  }
+  const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+    mainHeader.xUnitsType as string,
+  );
+  const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
+    mainHeader.yUnitsType,
+  );
+  const variables: MeasurementXYVariables = {
+    x: {
+      symbol: 'x',
+      label: xAxis?.groups?.label || (mainHeader.xUnitsType as string),
+      units: xAxis?.groups?.units || '',
+      data: x as Float64Array,
+      isDependent: false,
+    },
+    y: {
+      symbol: 'y',
+      label: yAxis?.groups?.label || mainHeader.yUnitsType,
+      units: yAxis?.groups?.units || '',
+      data: y,
+      isDependent: true,
+    },
+  };
+  return { meta, variables };
 }

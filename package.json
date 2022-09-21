@@ -50,6 +50,8 @@
     "typescript": "^4.8.2"
   },
   "dependencies": {
-    "iobuffer": "^5.1.0"
+    "cheminfo-types": "^1.4.0",
+    "iobuffer": "^5.1.0",
+    "ml-spectra-processing": "^11.12.0"
   }
 }
