@@ -1,15 +1,14 @@
-import { getFlagParameters, longToDate } from '../utility';
+import { FlagParameters, longToDate } from '../utility';
 
 test('Flag parameters', () => {
-  expect(getFlagParameters(127)).toStrictEqual({
+  expect(new FlagParameters(255)).toEqual({
     y16BitPrecision: true,
     useExperimentExtension: true,
     multiFile: true,
     zValuesRandom: true,
     zValuesUneven: true,
     customAxisLabels: true,
-    xyxy: true,
-    xy: false,
+    dataShape: 'XYXY',
   });
 });
 test('Long to date', () => {

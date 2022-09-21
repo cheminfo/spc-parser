@@ -1,11 +1,11 @@
-import { Header } from './mainHeader';
+import { Header } from './fileHeader';
 
 /**
  * The new file format records as:
  * - Y. X is implicit (calc from XStart, XEnd, Y.length)
  * - XY. Single Y uneven, explicit X.
  * - YY. Multiple spectra (Ys), implicit, unique, even X.
- * - XYY. Multiple Ys, one unique, uneven X. 
+ * - XYY. Multiple Ys, one unique, uneven X.
  * - XYYX. Multiple Ys, Multiple Xs (even or not, I think, but will be explicit).
  * The old file format records only: Y or YY./
  *
@@ -13,23 +13,25 @@ import { Header } from './mainHeader';
  * @param flag - holds information about how the data is classified
  * @return the shape of the data
  */
-export function dataShape(multiFile:boolean, flag:number): DataShape{
-  const xy = (flag & 128) !== 0;// Non-evenly spaced X, X before Y
-  const xyxy =  (flag & 64) !== 0;//One X array per subfile, for discontinuous curves
-  let shape;
-  if(!multiFile){//single file: Y or XY
-   shape = !xy ? "Y" : "XY"
-  } else {//multifile: YY, XY, XYXY
-  if(!xy) {//one shared even X - equidistant
-   shape =  "YY"
-} else {//uneven x, multifile
-   shape =  !xyxy ? "XYY" : "XYXY"
-}
-}
-return shape as DataShape
+export function dataShape(multiFile: boolean, flag: number): DataShape {
+  const xy = (flag & 128) !== 0; // Non-evenly spaced X, X before Y
+  const xyxy = (flag & 64) !== 0; //One X array per subfile, for discontinuous curves
+
+  if (!multiFile) {
+    //single file: Y or XY
+    return !xy ? 'Y' : 'XY';
+  }
+  //multifile
+  if (!xy) {
+    //one shared even X - equidistant
+    return 'YY';
+  } else {
+    //uneven x, multifile
+    return !xyxy ? 'XYY' : 'XYXY';
+  }
 }
 
-export type DataShape = "Y"|"XY"|"YY"|"XYY"|"XYXY";
+export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
 /**
  * Gets the parameter in each bit of the flag
  *
@@ -37,22 +39,22 @@ export type DataShape = "Y"|"XY"|"YY"|"XYY"|"XYXY";
  * @returns  The parameters.
  */
 export class FlagParameters {
-public y16BitPrecision: boolean;
-public useExperimentExtension: boolean;
-public multiFile: boolean;
-public zValuesRandom: boolean;
-public zValuesUneven: boolean;
-public customAxisLabels: boolean;
-public dataShape: DataType
-  constructor(flag: number){
-  this.y16BitPrecision = (flag & 1) !== 0, //Y values are 16 bits instead of 32
-  this.useExperimentExtension = (flag & 2) !== 0, //Enable experiment mode
-  this.multiFile = (flag & 4) !== 0, //Multiple spectra (multifile)
-  this.zValuesRandom = (flag & 8) !== 0, //Z values in random order if multiFile
-  this.zValuesUneven = (flag & 16) !== 0, //Z values ordered but unevenly spaced if multi
-  this.customAxisLabels = (flag & 32) !== 0, //Custom labels
-  this.dataShape = dataShape(this.multiFile, flag)
-}
+  public y16BitPrecision: boolean;
+  public useExperimentExtension: boolean;
+  public multiFile: boolean;
+  public zValuesRandom: boolean;
+  public zValuesUneven: boolean;
+  public customAxisLabels: boolean;
+  public dataShape: DataShape;
+  constructor(flag: number) {
+    this.y16BitPrecision = (flag & 1) !== 0; //Y values are 16 bits instead of 32
+    this.useExperimentExtension = (flag & 2) !== 0; //Enable experiment mode
+    this.multiFile = (flag & 4) !== 0; //Multiple spectra (multifile)
+    this.zValuesRandom = (flag & 8) !== 0; //Z values in random order if multiFile
+    this.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced if multi
+    this.customAxisLabels = (flag & 32) !== 0; //Custom labels
+    this.dataShape = dataShape(this.multiFile, flag);
+  }
 }
 
 /**
@@ -61,15 +63,15 @@ public dataShape: DataType
  * @param  flag First byte of the subheader.
  * @return The parameters.
  */
-export class SubFlagParameters{
-public changed: boolean;
-public noPeakTable: boolean;
-public modifiedArithmetic: boolean;
- constructor(flag:number){
- this.changed = (flag & 1) !== 0;
- this.noPeakTable = (flag & 8) !== 0;
- this.modifiedArithmetic = (flag & 128) !== 0;
-}
+export class SubFlagParameters {
+  public changed: boolean;
+  public noPeakTable: boolean;
+  public modifiedArithmetic: boolean;
+  constructor(flag: number) {
+    this.changed = (flag & 1) !== 0;
+    this.noPeakTable = (flag & 8) !== 0;
+    this.modifiedArithmetic = (flag & 128) !== 0;
+  }
 }
 
 /**

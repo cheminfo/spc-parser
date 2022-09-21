@@ -1,12 +1,7 @@
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import {
-  guessType,
-  FlagParameters,
-  longToDate,
-} from './utility';
-
+import { guessType, FlagParameters, longToDate } from './utility';
 
 /**
  * old-format file-header parsing.
@@ -33,8 +28,16 @@ export class TheOldHeader {
   public guessedType: string;
   constructor(
     buffer: IOBuffer,
-    prev: { parameters: FlagParameters; fileVersion: number },
+    prev?: { parameters: FlagParameters; fileVersion: number },
   ) {
+    //In case we want to import and execute only the file header
+    if (!prev) {
+      prev = {
+        parameters: new FlagParameters(buffer.readUint8()), //Each bit contains a parameter
+        fileVersion: buffer.readUint8(), //4B => New format; 4D => LabCalc format
+      };
+    }
+
     this.fileVersion = prev.fileVersion;
     this.parameters = prev.parameters;
     this.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
@@ -54,7 +57,7 @@ export class TheOldHeader {
     this.resolutionDescription = buffer
       .readChars(8)
       .replace(/\x00/g, '')
-      .trim()
+      .trim();
     this.peakPointNumber = buffer.readUint16();
     this.scans = buffer.readUint16();
     this.spare = [];
@@ -66,7 +69,6 @@ export class TheOldHeader {
     this.guessedType = guessType(this);
   }
 }
-
 
 /**
  * New format file-header parsing.
@@ -110,8 +112,15 @@ export class TheNewHeader {
 
   constructor(
     buffer: IOBuffer,
-    prev: { parameters: FlagParameters; fileVersion: number },
+    prev?: { parameters: FlagParameters; fileVersion: number },
   ) {
+    //In case we want to import and execute only the file header
+    if (!prev) {
+      prev = {
+        parameters: new FlagParameters(buffer.readUint8()), //Each bit contains a parameter
+        fileVersion: buffer.readUint8(), //4B => New format; 4D => LabCalc format
+      };
+    }
     this.fileVersion = prev.fileVersion;
     this.parameters = prev.parameters;
     this.experimentType = experimentSettings(buffer.readUint8()); //Experiment type code (See SPC.h)
@@ -128,11 +137,11 @@ export class TheNewHeader {
     this.resolutionDescription = buffer
       .readChars(9)
       .replace(/\x00/g, '')
-      .trim()//Resolution description text
+      .trim(); //Resolution description text
     this.sourceInstrumentDescription = buffer
       .readChars(9)
       .replace(/\x00/g, '')
-      .trim() // Source Instrument description text
+      .trim(); // Source Instrument description text
     this.peakPointNumber = buffer.readUint16(); //Peak point number for interferograms
     this.spare = [];
     for (let i = 0; i < 8; i++) {
@@ -164,4 +173,33 @@ export class TheNewHeader {
     }
     this.guessedType = guessType(this);
   }
+}
+
+export type Header = TheOldHeader | TheNewHeader;
+/**
+ * General fileHeader parser
+ * @param buffer the file as buffer
+ * @returns the header in one of the two formats
+ */
+export function fileHeader(buffer: IOBuffer): Header {
+  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
+  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+  const headerOpts = { parameters, fileVersion };
+
+  switch (fileVersion) {
+    case 0x4b: // new format
+      break;
+    case 0x4c:
+      buffer.setBigEndian();
+      break;
+    case 0x4d: {
+      // old LabCalc format
+      return new TheOldHeader(buffer, headerOpts);
+    }
+    default:
+      throw new Error(
+        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
+      );
+  }
+  return new TheNewHeader(buffer, headerOpts);
 }

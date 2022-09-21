@@ -3,14 +3,14 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
-import { TheNewHeader, mainHeader } from '../mainHeader';
+import { TheNewHeader, TheOldHeader } from '../fileHeader';
 
 describe('mainHeader parsing test', () => {
   it('m_xyxy.spc', () => {
-    const mxyxy = mainHeader(
+    const mxyxy = new TheNewHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_xyxy.spc'))),
-    ) as TheNewHeader;
-    expect(mxyxy.parameters.xyxy).toBe(true);
+    );
+    expect(mxyxy.parameters.dataShape).toBe('XYXY');
     expect(mxyxy.parameters.multiFile).toBe(true);
     expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
     expect(mxyxy.zUnitsType).toBe('Minutes');
@@ -19,7 +19,7 @@ describe('mainHeader parsing test', () => {
     expect(mxyxy.guessedType).toBe('mass');
   });
   it('RAMAN.SPC', () => {
-    const raman = mainHeader(
+    const raman = new TheNewHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/RAMAN.SPC'))),
     );
     expect(raman.date).toMatch(/1994-08-26T16:45/);
@@ -27,7 +27,7 @@ describe('mainHeader parsing test', () => {
     expect(raman.guessedType).toBe('raman');
   });
   it('m_ordz', () => {
-    const mOrdZ = mainHeader(
+    const mOrdZ = new TheOldHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_ordz.spc'))),
     );
     expect(mOrdZ.fileVersion).toBe(0x4d);

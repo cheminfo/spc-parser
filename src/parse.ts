@@ -1,12 +1,10 @@
 import { IOBuffer } from 'iobuffer';
 
 import { readNewDataBlock, readOldDataBlock, Spectrum } from './dataBlock';
+import { fileHeader, Header, TheNewHeader } from './fileHeader';
 import { LogBlock, readLogBlock } from './logBlock';
-import { TheOldHeader, TheNewHeader } from './fileHeader';
-import { FlagParameters } from './utility';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
-export type Header = TheOldHeader | TheNewHeader;
 export interface ParseResult {
   meta: Header;
   spectra: Spectrum[];
@@ -27,30 +25,18 @@ export interface ParseResult {
  */
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);
+  const meta = fileHeader(ioBuffer);
 
-  const parameters = new FlagParameters(ioBuffer.readUint8()); //Each bit contains a parameter
-  const fileVersion = ioBuffer.readUint8(); //4B => New format; 4D => LabCalc format
-
-  switch (fileVersion) {
-    case 0x4b: // new format
-      break;
-    case 0x4c:
-      ioBuffer.setBigEndian();
-      break;
-    case 0x4d: {// old LabCalc format
-      const meta =  new TheOldHeader(ioBuffer, { parameters, fileVersion });
-      return  { meta, spectra: readOldDataBlock(ioBuffer,meta) };
-    }
-    default:
-      throw new Error(
-        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
-      );
+  if (meta instanceof TheNewHeader) {
+    const spectra = readNewDataBlock(ioBuffer, meta);
+    const logs =
+      meta.logOffset !== 0 ? readLogBlock(ioBuffer, meta.logOffset) : null;
+    return { meta, spectra, logs };
+  } else {
+    //the old meta
+    return {
+      meta,
+      spectra: readOldDataBlock(ioBuffer, meta),
+    };
   }
-
-  const meta =  new TheNewHeader(ioBuffer, { parameters, fileVersion });
-  const spectra = readNewDataBlock(ioBuffer, meta)
-  const logs = meta.logOffset !== 0 ? readLogBlock(ioBuffer, meta.logOffset) : null
-
-  return { meta, spectra , logs  };
-
 }
