@@ -3,13 +3,14 @@ import { IOBuffer } from 'iobuffer';
 import { readNewDataBlock, readOldDataBlock, Spectrum } from './dataBlock';
 import { LogBlock, readLogBlock } from './logBlock';
 import { TheOldHeader, TheNewHeader } from './fileHeader';
+import { FlagParameters } from './utility';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 export type Header = TheOldHeader | TheNewHeader;
 export interface ParseResult {
   meta: Header;
   spectra: Spectrum[];
-  logs?: LogBlock;
+  logs?: LogBlock | null;
 }
 
 /**
@@ -27,17 +28,17 @@ export interface ParseResult {
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);
 
-  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
-  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+  const parameters = new FlagParameters(ioBuffer.readUint8()); //Each bit contains a parameter
+  const fileVersion = ioBuffer.readUint8(); //4B => New format; 4D => LabCalc format
 
   switch (fileVersion) {
     case 0x4b: // new format
       break;
     case 0x4c:
-      buffer.setBigEndian();
+      ioBuffer.setBigEndian();
       break;
-    case 0x4d: { // old LabCalc format
-      const meta =  new TheOldHeader(buffer, { parameters, fileVersion });
+    case 0x4d: {// old LabCalc format
+      const meta =  new TheOldHeader(ioBuffer, { parameters, fileVersion });
       return  { meta, spectra: readOldDataBlock(ioBuffer,meta) };
     }
     default:
@@ -46,9 +47,9 @@ export function parse(buffer: InputData): ParseResult {
       );
   }
 
-  const meta =  new TheNewHeader(buffer, { parameters, fileVersion });
+  const meta =  new TheNewHeader(ioBuffer, { parameters, fileVersion });
   const spectra = readNewDataBlock(ioBuffer, meta)
-  const logs = readLogBlock(ioBuffer, meta.logOffset)
+  const logs = meta.logOffset !== 0 ? readLogBlock(ioBuffer, meta.logOffset) : null
 
   return { meta, spectra , logs  };
 
