@@ -1,6 +1,6 @@
 import { IOBuffer } from 'iobuffer';
 
-import { readDataBlock, Spectrum } from './dataBlock';
+import { readNewDataBlock, readOldDataBlock, Spectrum } from './dataBlock';
 import { LogBlock, readLogBlock } from './logBlock';
 import { Header, TheNewHeader, mainHeader } from './mainHeader';
 
@@ -21,9 +21,8 @@ export interface ParseResult {
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);
   const meta = mainHeader(ioBuffer);
-  const spectra = readDataBlock(ioBuffer, meta);
   if (meta instanceof TheNewHeader && meta.logOffset !== 0) {
-    return { meta, spectra, logs: readLogBlock(ioBuffer, meta.logOffset) };
+    return { meta, spectra: readNewDataBlock(ioBuffer, meta), logs: readLogBlock(ioBuffer, meta.logOffset) };
   }
-  return { meta, spectra };
+  return { meta, spectra: readOldDataBlock };
 }

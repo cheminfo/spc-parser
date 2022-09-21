@@ -3,9 +3,8 @@ import { IOBuffer } from 'iobuffer';
 import { xzwTypes, yTypes, experimentSettings } from './types';
 import {
   guessType,
-  getFlagParameters,
-  longToDate,
   FlagParameters,
+  longToDate,
 } from './utility';
 
 export type Header = TheNewHeader | TheOldHeader;
@@ -15,9 +14,8 @@ export type Header = TheNewHeader | TheOldHeader;
  * @return Main header.
  */
 export function mainHeader(buffer: IOBuffer): Header {
-  const parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
+  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
   const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
-
   switch (fileVersion) {
     case 0x4b: // new format
       break;
@@ -31,7 +29,6 @@ export function mainHeader(buffer: IOBuffer): Header {
         'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
       );
   }
-
   return new TheNewHeader(buffer, { parameters, fileVersion });
 }
 
@@ -80,16 +77,16 @@ export class TheOldHeader {
     this.date = date.toISOString();
     this.resolutionDescription = buffer
       .readChars(8)
+      .replace(/\x00/g, '')
       .trim()
-      .replace(/\x00/g, '');
     this.peakPointNumber = buffer.readUint16();
     this.scans = buffer.readUint16();
     this.spare = [];
     for (let i = 0; i < 7; i++) {
       this.spare.push(buffer.readFloat32());
     }
-    this.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
-    this.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
+    this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
+    this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
     this.guessedType = guessType(this);
   }
 }
@@ -147,12 +144,12 @@ export class TheNewHeader {
     this.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
     this.resolutionDescription = buffer
       .readChars(9)
-      .trim()
-      .replace(/\x00/g, ''); //Resolution description text
+      .replace(/\x00/g, '')
+      .trim()//Resolution description text
     this.sourceInstrumentDescription = buffer
       .readChars(9)
-      .trim()
-      .replace(/\x00/g, ''); // Source Instrument description text
+      .replace(/\x00/g, '')
+      .trim() // Source Instrument description text
     this.peakPointNumber = buffer.readUint16(); //Peak point number for interferograms
     this.spare = [];
     for (let i = 0; i < 8; i++) {

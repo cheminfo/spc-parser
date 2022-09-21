@@ -1,41 +1,58 @@
 import { Header } from './mainHeader';
 
-export interface SubFlagParameters {
-  changed: boolean;
-  noPeakTable: boolean;
-  modifiedArithmetic: boolean;
+/**
+ * The new file format records as:
+ * - Y. X is implicit (calc from XStart, XEnd, Y.length)
+ * - XY. Single Y uneven, explicit X.
+ * - YY. Multiple spectra (Ys), implicit, unique, even X.
+ * - XYY. Multiple Ys, one unique, uneven X. 
+ * - XYYX. Multiple Ys, Multiple Xs (even or not, I think, but will be explicit).
+ * The old file format records only: Y or YY./
+ *
+ * @param multiFile - whether there are multiple spectra (subfiles) or not.
+ * @param flag - holds information about how the data is classified
+ * @return the shape of the data
+ */
+export function dataShape(multiFile:boolean, flag:number): DataShape{
+  const xy = (flag & 128) !== 0;// Non-evenly spaced X, X before Y
+  const xyxy =  (flag & 64) !== 0;//One X array per subfile, for discontinuous curves
+  let shape;
+  if(!multiFile){//single file: Y or XY
+   shape = !xy ? "Y" : "XY"
+  } else {//multifile: YY, XY, XYXY
+  if(!xy) {//one shared even X - equidistant
+   shape =  "YY"
+} else {//uneven x, multifile
+   shape =  !xyxy ? "XYY" : "XYXY"
+}
+}
+return shape as DataShape
 }
 
-export interface FlagParameters {
-  y16BitPrecision: boolean;
-  useExperimentExtension: boolean;
-  multiFile: boolean;
-  zValuesRandom: boolean;
-  zValuesUneven: boolean;
-  customAxisLabels: boolean;
-  xyxy: boolean;
-  xy: boolean;
-}
-
+export type DataShape = "Y"|"XY"|"YY"|"XYY"|"XYXY";
 /**
  * Gets the parameter in each bit of the flag
  *
  * @param  flag First byte of the main header.
  * @returns  The parameters.
  */
-export function getFlagParameters(flag: number): FlagParameters {
-  const parameters: FlagParameters = {
-    y16BitPrecision: (flag & 1) !== 0, //Y values are 16 bits instead of 32
-    useExperimentExtension: (flag & 2) !== 0, //Enable experiment mode
-    multiFile: (flag & 4) !== 0, //Multiple spectra
-    zValuesRandom: (flag & 8) !== 0, //Z values in random order if multiFile
-    zValuesUneven: (flag & 16) !== 0, //Z values ordered but unevenly spaced if multi
-    customAxisLabels: (flag & 32) !== 0, //Custom labels
-    xyxy: (flag & 64) !== 0, //One X array per subfile, for discontinuous curves
-    xy: (flag & 128) !== 0, // Non-evenly spaced X, X before Y
-  }; //Z is time
-
-  return parameters;
+export class FlagParameters {
+public y16BitPrecision: boolean;
+public useExperimentExtension: boolean;
+public multiFile: boolean;
+public zValuesRandom: boolean;
+public zValuesUneven: boolean;
+public customAxisLabels: boolean;
+public dataShape: DataType
+  constructor(flag: number){
+  this.y16BitPrecision = (flag & 1) !== 0, //Y values are 16 bits instead of 32
+  this.useExperimentExtension = (flag & 2) !== 0, //Enable experiment mode
+  this.multiFile = (flag & 4) !== 0, //Multiple spectra (multifile)
+  this.zValuesRandom = (flag & 8) !== 0, //Z values in random order if multiFile
+  this.zValuesUneven = (flag & 16) !== 0, //Z values ordered but unevenly spaced if multi
+  this.customAxisLabels = (flag & 32) !== 0, //Custom labels
+  this.dataShape = dataShape(this.multiFile, flag)
+}
 }
 
 /**
@@ -44,13 +61,15 @@ export function getFlagParameters(flag: number): FlagParameters {
  * @param  flag First byte of the subheader.
  * @return The parameters.
  */
-export function getSubFlagParameters(flag: number): SubFlagParameters {
-  const parameters = {
-    changed: (flag & 1) !== 0,
-    noPeakTable: (flag & 8) !== 0,
-    modifiedArithmetic: (flag & 128) !== 0,
-  };
-  return parameters;
+export class SubFlagParameters{
+public changed: boolean;
+public noPeakTable: boolean;
+public modifiedArithmetic: boolean;
+ constructor(flag:number){
+ this.changed = (flag & 1) !== 0;
+ this.noPeakTable = (flag & 8) !== 0;
+ this.modifiedArithmetic = (flag & 128) !== 0;
+}
 }
 
 /**
@@ -81,7 +100,8 @@ export function longToDate(long: number): string {
  * But if they are not transformed already, they'd
  * fall in the General category.
  */
-export type SpectraType = 'ir' | 'raman' | 'mass' | 'uv' | 'other';
+export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
+
 /**
  * Inspects properties and tries to classify the spectra
  * For the most common spectra types
