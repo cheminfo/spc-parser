@@ -1,15 +1,19 @@
 import { FlagParameters, longToDate } from '../utility';
 
 test('Flag parameters', () => {
-  expect(new FlagParameters(255)).toEqual({
+  const instance = new FlagParameters(255)
+  expect({...instance}).toStrictEqual({
     y16BitPrecision: true,
     useExperimentExtension: true,
     multiFile: true,
     zValuesRandom: true,
     zValuesUneven: true,
     customAxisLabels: true,
+    xy:true;
+    xyxy:true;
     dataShape: 'XYXY',
-  });
+  })
+ 
 });
 test('Long to date', () => {
   expect(longToDate(2102092692)).toMatch(/2004-11-12T14:20/);

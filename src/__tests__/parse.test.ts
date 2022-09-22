@@ -1,9 +1,20 @@
-import { readFileSync } from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 import { parse } from '../parse';
 
 describe('parse', () => {
+
+  it('all', () => {
+    const fnames = readdirSync(join(__dirname,"data")).filter(fname=>fname!=="nir.cfl")
+    fnames.map(fname=>{
+    console.log(fname);
+    const res = parse(readFileSync(join(__dirname, 'data', fname)))
+    console.log(res.meta);
+    //console.log(res.spectra[0].variables.x.data)//.length, res.spectra[0].variables.y.data.length)
+})
+  })
+
   it('snapshot for comparison', () => {
     const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
     expect(result).toMatchSnapshot();

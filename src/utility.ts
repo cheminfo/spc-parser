@@ -7,31 +7,34 @@ import { Header } from './fileHeader';
  * - YY. Multiple spectra (Ys), implicit, unique, even X.
  * - XYY. Multiple Ys, one unique, uneven X.
  * - XYYX. Multiple Ys, Multiple Xs (even or not, I think, but will be explicit).
- * The old file format records only: Y or YY./
+ * The old file format records only: Y or YY.
  *
- * @param multiFile - whether there are multiple spectra (subfiles) or not.
- * @param flag - holds information about how the data is classified
- * @return the shape of the data
- */
-export function dataShape(multiFile: boolean, flag: number): DataShape {
-  const xy = (flag & 128) !== 0; // Non-evenly spaced X, X before Y
-  const xyxy = (flag & 64) !== 0; //One X array per subfile, for discontinuous curves
+*/
+export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
 
-  if (!multiFile) {
-    //single file: Y or XY
-    return !xy ? 'Y' : 'XY';
-  }
-  //multifile
-  if (!xy) {
-    //one shared even X - equidistant
+/** Get how the data was stored 
+ * @param multiFile - whether there are multiple spectra (subfiles) or not.
+ * @param xy - uneven x values
+ * @param xyxy - multifile with separate x axis
+ * @return the shape of the data as a string
+ */
+export function getDataShape(multifile:boolean,xy:boolean,xyxy:boolean): DataShape {
+
+  /* single file */
+  if (!multiFile) {// Y or XY, 
+   // XYXY is an exeption detailed at page 11 
+   //https://ensembles-eu.metoffice.gov.uk/met-res/aries/technical/GSPC_UDF.PDF
+    return !xy ? 'Y' : xyxy ? "XYXY" : 'XY';
+  } 
+
+  /* then multifile */
+  if (!xy) { /* even X - equidistant */
     return 'YY';
-  } else {
-    //uneven x, multifile
+  } else { // uneven x
     return !xyxy ? 'XYY' : 'XYXY';
   }
 }
 
-export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
 /**
  * Gets the parameter in each bit of the flag
  *
@@ -45,7 +48,8 @@ export class FlagParameters {
   public zValuesRandom: boolean;
   public zValuesUneven: boolean;
   public customAxisLabels: boolean;
-  public dataShape: DataShape;
+  public xyxy: boolean;
+  public xy: boolean;
   constructor(flag: number) {
     this.y16BitPrecision = (flag & 1) !== 0; //Y values are 16 bits instead of 32
     this.useExperimentExtension = (flag & 2) !== 0; //Enable experiment mode
@@ -53,7 +57,8 @@ export class FlagParameters {
     this.zValuesRandom = (flag & 8) !== 0; //Z values in random order if multiFile
     this.zValuesUneven = (flag & 16) !== 0; //Z values ordered but unevenly spaced if multi
     this.customAxisLabels = (flag & 32) !== 0; //Custom labels
-    this.dataShape = dataShape(this.multiFile, flag);
+    this.xyxy = (flag & 64) !== 0; //One X array per subfile, for discontinuous curves
+    this.xy = (flag & 128) !== 0; // Non-evenly spaced X, X before Y
   }
 }
 
@@ -97,10 +102,8 @@ export function longToDate(long: number): string {
 /**
  * Classification of standard spectra out of basic
  * `meta` properties
- * Fluorescence could be Atomic or molecular,
- * IR,NIR etc could be standard or the FT ones
- * But if they are not transformed already, they'd
- * fall in the General category.
+ * For now ir is only ir spectra
+ * uv could be: uv (only), uv-vis, uv-vis-nir, vis-nir. 
  */
 export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 
@@ -110,10 +113,10 @@ export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
  * @param Header
  * @returns string describing the type of spectra or "General" if unsure.
  */
-export function guessType(header: Header): SpectraType {
-  //xStart and xEnd could be used to narrow down NIR, MIR, FIR
-  //and so on. But it is not important yet.
-  const { xUnitsType: xU, yUnitsType: yU } = header;
+export function guessType(fileHeader: Header): SpectraType {
+
+  const { xUnitsType: xU, yUnitsType: yU } = fileHeader;
+
   switch (xU) {
     case 'Mass (M/z)':
       return 'mass';
