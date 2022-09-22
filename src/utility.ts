@@ -18,7 +18,7 @@ export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
  * @param xyxy - multifile with separate x axis
  * @return the shape of the data as a string
  */
-export function getDataShape(multifile:boolean,xy:boolean,xyxy:boolean): DataShape {
+export function getDataShape(multiFile:boolean,xy:boolean,xyxy:boolean): DataShape {
 
   /* single file */
   if (!multiFile) {// Y or XY, 

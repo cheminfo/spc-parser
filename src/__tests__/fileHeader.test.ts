@@ -10,7 +10,6 @@ describe('mainHeader parsing test', () => {
     const mxyxy = new TheNewHeader(
       new IOBuffer(readFileSync(join(__dirname, 'data/m_xyxy.spc'))),
     );
-    expect(mxyxy.parameters.dataShape).toBe('XYXY');
     expect(mxyxy.parameters.multiFile).toBe(true);
     expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
     expect(mxyxy.zUnitsType).toBe('Minutes');

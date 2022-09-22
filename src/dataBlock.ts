@@ -51,10 +51,10 @@ export class SubHeader {
  */
 export function makeSpectrum(
   x: Float64Array | undefined,
+  dataShape:DataShape,
   meta: SubHeader,
   fileHeader: Header,
   buffer: IOBuffer,
-  dataShape:DataShape
 ): Spectrum {
 
   const nbPoints = x ?  x.length : meta.numberPoints
@@ -135,7 +135,7 @@ export function readOldDataBlock(
 ): Spectrum[] {
   let spectra: Spectrum[] = [];
 
-  const {multiFile, xy, xyxy } fileHeader.parameters; 
+  const {multiFile, xy, xyxy } = fileHeader.parameters; 
   const dataShape = getDataShape(multiFile,xy, xyxy);
 
   const x = createFromToArray({
@@ -168,7 +168,7 @@ export function readNewDataBlock(
 ): Spectrum[] {
   let x;
   let spectra: Spectrum[] = [];
-  const {multiFile, xy, xyxy } fileHeader.parameters; 
+  const {multiFile, xy, xyxy }  = fileHeader.parameters; 
   const dataShape = getDataShape(multiFile, xy, xyxy);
 
   if (dataShape === 'XY') {
