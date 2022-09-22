@@ -4,20 +4,25 @@ import { join } from 'path';
 import { parse } from '../parse';
 
 describe('parse', () => {
-
   it('test that all are consistent arrays of data', () => {
-    const files = readdirSync(join(__dirname, "data")).filter(file=>file!=="nir.cfl")
-    files.forEach( f => {
-     const r = parse(readFileSync(join(__dirname, "data", f)))
-     r.spectra.forEach(({variables:{x,y}}) => expect(x.data.length).toBe(y.data.length))    
-  })
-})
+    const files = readdirSync(join(__dirname, 'data')).filter(
+      (file) => file !== 'nir.cfl',
+    );
+    files.forEach((f) => {
+      const r = parse(readFileSync(join(__dirname, 'data', f)));
+      for (let spectrum of r.spectra) {
+        const {
+          variables: { x, y },
+        } = spectrum;
+        expect(x.data).toHaveLength(y.data.length);
+      }
+    });
+  });
 
   it('snapshot for comparison', () => {
     const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
     expect(result).toMatchSnapshot();
   });
-
 
   it('random format throws error', () => {
     const file = readFileSync(join(__dirname, 'data', 'nir.cfl'));

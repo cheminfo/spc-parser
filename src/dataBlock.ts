@@ -50,19 +50,18 @@ export class SubHeader {
  * @param buffer - current file as iobuffer
  */
 export function makeSpectrum(
-  x: Float64Array|undefined,
+  x: Float64Array | undefined,
   dataShape: DataShape,
   meta: SubHeader,
   fileHeader: Header,
   buffer: IOBuffer,
 ): Spectrum {
-
   const nbPoints = x ? x.length : meta.numberPoints;
 
   x = x || new Float64Array(nbPoints); //for `xyxy` and exception
   let y = new Float64Array(nbPoints);
 
-  if (dataShape === 'XYXY' || dataShape==="exception") {
+  if (dataShape === 'XYXY' || dataShape === 'exception') {
     for (let j = 0; j < nbPoints; j++) {
       x[j] = buffer.readFloat32();
     }

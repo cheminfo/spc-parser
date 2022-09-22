@@ -17,11 +17,13 @@ describe('data block parsing test', () => {
     expect(spectra[0].variables.y.data[1]).toBe(3188);
     expect(spectra[511].variables.y.data[3]).toBe(11019);
 
-    for(let i=0; i<spectra.length; i++) {
-    const { variables:{ x,y }} = spectra[i]
-    expect(x.data.length).toBe(y.data.length)
-  }
-})
+    for (let spectrum of spectra) {
+      const {
+        variables: { x, y },
+      } = spectrum;
+      expect(x.data).toHaveLength(y.data.length);
+    }
+  });
 
   it('RAMAN.SPC', () => {
     const buffer = new IOBuffer(

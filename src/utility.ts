@@ -24,8 +24,9 @@ export function getDataShape(
   xyxy: boolean,
 ): DataShape {
   /* single file */
-  if (!multiFile) { // Y or XY,
-    return !xy ? 'Y' : xyxy ? "exception" : 'XY';
+  if (!multiFile) {
+    // Y or XY,
+    return !xy ? 'Y' : xyxy ? 'exception' : 'XY';
   }
 
   /* then multifile */
