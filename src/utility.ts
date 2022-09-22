@@ -9,28 +9,31 @@ import { Header } from './fileHeader';
  * - XYYX. Multiple Ys, Multiple Xs (even or not, I think, but will be explicit).
  * The old file format records only: Y or YY.
  *
-*/
+ */
 export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
 
-/** Get how the data was stored 
+/** Get how the data was stored
  * @param multiFile - whether there are multiple spectra (subfiles) or not.
  * @param xy - uneven x values
  * @param xyxy - multifile with separate x axis
  * @return the shape of the data as a string
  */
-export function getDataShape(multiFile:boolean,xy:boolean,xyxy:boolean): DataShape {
-
+export function getDataShape(
+  multiFile: boolean,
+  xy: boolean,
+  xyxy: boolean,
+): DataShape {
   /* single file */
-  if (!multiFile) {// Y or XY, 
-   // XYXY is an exeption detailed at page 11 
-   //https://ensembles-eu.metoffice.gov.uk/met-res/aries/technical/GSPC_UDF.PDF
-    return !xy ? 'Y' : xyxy ? "XYXY" : 'XY';
-  } 
+  if (!multiFile) { // Y or XY,
+    return !xy ? 'Y' : xyxy ? "exception" : 'XY';
+  }
 
   /* then multifile */
-  if (!xy) { /* even X - equidistant */
+  if (!xy) {
+    /* even X - equidistant */
     return 'YY';
-  } else { // uneven x
+  } else {
+    // uneven x
     return !xyxy ? 'XYY' : 'XYXY';
   }
 }
@@ -103,7 +106,7 @@ export function longToDate(long: number): string {
  * Classification of standard spectra out of basic
  * `meta` properties
  * For now ir is only ir spectra
- * uv could be: uv (only), uv-vis, uv-vis-nir, vis-nir. 
+ * uv could be: uv (only), uv-vis, uv-vis-nir, vis-nir.
  */
 export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 
@@ -114,7 +117,6 @@ export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
  * @returns string describing the type of spectra or "General" if unsure.
  */
 export function guessType(fileHeader: Header): SpectraType {
-
   const { xUnitsType: xU, yUnitsType: yU } = fileHeader;
 
   switch (xU) {

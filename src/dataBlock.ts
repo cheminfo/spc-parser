@@ -50,20 +50,20 @@ export class SubHeader {
  * @param buffer - current file as iobuffer
  */
 export function makeSpectrum(
-  x: Float64Array | undefined,
-  dataShape:DataShape,
+  x: Float64Array|undefined,
+  dataShape: DataShape,
   meta: SubHeader,
   fileHeader: Header,
   buffer: IOBuffer,
 ): Spectrum {
 
-  const nbPoints = x ?  x.length : meta.numberPoints
+  const nbPoints = x ? x.length : meta.numberPoints;
 
+  x = x || new Float64Array(nbPoints); //for `xyxy` and exception
   let y = new Float64Array(nbPoints);
 
-  if (dataShape === 'XYXY') {
-    let x = new Float64Array(nbPoints);
-    for (let j = 0; j < meta.numberPoints; j++) {
+  if (dataShape === 'XYXY' || dataShape==="exception") {
+    for (let j = 0; j < nbPoints; j++) {
       x[j] = buffer.readFloat32();
     }
   }
@@ -107,7 +107,7 @@ export function makeSpectrum(
       symbol: 'x',
       label: xAxis?.groups?.label || (fileHeader.xUnitsType as string),
       units: xAxis?.groups?.units || '',
-      data: x as Float64Array,
+      data: x,
       isDependent: false,
     },
     y: {
@@ -135,8 +135,8 @@ export function readOldDataBlock(
 ): Spectrum[] {
   let spectra: Spectrum[] = [];
 
-  const {multiFile, xy, xyxy } = fileHeader.parameters; 
-  const dataShape = getDataShape(multiFile,xy, xyxy);
+  const { multiFile, xy, xyxy } = fileHeader.parameters;
+  const dataShape = getDataShape(multiFile, xy, xyxy);
 
   const x = createFromToArray({
     from: fileHeader.startingX,
@@ -168,10 +168,10 @@ export function readNewDataBlock(
 ): Spectrum[] {
   let x;
   let spectra: Spectrum[] = [];
-  const {multiFile, xy, xyxy }  = fileHeader.parameters; 
+  const { multiFile, xy, xyxy } = fileHeader.parameters;
   const dataShape = getDataShape(multiFile, xy, xyxy);
 
-  if (dataShape === 'XY') {
+  if (dataShape === 'XY' || dataShape === 'XYY') {
     x = new Float64Array(fileHeader.numberPoints);
     for (let i = 0; i < fileHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();
