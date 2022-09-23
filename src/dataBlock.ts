@@ -3,7 +3,7 @@ import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import { Header, TheNewHeader, TheOldHeader } from './fileHeader';
-import { getDataShape, SubFlagParameters } from './utility';
+import { DataShape, getDataShape, SubFlagParameters } from './utility';
 
 /**
  * Use cheminfo type for better UI compatibility
@@ -169,7 +169,8 @@ export function readNewDataBlock(
 
   const dataShape = getDataShape(fileHeader.parameters);
 
-  if (dataShape === 'XY' || dataShape === 'XYY') {//for these, X axis comes before subheader
+  if (dataShape === 'XY' || dataShape === 'XYY') {
+    //for these, X axis comes before subheader
     x = new Float64Array(fileHeader.numberPoints);
     for (let i = 0; i < fileHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();

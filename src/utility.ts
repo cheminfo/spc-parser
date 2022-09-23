@@ -1,4 +1,4 @@
-import {Header} from "./fileHeader";
+import { Header } from './fileHeader';
 
 /**
  * The new file format records as:
@@ -10,7 +10,7 @@ import {Header} from "./fileHeader";
  * The old file format records only: Y or YY.
  *
  */
-export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
+export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY' | 'exception';
 
 /** Get how the data was stored
  * @param multiFile - whether there are multiple spectra (subfiles) or not.
@@ -18,8 +18,11 @@ export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
  * @param xyxy - multifile with separate x axis
  * @return the shape of the data as a string
  */
-export function getDataShape({multiFile, xy, xyxy}: FlagParameters)
-: DataShape {
+export function getDataShape({
+  multiFile,
+  xy,
+  xyxy,
+}: FlagParameters): DataShape {
   /* single file */
   if (!multiFile) {
     // Y or XY,

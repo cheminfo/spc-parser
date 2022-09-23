@@ -4,7 +4,7 @@ import { join } from 'path';
 import { IOBuffer } from 'iobuffer';
 
 import { TheNewHeader, TheOldHeader } from '../fileHeader';
-import {guessType} from '../utility';
+import { guessType } from '../utility';
 
 describe('mainHeader parsing test', () => {
   it('m_xyxy.spc', () => {
