@@ -41,7 +41,7 @@ describe('parse', () => {
       isDependent: false,
     });
     expect(result.spectra).toHaveLength(1);
-    expect(Object.keys(result.meta)).toHaveLength(32);
+    expect(Object.keys(result.meta)).toHaveLength(31);
   });
 
   it('raman-sion.spc', () => {
@@ -54,7 +54,7 @@ describe('parse', () => {
       isDependent: false,
     });
     expect(result.spectra).toHaveLength(36);
-    expect(Object.keys(result.meta)).toHaveLength(32);
+    expect(Object.keys(result.meta)).toHaveLength(31);
     const dataY = result.spectra[0].variables.y.data;
     expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
     expect(Math.max(...dataY)).toBe(7594.40869140625);

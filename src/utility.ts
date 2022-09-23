@@ -1,4 +1,4 @@
-import { Header } from './fileHeader';
+import {Header} from "./fileHeader";
 
 /**
  * The new file format records as:
@@ -18,11 +18,8 @@ export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY';
  * @param xyxy - multifile with separate x axis
  * @return the shape of the data as a string
  */
-export function getDataShape(
-  multiFile: boolean,
-  xy: boolean,
-  xyxy: boolean,
-): DataShape {
+export function getDataShape({multiFile, xy, xyxy}: FlagParameters)
+: DataShape {
   /* single file */
   if (!multiFile) {
     // Y or XY,

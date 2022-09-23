@@ -134,8 +134,7 @@ export function readOldDataBlock(
 ): Spectrum[] {
   let spectra: Spectrum[] = [];
 
-  const { multiFile, xy, xyxy } = fileHeader.parameters;
-  const dataShape = getDataShape(multiFile, xy, xyxy);
+  const dataShape = getDataShape(fileHeader.parameters);
 
   const x = createFromToArray({
     from: fileHeader.startingX,
@@ -167,10 +166,10 @@ export function readNewDataBlock(
 ): Spectrum[] {
   let x;
   let spectra: Spectrum[] = [];
-  const { multiFile, xy, xyxy } = fileHeader.parameters;
-  const dataShape = getDataShape(multiFile, xy, xyxy);
 
-  if (dataShape === 'XY' || dataShape === 'XYY') {
+  const dataShape = getDataShape(fileHeader.parameters);
+
+  if (dataShape === 'XY' || dataShape === 'XYY') {//for these, X axis comes before subheader
     x = new Float64Array(fileHeader.numberPoints);
     for (let i = 0; i < fileHeader.numberPoints; i++) {
       x[i] = buffer.readFloat32();
@@ -187,5 +186,6 @@ export function readNewDataBlock(
     const subFileHeader = new SubHeader(buffer);
     spectra.push(makeSpectrum(x, dataShape, subFileHeader, fileHeader, buffer));
   }
+
   return spectra;
 }

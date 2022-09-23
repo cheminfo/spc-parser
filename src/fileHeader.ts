@@ -1,7 +1,7 @@
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import { guessType, FlagParameters, longToDate } from './utility';
+import { FlagParameters, longToDate } from './utility';
 
 /**
  * old-format file-header parsing.
@@ -25,7 +25,6 @@ export class TheOldHeader {
   public spare: number[];
   public memo: string;
   public xyzLabels: string;
-  public guessedType: string;
   constructor(
     buffer: IOBuffer,
     prev?: { parameters: FlagParameters; fileVersion: number },
@@ -66,7 +65,6 @@ export class TheOldHeader {
     }
     this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
     this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
-    this.guessedType = guessType(this);
   }
 }
 
@@ -108,7 +106,6 @@ export class TheNewHeader {
   public wPlaneIncrement: number;
   public wAxisUnits: string | number;
   public reserved: string;
-  public guessedType: string;
 
   constructor(
     buffer: IOBuffer,
@@ -171,7 +168,6 @@ export class TheNewHeader {
     if (this.zUnitsType === 0) {
       this.zUnitsType = this.xyzLabels.substring(20, 30);
     }
-    this.guessedType = guessType(this);
   }
 }
 
