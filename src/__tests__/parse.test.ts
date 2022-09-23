@@ -46,7 +46,7 @@ describe('parse', () => {
     });
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(31);
-    expect(guessedType).toBe('uv'); //vis to ir
+    expect(guessedType).toBe('ir'); //MIR I think (middle range IR.)
   });
 
   it('raman-sion.spc', () => {

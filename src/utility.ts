@@ -168,7 +168,7 @@ export function guessType(data: ParseResult): SpectraType {
     case 'Micrometers (um)':
       return 'ir';
     case 'Wavenumber (cm-1)': {
-      const range = uvOrIR(data);
+      const range = uvOrIR(data, 'wavenumber');
       if (range === null) return 'other';
       return range;
     }
@@ -176,7 +176,7 @@ export function guessType(data: ParseResult): SpectraType {
       if (
         ['Kubelka-Monk', 'Absorbance', 'Log(1/R)', 'Transmission'].includes(yU)
       ) {
-        const range = uvOrIR(data);
+        const range = uvOrIR(data, 'nanometers');
         if (range === null) return 'other';
         return range;
       }
@@ -194,7 +194,7 @@ export function guessType(data: ParseResult): SpectraType {
  * @param data - the parsed file (a jsonlike object)
  * @returns
  */
-export function uvOrIR(data: ParseResult): 'uv' | 'ir' | null {
+export function uvOrIR(data: ParseResult, xUnit: string): 'uv' | 'ir' | null {
   //tested in "parse" because of the input
   const dataShape = getDataShape(data.meta.parameters);
   const analyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
@@ -203,11 +203,10 @@ export function uvOrIR(data: ParseResult): 'uv' | 'ir' | null {
     if (areTooClose(sX, eX)) return null;
 
     const lowerBound = sX < eX ? sX : eX;
-
-    if (lowerBound < 150) return null; //could be X-rays maybe
-
+    if (xUnit === 'nanometers' && lowerBound < 150) return null; //could be X-rays maybe
+    if (xUnit === 'wavenumber' && lowerBound > 66666) return null; //
     // then there may be a spectrum
-    return getSpectrumRegion(lowerBound);
+    return getSpectrumRegion(lowerBound, xUnit);
   }
   return null;
 }
@@ -226,6 +225,7 @@ export function areTooClose(startX: number, endX: number): boolean {
  * @param lb
  * @return type of spectra
  */
-export function getSpectrumRegion(lb: number): 'uv' | 'ir' {
-  return lb > 700 ? 'ir' : 'uv';
+export function getSpectrumRegion(lb: number, xUnit: string): 'uv' | 'ir' {
+  if (xUnit === 'nanometers') return lb > 700 ? 'ir' : 'uv';
+  return lb < 14285 ? 'ir' : 'uv';
 }
