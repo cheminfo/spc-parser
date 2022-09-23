@@ -1,4 +1,5 @@
-import { Header } from './fileHeader';
+import { TheNewHeader } from './fileHeader';
+import { ParseResult } from './parse';
 
 /**
  * The new file format records as:
@@ -111,15 +112,54 @@ export function longToDate(long: number): string {
  */
 export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 
+/* other possible additions
+     else if (yU === 'Counts') {
+         //'Fluorescence';
+      }
+      else if(yU==='Kubelka-Monk'){
+        //'Diffuse Reflectance'
+      }
+    case 'eV':
+      //return 'X-Ray';
+    case 'Minutes':
+      //return 'Chromatogram';
+    case 'Parts per million (PPM)':
+      //theType = 'nmr';
+*/
 /**
  * Inspects properties and tries to classify the spectra
  * For the most common spectra types
- * @param Header
- * @returns string describing the type of spectra or "General" if unsure.
+ * @param data the parsed data
+ * @returns string describing the type of spectra ([[`SpectraType`]]) or "General" if unsure.
  */
-export function guessType(fileHeader: Header): SpectraType {
-  const { xUnitsType: xU, yUnitsType: yU } = fileHeader;
+export function guessType(data: ParseResult): SpectraType {
+  //function tested with the `fileHeader.test.ts`
+  const { xUnitsType: xU, yUnitsType: yU } = data.meta;
 
+  // for the new file header they define a "experiment type"
+  if (data.meta instanceof TheNewHeader) {
+    // "General SPC" does not give any information
+    if (!data.meta.experimentType.startsWith('General SPC')) {
+      let id = data.meta.experimentType.split(' ')[0];
+      switch (
+        id //find all possible ids in `types.ts` file
+      ) {
+        case 'FT-IR,':
+          return 'ir';
+        case 'NIR':
+          return 'ir';
+        case 'UV-VIS':
+          return 'uv';
+        case 'Mass':
+          return 'mass';
+        case 'Raman':
+          return 'raman';
+        default:
+          return 'other';
+      }
+    }
+  }
+  // for old header or General SPC
   switch (xU) {
     case 'Mass (M/z)':
       return 'mass';
@@ -127,28 +167,65 @@ export function guessType(fileHeader: Header): SpectraType {
       return 'raman';
     case 'Micrometers (um)':
       return 'ir';
-    case 'Wavenumber (cm-1)':
-      return 'uv'; //'UV-Vis-IR';
+    case 'Wavenumber (cm-1)': {
+      const range = uvOrIR(data);
+      if (range === null) return 'other';
+      return range;
+    }
     case 'Nanometers (nm)':
-      if (yU === 'Absorbance' || yU === 'Log(1/R)' || yU === 'Transmission') {
-        return 'uv'; // 'Atomic-UV-Vis-NIR';
+      if (
+        ['Kubelka-Monk', 'Absorbance', 'Log(1/R)', 'Transmission'].includes(yU)
+      ) {
+        const range = uvOrIR(data);
+        if (range === null) return 'other';
+        return range;
       }
       return 'other';
     default:
       return 'other';
-    /** other possible additions
-         else if (yU === 'Counts') {
-             //'Fluorescence';
-          }
-         else if(yU==='Kubelka-Monk'){
-            //'Diffuse Reflectance'
-          }
-        case 'eV':
-          //return 'X-Ray';
-        case 'Minutes':
-          //return 'Chromatogram';
-        case 'Parts per million (PPM)':
-          //theType = 'nmr';
-    */
   }
+}
+
+//`xyxy` and `exception` are left for the future.
+// this is just to distinguins uv-ir from only ir
+
+/**
+ * Further classify an X axis that is using "wavenumber" as uv or ir.
+ * @param data - the parsed file (a jsonlike object)
+ * @returns
+ */
+export function uvOrIR(data: ParseResult): 'uv' | 'ir' | null {
+  //tested in "parse" because of the input
+  const dataShape = getDataShape(data.meta.parameters);
+  const analyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
+  if (analyze) {
+    const { startingX: sX, endingX: eX } = data.meta;
+    if (areTooClose(sX, eX)) return null;
+
+    const lowerBound = sX < eX ? sX : eX;
+
+    if (lowerBound < 150) return null; //could be X-rays maybe
+
+    // then there may be a spectrum
+    return getSpectrumRegion(lowerBound);
+  }
+  return null;
+}
+
+/**
+ * check whether this does not look like a standard spectra
+ * @param  startX
+ * @param  endX
+ * @returns
+ */
+export function areTooClose(startX: number, endX: number): boolean {
+  return Math.abs(startX - endX) < 200;
+}
+
+/**
+ * @param lb
+ * @return type of spectra
+ */
+export function getSpectrumRegion(lb: number): 'uv' | 'ir' {
+  return lb > 700 ? 'ir' : 'uv';
 }
