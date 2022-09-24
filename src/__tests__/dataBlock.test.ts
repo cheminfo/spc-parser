@@ -3,32 +3,36 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
-import { readDataBlock } from '../dataBlock';
-import { mainHeader } from '../mainHeader';
+import { fileHeader, TheNewHeader, TheOldHeader } from '../fileHeader';
+import { newDataBlock } from '../newDataBlock';
+import { oldDataBlock } from '../oldDataBlock';
 
 describe('data block parsing test', () => {
   it('m_xyxy.spc', () => {
     const buffer = new IOBuffer(
       readFileSync(join(__dirname, 'data/m_xyxy.spc')),
     );
-    const spectra = readDataBlock(buffer, mainHeader(buffer));
+    const header = fileHeader(buffer) as TheNewHeader;
+    const spectra = newDataBlock(buffer, header);
     expect(spectra).toHaveLength(512);
     expect(spectra[0].variables.y.data[1]).toBe(3188);
     expect(spectra[511].variables.y.data[3]).toBe(11019);
   });
+
   it('RAMAN.SPC', () => {
     const buffer = new IOBuffer(
       readFileSync(join(__dirname, 'data/RAMAN.SPC')),
     );
-    const spevctra = readDataBlock(buffer, mainHeader(buffer));
-    expect(spevctra[0].variables.x.data[1]).toBeCloseTo(3994.8946331825773);
-    expect(spevctra[0].variables.y.data[1]).toBeCloseTo(0.0186002254486084);
+    const header = fileHeader(buffer) as TheNewHeader;
+    const spectra = newDataBlock(buffer, header);
+    expect(spectra[0].variables.x.data[1]).toBeCloseTo(3994.8946331825773);
+    expect(spectra[0].variables.y.data[1]).toBeCloseTo(0.0186002254486084);
   });
   it('m_ordz.spc', () => {
     const buffer = new IOBuffer(
       readFileSync(join(__dirname, 'data/m_ordz.spc')),
     );
-    const spectra = readDataBlock(buffer, mainHeader(buffer));
+    const spectra = oldDataBlock(buffer, fileHeader(buffer) as TheOldHeader);
     expect(spectra[0].variables.x.data[0]).toBe(698.229736328125);
     expect(spectra[0].variables.y.data[0]).toBeCloseTo(0.02219367027282715);
     expect(spectra[0].variables.y.data[4]).toBeCloseTo(0.005127236247062683);
@@ -37,13 +41,13 @@ describe('data block parsing test', () => {
     expect(spectra[9].variables.y.data[0]).toBeCloseTo(0.023877553641796112);
     expect(spectra[9].variables.y.data[856]).toBeCloseTo(0.000490216538310051);
     expect(spectra[9].variables.x.data).toHaveLength(857);
-    expect(spectra[10]).toBeUndefined();
+    expect(spectra).toHaveLength(10);
   });
   it('Ft-ir.spc', () => {
     const buffer = new IOBuffer(
       readFileSync(join(__dirname, 'data/Ft-ir.spc')),
     );
-    const spectra = readDataBlock(buffer, mainHeader(buffer));
+    const spectra = newDataBlock(buffer, fileHeader(buffer) as TheNewHeader);
     expect(spectra).toHaveLength(1);
     expect(spectra[0].variables.y.data[0]).toBeCloseTo(95.13749694824219);
   });
@@ -51,8 +55,7 @@ describe('data block parsing test', () => {
     const buffer = new IOBuffer(
       readFileSync(join(__dirname, 'data/m_evenz.spc')),
     );
-    const header = mainHeader(buffer);
-    const spectra = readDataBlock(buffer, header);
+    const spectra = newDataBlock(buffer, fileHeader(buffer) as TheNewHeader);
     expect(spectra[0].variables.x.data).toStrictEqual(
       spectra[2].variables.x.data,
     );

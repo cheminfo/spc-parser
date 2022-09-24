@@ -1,45 +1,13 @@
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import {
-  guessType,
-  getFlagParameters,
-  longToDate,
-  FlagParameters,
-} from './utility';
-
-export type Header = TheNewHeader | TheOldHeader;
-/**
- * Main header parsing - First 512/256 bytes (new/old format).
- * @param buffer SPC buffer.
- * @return Main header.
- */
-export function mainHeader(buffer: IOBuffer): Header {
-  const parameters = getFlagParameters(buffer.readUint8()); //Each bit contains a parameter
-  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
-
-  switch (fileVersion) {
-    case 0x4b: // new format
-      break;
-    case 0x4c:
-      buffer.setBigEndian();
-      break;
-    case 0x4d: // old LabCalc format
-      return new TheOldHeader(buffer, { parameters, fileVersion });
-    default:
-      throw new Error(
-        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
-      );
-  }
-
-  return new TheNewHeader(buffer, { parameters, fileVersion });
-}
+import { FlagParameters, longToDate } from './utility';
 
 /**
- * Old version files header parsing.
- * @param buffer SPC buffer.
- * @param  prev `{parameters,fileVersion}`
- * @return  Object containing the metadata of the old file.
+ * Old-format File-header parsing.
+ * @param buffer spc buffer.
+ * @param  prev `{parameters,fileversion}`
+ * @return  file metadata
  */
 export class TheOldHeader {
   public fileVersion: number;
@@ -57,13 +25,12 @@ export class TheOldHeader {
   public spare: number[];
   public memo: string;
   public xyzLabels: string;
-  public guessedType: string;
   constructor(
     buffer: IOBuffer,
     prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    this.fileVersion = prev.fileVersion;
-    this.parameters = prev.parameters;
+    this.fileVersion = prev.fileVersion; //Each bit contains a parameter
+    this.parameters = prev.parameters; //4B => New format; 4D => LabCalc format
     this.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
     this.numberPoints = buffer.readFloat32();
     this.startingX = buffer.readFloat32();
@@ -80,20 +47,25 @@ export class TheOldHeader {
     this.date = date.toISOString();
     this.resolutionDescription = buffer
       .readChars(8)
-      .trim()
-      .replace(/\x00/g, '');
+      .replace(/\x00/g, '')
+      .trim();
     this.peakPointNumber = buffer.readUint16();
     this.scans = buffer.readUint16();
     this.spare = [];
     for (let i = 0; i < 7; i++) {
       this.spare.push(buffer.readFloat32());
     }
-    this.memo = buffer.readChars(130).trim().replace(/\x00/g, '');
-    this.xyzLabels = buffer.readChars(30).trim().replace(/\x00/g, '');
-    this.guessedType = guessType(this);
+    this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
+    this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
   }
 }
 
+/**
+ * New format file-header parsing.
+ * @param buffer spc buffer.
+ * @param  prev `{parameters,fileversion}`
+ * @return  file metadata
+ */
 export class TheNewHeader {
   public fileVersion: number;
   public parameters: FlagParameters;
@@ -126,14 +98,13 @@ export class TheNewHeader {
   public wPlaneIncrement: number;
   public wAxisUnits: string | number;
   public reserved: string;
-  public guessedType: string;
 
   constructor(
     buffer: IOBuffer,
     prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    this.fileVersion = prev.fileVersion;
-    this.parameters = prev.parameters;
+    this.fileVersion = prev.fileVersion; //Each bit contains a parameter
+    this.parameters = prev.parameters; //4B => New format; 4D => LabCalc format
     this.experimentType = experimentSettings(buffer.readUint8()); //Experiment type code (See SPC.h)
     this.exponentY = buffer.readInt8(); //Exponent for Y values (80h = floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
     this.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)
@@ -147,12 +118,12 @@ export class TheNewHeader {
     this.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
     this.resolutionDescription = buffer
       .readChars(9)
-      .trim()
-      .replace(/\x00/g, ''); //Resolution description text
+      .replace(/\x00/g, '')
+      .trim(); //Resolution description text
     this.sourceInstrumentDescription = buffer
       .readChars(9)
-      .trim()
-      .replace(/\x00/g, ''); // Source Instrument description text
+      .replace(/\x00/g, '')
+      .trim(); // Source Instrument description text
     this.peakPointNumber = buffer.readUint16(); //Peak point number for interferograms
     this.spare = [];
     for (let i = 0; i < 8; i++) {
@@ -182,6 +153,35 @@ export class TheNewHeader {
     if (this.zUnitsType === 0) {
       this.zUnitsType = this.xyzLabels.substring(20, 30);
     }
-    this.guessedType = guessType(this);
   }
+}
+
+export type Header = TheOldHeader | TheNewHeader;
+
+/**
+ * File-header parsing - First 512/256 bytes (new/old format).
+ * @param buffer SPC buffer.
+ * @return File-header object
+ */
+export function fileHeader(buffer: IOBuffer): Header {
+  const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
+  const fileVersion = buffer.readUint8(); //4B => New format; 4D => LabCalc format
+  const headerOpts = { parameters, fileVersion };
+
+  switch (fileVersion) {
+    case 0x4b: // new format
+      break;
+    case 0x4c:
+      buffer.setBigEndian();
+      break;
+    case 0x4d: {
+      // old LabCalc format
+      return new TheOldHeader(buffer, headerOpts);
+    }
+    default:
+      throw new Error(
+        'Unrecognized file format: byte 01 must be either 4B, 4C or 4D',
+      );
+  }
+  return new TheNewHeader(buffer, headerOpts);
 }

@@ -140,8 +140,9 @@ export function yTypes(yType: number): string {
 }
 
 /**
- * Experiment settings code converter
- * @param  code
+ * Convert code to experiment type
+ * @param code
+ * @returns type of experiment carried out.
  */
 export function experimentSettings(code: number): string {
   switch (code) {

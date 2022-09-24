@@ -36,11 +36,11 @@ The data is stored in binary with some parts encoded in ASCII. As such, the file
 
 An SPC file is organized in three blocks:
 
-1. Main Header block
+1. File-Header block
 2. Data block
 3. Log block
 
-The Main Header contains information about the whole file, such as how values are read, the type of format (Old, New LSB, New MSB), the structure of the data block (**XY**, **XYY** or **XYXY**) and the number of spectra.
+The File Header contains information about the whole file, such as how values are read, the type of format (Old, New LSB, New MSB), the structure of the data block (**XY**, **XYY** or **XYXY**) and the number of spectra.
 
 The Data block contains the spectrum data and is composed of a subheader for each spectrum, the X values _before_ the subheader if **XY** or **XYY**, else _after_ each subheader if **XYXY**. After the subheader and X values come the Y values, which are read according to the method determined in the Main Header.
 
