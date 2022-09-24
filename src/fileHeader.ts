@@ -4,7 +4,7 @@ import { xzwTypes, yTypes, experimentSettings } from './types';
 import { FlagParameters, longToDate } from './utility';
 
 /**
- * old-format file-header parsing.
+ * Old-format File-header parsing.
  * @param buffer spc buffer.
  * @param  prev `{parameters,fileversion}`
  * @return  file metadata
@@ -27,18 +27,10 @@ export class TheOldHeader {
   public xyzLabels: string;
   constructor(
     buffer: IOBuffer,
-    prev?: { parameters: FlagParameters; fileVersion: number },
+    prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    //In case we want to import and execute only the file header
-    if (!prev) {
-      prev = {
-        parameters: new FlagParameters(buffer.readUint8()), //Each bit contains a parameter
-        fileVersion: buffer.readUint8(), //4B => New format; 4D => LabCalc format
-      };
-    }
-
-    this.fileVersion = prev.fileVersion;
-    this.parameters = prev.parameters;
+    this.fileVersion = prev.fileVersion;//Each bit contains a parameter
+    this.parameters = prev.parameters;//4B => New format; 4D => LabCalc format
     this.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
     this.numberPoints = buffer.readFloat32();
     this.startingX = buffer.readFloat32();
@@ -109,17 +101,10 @@ export class TheNewHeader {
 
   constructor(
     buffer: IOBuffer,
-    prev?: { parameters: FlagParameters; fileVersion: number },
+    prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    //In case we want to import and execute only the file header
-    if (!prev) {
-      prev = {
-        parameters: new FlagParameters(buffer.readUint8()), //Each bit contains a parameter
-        fileVersion: buffer.readUint8(), //4B => New format; 4D => LabCalc format
-      };
-    }
-    this.fileVersion = prev.fileVersion;
-    this.parameters = prev.parameters;
+    this.fileVersion = prev.fileVersion;//Each bit contains a parameter
+    this.parameters = prev.parameters;//4B => New format; 4D => LabCalc format
     this.experimentType = experimentSettings(buffer.readUint8()); //Experiment type code (See SPC.h)
     this.exponentY = buffer.readInt8(); //Exponent for Y values (80h = floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
     this.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)
@@ -172,10 +157,11 @@ export class TheNewHeader {
 }
 
 export type Header = TheOldHeader | TheNewHeader;
+
 /**
- * General fileHeader parser
- * @param buffer the file as buffer
- * @returns the header in one of the two formats
+ * File-header parsing - First 512/256 bytes (new/old format).
+ * @param buffer SPC buffer.
+ * @return File-header object
  */
 export function fileHeader(buffer: IOBuffer): Header {
   const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter
