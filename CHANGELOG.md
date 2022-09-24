@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0](https://github.com/cheminfo/spc-parser/compare/v0.5.2...v0.6.0) (2022-09-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Split parsing (#27)
+
+### Code Refactoring
+
+* Split parsing ([#27](https://github.com/cheminfo/spc-parser/issues/27)) ([f4da7bd](https://github.com/cheminfo/spc-parser/commit/f4da7bde6fe14368536866d1dce6b30395064539))
+
 ### [0.5.2](https://www.github.com/cheminfo/spc-parser/compare/v0.5.1...v0.5.2) (2021-11-10)
 
 
