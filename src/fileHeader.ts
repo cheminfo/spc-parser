@@ -29,8 +29,8 @@ export class TheOldHeader {
     buffer: IOBuffer,
     prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    this.fileVersion = prev.fileVersion;//Each bit contains a parameter
-    this.parameters = prev.parameters;//4B => New format; 4D => LabCalc format
+    this.fileVersion = prev.fileVersion; //Each bit contains a parameter
+    this.parameters = prev.parameters; //4B => New format; 4D => LabCalc format
     this.exponentY = buffer.readInt16(); //Word (16 bits) instead of byte
     this.numberPoints = buffer.readFloat32();
     this.startingX = buffer.readFloat32();
@@ -103,8 +103,8 @@ export class TheNewHeader {
     buffer: IOBuffer,
     prev: { parameters: FlagParameters; fileVersion: number },
   ) {
-    this.fileVersion = prev.fileVersion;//Each bit contains a parameter
-    this.parameters = prev.parameters;//4B => New format; 4D => LabCalc format
+    this.fileVersion = prev.fileVersion; //Each bit contains a parameter
+    this.parameters = prev.parameters; //4B => New format; 4D => LabCalc format
     this.experimentType = experimentSettings(buffer.readUint8()); //Experiment type code (See SPC.h)
     this.exponentY = buffer.readInt8(); //Exponent for Y values (80h = floating point): FloatY = (2^Exp)*IntY/(2^32) 32-bit; FloatY = (2^Exp)*IntY/(2^16) 32-bit
     this.numberPoints = buffer.readUint32(); //Number of points (if not XYXY)

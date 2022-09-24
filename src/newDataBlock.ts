@@ -1,15 +1,9 @@
-import { MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import { TheNewHeader } from './fileHeader';
-import { SubHeader, setXYAxis } from './oldDataBlock';
+import { SubHeader, setXYAxis, Spectrum } from './oldDataBlock';
 import { getDataShape } from './utility';
-
-/**
- * Use cheminfo type for better UI compatibility
- */
-export type Spectrum = MeasurementXY;
 
 /**
  * Reads the data block of the SPC file.
@@ -48,20 +42,20 @@ export function newDataBlock(
 
     // set X for the remaining cases if neccesary
     if (dataShape === 'XYXY' || dataShape === 'exception') {
-      x = new Float64Array(subFileHeader.numberPoints)
+      x = new Float64Array(subFileHeader.numberPoints);
       for (let j = 0; j < x.length; j++) {
         x[j] = buffer.readFloat32();
       }
     }
 
     const y = getNewY(
-      new Float64Array(x.length),
+      new Float64Array((x as Float64Array).length),
       subFileHeader,
       fileHeader,
       buffer,
     );
 
-    const variables = setXYAxis(x, y, fileHeader);
+    const variables = setXYAxis(x as Float64Array, y, fileHeader);
 
     spectra.push({ meta: subFileHeader, variables });
   }

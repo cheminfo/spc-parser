@@ -2,8 +2,8 @@ import { IOBuffer } from 'iobuffer';
 
 import { fileHeader, Header, TheNewHeader } from './fileHeader';
 import { LogBlock, readLogBlock } from './logBlock';
-import { newDataBlock, Spectrum } from './newDataBlock';
-import { oldDataBlock } from './oldDataBlock';
+import { newDataBlock } from './newDataBlock';
+import { oldDataBlock, Spectrum } from './oldDataBlock';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 

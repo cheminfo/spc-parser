@@ -3,16 +3,16 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
-import { readNewDataBlock } from '../dataBlock';
 import { TheNewHeader, fileHeader } from '../fileHeader';
 import { readLogBlock } from '../logBlock';
+import { newDataBlock } from '../newDataBlock';
 
 const pathFiles = join(__dirname, 'data');
 
 const nmrBuffer = new IOBuffer(fs.readFileSync(join(pathFiles, 'NMR_SPC.SPC')));
 
 const nmrMain = fileHeader(nmrBuffer) as TheNewHeader;
-readNewDataBlock(nmrBuffer, nmrMain);
+newDataBlock(nmrBuffer, nmrMain);
 const nmrLog = readLogBlock(nmrBuffer, nmrMain.logOffset);
 test('Log block parsing', () => {
   expect(nmrLog.data).toHaveLength(nmrLog.meta.binarySize);
