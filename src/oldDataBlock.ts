@@ -6,8 +6,8 @@ import { Header, TheOldHeader } from './fileHeader';
 import { SubFlagParameters } from './utility';
 
 export interface Spectrum {
- meta:SubHeader;
- variables: Record<string, MeasurementVariable>
+  meta: SubHeader;
+  variables: Record<string, MeasurementVariable>;
 }
 
 /**
@@ -153,9 +153,9 @@ export function setXYAxis(
   const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
     fileHeader.yUnitsType,
   );
-/**
- * Use cheminfo type for UI compatibility
- */
+  /**
+   * Use cheminfo type for UI compatibility
+   */
   const variables: Record<string, MeasurementVariable> = {
     x: {
       symbol: 'x',
