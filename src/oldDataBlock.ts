@@ -1,14 +1,14 @@
-import { MeasurementXYVariables, MeasurementXY } from 'cheminfo-types';
+import { MeasurementVariable } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import { Header, TheOldHeader } from './fileHeader';
 import { SubFlagParameters } from './utility';
 
-/**
- * Use cheminfo type for better UI compatibility
- */
-export type Spectrum = MeasurementXY;
+export interface Spectrum {
+ meta:SubHeader;
+ variables: Record<string, MeasurementVariable>
+}
 
 /**
  * Parses the subheader (header of the subfile)
@@ -153,7 +153,10 @@ export function setXYAxis(
   const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
     fileHeader.yUnitsType,
   );
-  const variables: MeasurementXYVariables = {
+/**
+ * Use cheminfo type for UI compatibility
+ */
+  const variables: Record<string, MeasurementVariable> = {
     x: {
       symbol: 'x',
       label: xAxis?.groups?.label || (fileHeader.xUnitsType as string),
