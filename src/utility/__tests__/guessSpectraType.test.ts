@@ -17,6 +17,15 @@ describe('Test the Spectra-Type Guess', () => {
     expect(guessedType).toBe('other');
   });
 
+  it('s_evenx', () => {
+    //kubelka-monk is now in "other" as it is a
+    //very different type of "ir"
+    const buffer = readFileSync(join(__dirname, dataDir, 's_evenx.spc'));
+    const result = fileHeader(new IOBuffer(buffer));
+    const guessedType = guessSpectraType(result);
+    expect(guessedType).toBe('ir');
+  });
+
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, dataDir, 'Ft-ir.spc'));
     const result = fileHeader(new IOBuffer(buffer));

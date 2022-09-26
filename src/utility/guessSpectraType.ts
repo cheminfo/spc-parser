@@ -47,7 +47,7 @@ export function guessSpectraType(meta: Header): SpectraType {
     case 'Raman Shift (cm-1)':
       return 'raman';
     case 'Micrometers (um)':
-      return uvOrIR(meta, 'wavenumber');
+      return uvOrIR(meta, 'micrometer');
     case 'Wavenumber (cm-1)': {
       return uvOrIR(meta, 'wavenumber');
     }
@@ -86,7 +86,7 @@ export function uvOrIR(
     let eX = meta.endingX;
     if (xUnit !== 'nanometer') {
       sX = unitToNano(sX, xUnit);
-      eX = unitToNano(sX, xUnit);
+      eX = unitToNano(eX, xUnit);
     }
     const lowerBound = sX <= eX ? sX : eX;
     return getRegion(lowerBound);
