@@ -4,7 +4,7 @@ import { join } from 'path';
 import { IOBuffer } from 'iobuffer';
 
 import { fileHeader } from '../../fileHeader';
-import { guessSpectraType } from '../guessSpectraType';
+import { unitToNano, getRegion, guessSpectraType } from '../guessSpectraType';
 
 describe('Test the Spectra-Type Guess', () => {
   const dataDir = '../../__tests__/data';
@@ -42,5 +42,16 @@ describe('Test the Spectra-Type Guess', () => {
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
     expect(guessedType).toBe('mass');
+  });
+
+  it('get region of spectra from wavelength in nm.', () => {
+    expect(getRegion(100)).toBe('other');
+    expect(getRegion(250)).toBe('uv');
+    expect(getRegion(750)).toBe('ir');
+  });
+
+  it('convert micrometers or wavenumber to nanometers', () => {
+    expect(unitToNano(12500, 'wavenumber')).toBeCloseTo(800);
+    expect(unitToNano(0.8, 'micrometer')).toBeCloseTo(800);
   });
 });
