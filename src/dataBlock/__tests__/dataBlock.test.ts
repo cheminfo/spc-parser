@@ -3,14 +3,15 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
-import { fileHeader, TheNewHeader, TheOldHeader } from '../fileHeader';
+import { fileHeader, TheNewHeader, TheOldHeader } from '../../fileHeader';
 import { newDataBlock } from '../newDataBlock';
 import { oldDataBlock } from '../oldDataBlock';
 
 describe('data block parsing test', () => {
+  const dataDir = "../../__tests__/data";
   it('m_xyxy.spc', () => {
     const buffer = new IOBuffer(
-      readFileSync(join(__dirname, 'data/m_xyxy.spc')),
+      readFileSync(join(__dirname, dataDir,'m_xyxy.spc')),
     );
     const header = fileHeader(buffer) as TheNewHeader;
     const spectra = newDataBlock(buffer, header);
@@ -21,7 +22,7 @@ describe('data block parsing test', () => {
 
   it('RAMAN.SPC', () => {
     const buffer = new IOBuffer(
-      readFileSync(join(__dirname, 'data/RAMAN.SPC')),
+      readFileSync(join(__dirname, dataDir,'RAMAN.SPC')),
     );
     const header = fileHeader(buffer) as TheNewHeader;
     const spectra = newDataBlock(buffer, header);
@@ -30,7 +31,7 @@ describe('data block parsing test', () => {
   });
   it('m_ordz.spc', () => {
     const buffer = new IOBuffer(
-      readFileSync(join(__dirname, 'data/m_ordz.spc')),
+      readFileSync(join(__dirname, dataDir,'m_ordz.spc')),
     );
     const spectra = oldDataBlock(buffer, fileHeader(buffer) as TheOldHeader);
     expect(spectra[0].variables.x.data[0]).toBe(698.229736328125);
@@ -45,7 +46,7 @@ describe('data block parsing test', () => {
   });
   it('Ft-ir.spc', () => {
     const buffer = new IOBuffer(
-      readFileSync(join(__dirname, 'data/Ft-ir.spc')),
+      readFileSync(join(__dirname, dataDir,'Ft-ir.spc')),
     );
     const spectra = newDataBlock(buffer, fileHeader(buffer) as TheNewHeader);
     expect(spectra).toHaveLength(1);
@@ -53,7 +54,7 @@ describe('data block parsing test', () => {
   });
   it('m_evenz.spc', () => {
     const buffer = new IOBuffer(
-      readFileSync(join(__dirname, 'data/m_evenz.spc')),
+      readFileSync(join(__dirname, dataDir,'m_evenz.spc')),
     );
     const spectra = newDataBlock(buffer, fileHeader(buffer) as TheNewHeader);
     expect(spectra[0].variables.x.data).toStrictEqual(

@@ -1,4 +1,5 @@
-import {Header, TheNewHeader, TheOldHeader} from "../fileHeader";
+import { Header, TheNewHeader } from "../fileHeader";
+import { getDataShape } from "./getDataShape";
 
 /**
  * For now "ir" is ir-only spectra
@@ -12,10 +13,10 @@ export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
  * @param data the parsed data
  * @returns string describing the type of spectra ([[`SpectraType`]]) or "General" if unsure.
  */
-export function guessType(meta: Header): SpectraType {
+export function guessSpectraType(meta: Header): SpectraType {
   //function tested with the `fileHeader.test.ts`
   const { xUnitsType: xU, yUnitsType: yU } = meta;
-
+  console.log(meta)
   // for the new file header they define a "experiment type"
   if (meta instanceof TheNewHeader) {
     // "General SPC" does not give any information
@@ -68,22 +69,22 @@ type Regions = 'uv'|'ir'|'other';
  * @param data - the parsed file (a jsonlike object)
  * @returns
  */
-export function uvOrIR(data: ParseResult, xUnit: "micrometer"|"nanometer"|"wavenumber"): Regions{
+export function uvOrIR(meta: Header, xUnit: "micrometer"|"nanometer"|"wavenumber"): Regions{
   //tested in "parse" because of the input
-  const dataShape = getDataShape(data.meta.parameters);
+  const dataShape = getDataShape(meta.parameters);
 
   //xyxy and exception won't normally get here anyways (raman or ms normally.)
   const analyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
 
   if (analyze) {
-   let sX = data.meta.startingX;
-   let eX = data.meta.endingX;
+   let sX = meta.startingX;
+   let eX = meta.endingX;
    if(xUnit!=="nanometer"){
     sX = unitToNano(sX, xUnit)
     eX = unitToNano(sX, xUnit)
     }
     const lowerBound = sX <= eX ? sX : eX;
-    return getSpectrumRegion(lowerBound, xUnit);
+    return getRegion(lowerBound, xUnit);
   }
 
   return "other";

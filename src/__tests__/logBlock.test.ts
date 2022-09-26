@@ -5,7 +5,7 @@ import { IOBuffer } from 'iobuffer';
 
 import { TheNewHeader, fileHeader } from '../fileHeader';
 import { readLogBlock } from '../logBlock';
-import { newDataBlock } from '../newDataBlock';
+import { newDataBlock } from '../dataBlock/newDataBlock';
 
 const pathFiles = join(__dirname, 'data');
 

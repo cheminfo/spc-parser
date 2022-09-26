@@ -2,8 +2,9 @@ import { IOBuffer } from 'iobuffer';
 
 import { fileHeader, Header, TheNewHeader } from './fileHeader';
 import { LogBlock, readLogBlock } from './logBlock';
-import { newDataBlock } from './newDataBlock';
-import { oldDataBlock, Spectrum } from './oldDataBlock';
+import { newDataBlock } from './dataBlock/newDataBlock';
+import { oldDataBlock } from './dataBlock/oldDataBlock';
+import { Spectra } from './dataBlock/shared';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 

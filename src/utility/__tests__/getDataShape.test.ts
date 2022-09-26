@@ -1,5 +1,5 @@
-import { FlagParameters } from "../../utility/headerUtils";
-import { getDataShape } from "../../getDataShape";
+import { FlagParameters } from "../headerUtils";
+import { getDataShape } from "../getDataShape";
 
 test('Data shape', () => {
   const y = new FlagParameters(0b00000000);

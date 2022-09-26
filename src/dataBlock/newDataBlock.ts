@@ -1,9 +1,9 @@
 import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
-import { TheNewHeader } from './fileHeader';
-import { SubHeader, setXYAxis, Spectrum } from './oldDataBlock';
-import { getDataShape } from './utility';
+import { TheNewHeader } from './../fileHeader';
+import { SubHeader, setXYAxis, Spectrum } from './shared';
+import { getDataShape } from '../utility/getDataShape';
 
 /**
  * Reads the data block of the SPC file.
