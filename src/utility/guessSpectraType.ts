@@ -1,5 +1,6 @@
-import { Header, TheNewHeader } from "../fileHeader";
-import { getDataShape } from "./getDataShape";
+import { Header, TheNewHeader } from '../fileHeader';
+
+import { getDataShape } from './getDataShape';
 
 /**
  * For now "ir" is ir-only spectra
@@ -16,7 +17,6 @@ export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 export function guessSpectraType(meta: Header): SpectraType {
   //function tested with the `fileHeader.test.ts`
   const { xUnitsType: xU, yUnitsType: yU } = meta;
-  console.log(meta)
   // for the new file header they define a "experiment type"
   if (meta instanceof TheNewHeader) {
     // "General SPC" does not give any information
@@ -47,15 +47,17 @@ export function guessSpectraType(meta: Header): SpectraType {
     case 'Raman Shift (cm-1)':
       return 'raman';
     case 'Micrometers (um)':
-      return uvOrIR(meta, "wavenumber");
+      return uvOrIR(meta, 'wavenumber');
     case 'Wavenumber (cm-1)': {
-      return uvOrIR(meta, "wavenumber");
+      return uvOrIR(meta, 'wavenumber');
     }
     case 'Nanometers (nm)':
       if (
-        [/*'Kubelka-Monk'*/, 'Absorbance', 'Log(1/R)', 'Transmission'].includes(yU)
+        [/*'Kubelka-Monk'*/ 'Absorbance', 'Log(1/R)', 'Transmission'].includes(
+          yU,
+        )
       ) {
-        return uvOrIR(meta, "nanometer");
+        return uvOrIR(meta, 'nanometer');
       }
       return 'other';
     default:
@@ -63,13 +65,16 @@ export function guessSpectraType(meta: Header): SpectraType {
   }
 }
 
-type Regions = 'uv'|'ir'|'other';
+type Regions = 'uv' | 'ir' | 'other';
 /**
  * Further classify an X axis that is using "wavenumber" as uv or ir.
  * @param data - the parsed file (a jsonlike object)
  * @returns
  */
-export function uvOrIR(meta: Header, xUnit: "micrometer"|"nanometer"|"wavenumber"): Regions{
+export function uvOrIR(
+  meta: Header,
+  xUnit: 'micrometer' | 'nanometer' | 'wavenumber',
+): Regions {
   //tested in "parse" because of the input
   const dataShape = getDataShape(meta.parameters);
 
@@ -77,17 +82,17 @@ export function uvOrIR(meta: Header, xUnit: "micrometer"|"nanometer"|"wavenumber
   const analyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
 
   if (analyze) {
-   let sX = meta.startingX;
-   let eX = meta.endingX;
-   if(xUnit!=="nanometer"){
-    sX = unitToNano(sX, xUnit)
-    eX = unitToNano(sX, xUnit)
+    let sX = meta.startingX;
+    let eX = meta.endingX;
+    if (xUnit !== 'nanometer') {
+      sX = unitToNano(sX, xUnit);
+      eX = unitToNano(sX, xUnit);
     }
     const lowerBound = sX <= eX ? sX : eX;
-    return getRegion(lowerBound, xUnit);
+    return getRegion(lowerBound);
   }
 
-  return "other";
+  return 'other';
 }
 
 /**
@@ -95,7 +100,7 @@ export function uvOrIR(meta: Header, xUnit: "micrometer"|"nanometer"|"wavenumber
  * @return type of spectra
  */
 export function getRegion(lb: number): Regions {
-  return lb < 150 ? "other" : lb < 700 ? "uv" : "ir"
+  return lb < 150 ? 'other' : lb < 700 ? 'uv' : 'ir';
 }
 
 /**
@@ -105,6 +110,6 @@ export function getRegion(lb: number): Regions {
  * @param from - input unit to convert
  * @return equivalent in nanometers
  */
-export function unitToNano(x:number, from:"micrometer"|"wavenumber"){
-  return (from==="micrometer") ?  x*1000 : (1/x)*10**7
+export function unitToNano(x: number, from: 'micrometer' | 'wavenumber') {
+  return from === 'micrometer' ? x * 1000 : (1 / x) * 10 ** 7;
 }

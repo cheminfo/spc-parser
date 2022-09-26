@@ -1,5 +1,5 @@
-import { FlagParameters } from "../headerUtils";
-import { getDataShape } from "../getDataShape";
+import { getDataShape } from '../getDataShape';
+import { FlagParameters } from '../headerUtils';
 
 test('Data shape', () => {
   const y = new FlagParameters(0b00000000);
@@ -15,4 +15,3 @@ test('Data shape', () => {
   const xyxy = new FlagParameters(0b11000100);
   expect(getDataShape(xyxy)).toBe('XYXY');
 });
-

@@ -1,10 +1,9 @@
-import { MeasurementXYVariables, MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
-import { Header, TheOldHeader } from './../fileHeader';
-import { SubHeader, setXYAxis, Spectrum } from './shared';
+import { TheOldHeader } from '../fileHeader';
 
+import { SubHeader, setXYAxis, Spectrum } from './shared';
 
 /**
  * Reads a file's data block (old SPC format)
@@ -95,4 +94,3 @@ export function getOldY(
   }
   return y;
 }
-

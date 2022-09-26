@@ -1,3 +1,7 @@
+import { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
+import { IOBuffer } from 'iobuffer';
+
+import { Header } from '../fileHeader';
 /**
  * Use cheminfo type for better UI compatibility
  */
@@ -19,7 +23,6 @@ export class SubFlagParameters {
     this.modifiedArithmetic = (flag & 128) !== 0;
   }
 }
-
 
 /**
  * Parses the subheader (header of the subfile)
@@ -53,7 +56,6 @@ export class SubHeader {
     this.reserved = buffer.readChars(4).replace(/\x00/g, '').trim();
   }
 }
-
 
 /**
  *
@@ -93,5 +95,3 @@ export function setXYAxis(
   };
   return variables;
 }
-
-

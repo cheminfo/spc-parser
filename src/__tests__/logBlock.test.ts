@@ -3,9 +3,9 @@ import { join } from 'path';
 
 import { IOBuffer } from 'iobuffer';
 
+import { newDataBlock } from '../dataBlock/newDataBlock';
 import { TheNewHeader, fileHeader } from '../fileHeader';
 import { readLogBlock } from '../logBlock';
-import { newDataBlock } from '../dataBlock/newDataBlock';
 
 const pathFiles = join(__dirname, 'data');
 

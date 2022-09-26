@@ -73,8 +73,4 @@ describe('parse', () => {
     expect(maxX).toBeCloseTo(4011.202392578125);
     expect(maxY).toBe(1);
   });
-  it('m_xyxy', () => {
-    const buffer = readFileSync(join(__dirname, 'data', 'm_xyxy.spc'));
-    const result = parse(buffer);
-  });
 });

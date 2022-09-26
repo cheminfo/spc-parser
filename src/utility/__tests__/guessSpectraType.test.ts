@@ -1,24 +1,21 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-import {IOBuffer} from "iobuffer";
+import { IOBuffer } from 'iobuffer';
 
 import { fileHeader } from '../../fileHeader';
 import { guessSpectraType } from '../guessSpectraType';
 
-
 describe('Test the Spectra-Type Guess', () => {
-
-const dataDir = "../../__tests__/data";
+  const dataDir = '../../__tests__/data';
   it('nir', () => {
-    //kubelka-monk is now in "other" as it is a 
+    //kubelka-monk is now in "other" as it is a
     //very different type of "ir"
     const buffer = readFileSync(join(__dirname, dataDir, 'nir.spc'));
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
     expect(guessedType).toBe('other');
   });
-
 
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, dataDir, 'Ft-ir.spc'));

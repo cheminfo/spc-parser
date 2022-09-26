@@ -1,4 +1,4 @@
-import {FlagParameters} from "./headerUtils";
+import { FlagParameters } from './headerUtils';
 /**
  * The new file format records as:
  * - Y. X is implicit (calc from XStart, XEnd, Y.length)
@@ -37,4 +37,3 @@ export function getDataShape({
     return !xyxy ? 'XYY' : 'XYXY';
   }
 }
-

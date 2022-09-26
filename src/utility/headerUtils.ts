@@ -44,4 +44,3 @@ export function longToDate(long: number): string {
   date.setUTCMilliseconds(0);
   return date.toISOString();
 }
-
