@@ -1,7 +1,7 @@
 import { IOBuffer } from 'iobuffer';
 
 import { xzwTypes, yTypes, experimentSettings } from './types';
-import { FlagParameters, longToDate } from './utility';
+import { FlagParameters, longToDate } from './utility/headerUtils';
 
 /**
  * Old-format File-header parsing.
