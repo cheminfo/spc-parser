@@ -1,6 +1,7 @@
 import { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 
+import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues';
 import { Header } from '../fileHeader';
 /**
  * Use cheminfo type for better UI compatibility
@@ -58,13 +59,11 @@ export class SubHeader {
 }
 
 /**
- *
- *
- * @export
- * @param {Float64Array} x
- * @param {Float64Array} y
- * @param {Header} fileHeader
- * @return {*}
+ * Set the X and Y axis (object with labels, values etc.)
+ * @param x
+ * @param y
+ * @param fileHeader
+ * @return object with x and y as axis.
  */
 export function setXYAxis(
   x: Float64Array,
@@ -77,6 +76,10 @@ export function setXYAxis(
   const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
     fileHeader.yUnitsType,
   );
+
+  // mutates x and y
+  ensureIncreasingXValues(x, y);
+ 
   const variables: MeasurementXYVariables = {
     x: {
       symbol: 'x',

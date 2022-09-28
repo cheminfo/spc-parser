@@ -16,8 +16,8 @@ describe('data block parsing test', () => {
     const header = fileHeader(buffer) as TheNewHeader;
     const spectra = newDataBlock(buffer, header);
     expect(spectra).toHaveLength(512);
-    expect(spectra[0].variables.y.data[1]).toBe(3188);
-    expect(spectra[511].variables.y.data[3]).toBe(11019);
+    expect(spectra[0].variables.y.data[1]).toBe(2826);
+    expect(spectra[511].variables.y.data[3]).toBe(4862);
   });
 
   it('RAMAN.SPC', () => {
@@ -26,8 +26,8 @@ describe('data block parsing test', () => {
     );
     const header = fileHeader(buffer) as TheNewHeader;
     const spectra = newDataBlock(buffer, header);
-    expect(spectra[0].variables.x.data[1]).toBeCloseTo(3994.8946331825773);
-    expect(spectra[0].variables.y.data[1]).toBeCloseTo(0.0186002254486084);
+    expect(spectra[0].variables.x.data[1]).toBeCloseTo(-3004.0274456825773);
+    expect(spectra[0].variables.y.data[1]).toBeCloseTo(0.030682086944580078);
   });
   it('m_ordz.spc', () => {
     const buffer = new IOBuffer(
@@ -50,7 +50,7 @@ describe('data block parsing test', () => {
     );
     const spectra = newDataBlock(buffer, fileHeader(buffer) as TheNewHeader);
     expect(spectra).toHaveLength(1);
-    expect(spectra[0].variables.y.data[0]).toBeCloseTo(95.13749694824219);
+    expect(spectra[0].variables.y.data[0]).toBeCloseTo(94.88349151611328);
   });
   it('m_evenz.spc', () => {
     const buffer = new IOBuffer(
