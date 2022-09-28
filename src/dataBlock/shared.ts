@@ -1,8 +1,10 @@
 import { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 
-import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues';
 import { Header } from '../fileHeader';
+
+import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues';
+
 /**
  * Use cheminfo type for better UI compatibility
  */
@@ -77,22 +79,21 @@ export function setXYAxis(
     fileHeader.yUnitsType,
   );
 
-  // mutates x and y
-  ensureIncreasingXValues(x, y);
- 
+  const [oX, oY]: [Float64Array, Float64Array] = ensureIncreasingXValues(x, y);
+
   const variables: MeasurementXYVariables = {
     x: {
       symbol: 'x',
       label: xAxis?.groups?.label || (fileHeader.xUnitsType as string),
       units: xAxis?.groups?.units || '',
-      data: x,
+      data: oX,
       isDependent: false,
     },
     y: {
       symbol: 'y',
       label: yAxis?.groups?.label || fileHeader.yUnitsType,
       units: yAxis?.groups?.units || '',
-      data: y,
+      data: oY,
       isDependent: true,
     },
   };
