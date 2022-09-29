@@ -2,7 +2,6 @@ import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 import { parse } from '../parse';
-import { guessType } from '../utility'; //needs the whole file
 
 describe('parse', () => {
   it('test that all are same length arrays of data', () => {
@@ -22,8 +21,6 @@ describe('parse', () => {
 
   it('snapshot for comparison', () => {
     const result = parse(readFileSync(join(__dirname, 'data', 'nir.spc')));
-    const guessedType = guessType(result);
-    expect(guessedType).toBe('ir');
     expect(result).toMatchSnapshot();
   });
 
@@ -37,7 +34,6 @@ describe('parse', () => {
   it('ft-ir.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'Ft-ir.spc'));
     const result = parse(buffer);
-    const guessedType = guessType(result);
     expect(result.spectra[0].variables.x).toMatchObject({
       symbol: 'x',
       label: 'Wavenumber',
@@ -46,13 +42,11 @@ describe('parse', () => {
     });
     expect(result.spectra).toHaveLength(1);
     expect(Object.keys(result.meta)).toHaveLength(31);
-    expect(guessedType).toBe('ir'); //MIR I think (middle range IR.)
   });
 
   it('raman-sion.spc', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'raman-sion.spc'));
     const result = parse(buffer);
-    const guessedType = guessType(result);
     expect(result.spectra[0].variables.x).toMatchObject({
       symbol: 'x',
       label: 'Raman Shift',
@@ -64,13 +58,11 @@ describe('parse', () => {
     const dataY = result.spectra[0].variables.y.data;
     expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
     expect(Math.max(...dataY)).toBe(7594.40869140625);
-    expect(guessedType).toBe('raman');
   });
 
   it('NDR0002.SPC', () => {
     const buffer = readFileSync(join(__dirname, 'data', 'NDR0002.SPC'));
     const result = parse(buffer);
-    const guessedType = guessType(result);
     const variables = result.spectra[0].variables;
     const minX = Math.min(...variables.x.data);
     const minY = Math.min(...variables.y.data);
@@ -80,12 +72,5 @@ describe('parse', () => {
     expect(minY).toBe(0);
     expect(maxX).toBeCloseTo(4011.202392578125);
     expect(maxY).toBe(1);
-    expect(guessedType).toBe('raman');
-  });
-  it('m_xyxy', () => {
-    const buffer = readFileSync(join(__dirname, 'data', 'm_xyxy.spc'));
-    const result = parse(buffer);
-    const guessedType = guessType(result);
-    expect(guessedType).toBe('mass');
   });
 });
