@@ -46,11 +46,8 @@ The Data block contains the spectrum data and is composed of a subheader for eac
 
 The Log block contains miscellaneous information that varies for each file, with a part written in ASCII and another one in binary.
 
-[Official file specification](https://github.com/cheminfo/eln-docs/blob/main/docs/30_structural_analysis/includes/spc/spc.pdf)
-
-[Thermo Scientific SPC File Developer Kit ](https://web.archive.org/web/20150131073636/http://ftirsearch.com/features/converters/spcfileformat.HTM)
-
-[c6h6 documentation](https://docs.c6h6.org/docs/eln/structural_analysis/includes/spc/README)
+## Docs
+See [Docs folder in the repo](https://github.com/cheminfo/spc-parser/tree/main/docs)
 
 ## License
 
