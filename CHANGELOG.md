@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/cheminfo/spc-parser/compare/v0.7.0...v0.7.1) (2022-10-06)
+
+
+### Bug Fixes
+
+* force new release ([0011f64](https://github.com/cheminfo/spc-parser/commit/0011f6469a803615d5c9db04ef897a01287080dd))
+
 ## [0.7.0](https://github.com/cheminfo/spc-parser/compare/v0.6.0...v0.7.0) (2022-10-04)
 
 
