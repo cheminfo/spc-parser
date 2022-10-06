@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0](https://github.com/cheminfo/spc-parser/compare/v0.6.0...v0.7.0) (2022-10-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* directory structure and exposed functions  (#34)
+
+### Code Refactoring
+
+* directory structure and exposed functions  ([#34](https://github.com/cheminfo/spc-parser/issues/34)) ([549aa72](https://github.com/cheminfo/spc-parser/commit/549aa72c4b47f31fc5e8b00b74363f038b557ef4))
+
 ## [0.6.0](https://github.com/cheminfo/spc-parser/compare/v0.5.2...v0.6.0) (2022-09-24)
 
 
