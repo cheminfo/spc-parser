@@ -46,8 +46,7 @@ The Data block contains the spectrum data and is composed of a subheader for eac
 
 The Log block contains miscellaneous information that varies for each file, with a part written in ASCII and another one in binary.
 
-## Docs
-See [Docs folder in the repo](https://github.com/cheminfo/spc-parser/tree/main/docs)
+Useful files for the specification for the spc-format can be found at [the docs folder in the Github repo](https://github.com/cheminfo/spc-parser/tree/main/docs)
 
 ## License
 
