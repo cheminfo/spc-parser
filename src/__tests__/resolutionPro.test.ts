@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 
 import { parse } from '../parse';
