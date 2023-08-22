@@ -22,7 +22,7 @@ export interface LogBlock {
  * @return  Object containing log meta, data and text.
  */
 export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
-  let logHeader: MetaData = {
+  const logHeader: MetaData = {
     size: buffer.readUint32(), //Size of the block in bytes
     memorySize: buffer.readUint32(), //Size of the memory rounded up to nearest multiple of 4096
     textOffset: buffer.readUint32(), //Offset to Text section

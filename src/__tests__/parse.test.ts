@@ -10,7 +10,7 @@ describe('parse', () => {
     );
     files.forEach((f) => {
       const r = parse(readFileSync(join(__dirname, 'data', f)));
-      for (let spectrum of r.spectra) {
+      for (const spectrum of r.spectra) {
         const {
           variables: { x, y },
         } = spectrum;

@@ -18,7 +18,7 @@ export function newDataBlock(
   fileHeader: TheNewHeader,
 ): Spectrum[] {
   let x;
-  let spectra: Spectrum[] = [];
+  const spectra: Spectrum[] = [];
 
   const dataShape = getDataShape(fileHeader.parameters);
 

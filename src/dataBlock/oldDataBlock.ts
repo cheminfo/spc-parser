@@ -17,7 +17,7 @@ export function oldDataBlock(
   fileHeader: TheOldHeader,
 ): Spectrum[] {
   // either Y or YY fall on the for loop
-  let spectra: Spectrum[] = [];
+  const spectra: Spectrum[] = [];
 
   // old format uses always equidistant arrays
   const x: Float64Array = createFromToArray({
