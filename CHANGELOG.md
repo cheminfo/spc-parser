@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.3](https://github.com/cheminfo/spc-parser/compare/v0.7.2...v0.7.3) (2023-08-22)
+
+
+### Bug Fixes
+
+* update dependencies and fix node16 module resolution ([79bd3e0](https://github.com/cheminfo/spc-parser/commit/79bd3e037a5fc6791c4669b379a21feec78a6a6e))
+
+
+### Documentation
+
+* add Zakodium as maintainer ([1eac75d](https://github.com/cheminfo/spc-parser/commit/1eac75deaebbffe2a91435db17cc87daf98a940e))
+
 ## [0.7.2](https://github.com/cheminfo/spc-parser/compare/v0.7.1...v0.7.2) (2023-03-24)
 
 
