@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>spc-parser</title><meta name="description" content="Documentation for spc-parser"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"/><script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script><script>
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>spc-parser</title><meta name="description" content="Documentation for spc-parser"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/search.js" id="tsd-search-script"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"/><script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script><script>
 					window.__typeDocPluginKatexOptions={"delimiters":[{"left":"$","right":"$","display":true}],"fleqn":"true","leqno":"false"};
 					window.addEventListener('load', () => window.renderMathInElement(document.body, window.__typeDocPluginKatexOptions));
 				</script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
@@ -12,43 +12,31 @@
 <li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">spc-parser</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="7" width="14" height="2" fill="var(--color-text)"></rect><rect x="1" y="11" width="14" height="2" fill="var(--color-text)"></rect></svg></a></div></div></header>
 <div class="container container-main">
-<div class="col-8 col-content">
+<div class="col-content">
 <div class="tsd-page-title">
 <h2>spc-parser</h2></div>
-<div class="tsd-panel tsd-typography">
-<a href="#spc-parser" id="spc-parser" style="color: inherit; text-decoration: none;">
-  <h1>spc-parser</h1>
-</a>
+<div class="tsd-panel tsd-typography"><a id="md:spc-parser" class="tsd-anchor"></a><h1><a href="#md:spc-parser">spc-parser</a></h1><p>Thermo Galactic GRAMS SPC files parser.</p>
+<h3 align="center">
+
+  <a href="https://www.zakodium.com">
+    <img src="https://www.zakodium.com/brand/zakodium-logo-white.svg" width="50" alt="Zakodium logo" />
+  </a>
+
+  <p>
+    Maintained by <a href="https://www.zakodium.com">Zakodium</a>
+  </p>
+
 <p><a href="https://www.npmjs.com/package/spc-parser"><img src="https://img.shields.io/npm/v/spc-parser.svg" alt="NPM version"></a>
 <a href="https://github.com/cheminfo/spc-parser/actions?query=workflow%3A%22Node.js+CI%22"><img src="https://github.com/cheminfo/spc-parser/workflows/Node.js%20CI/badge.svg?branch=main" alt="build status"></a>
 <a href="https://codecov.io/gh/cheminfo/spc-parser"><img src="https://img.shields.io/codecov/c/github/cheminfo/spc-parser.svg" alt="Test coverage"></a>
 <a href="https://www.npmjs.com/package/spc-parser"><img src="https://img.shields.io/npm/dm/spc-parser.svg" alt="npm download"></a>
 <a href="https://www.zenodo.org/badge/latestdoi/379600570"><img src="https://www.zenodo.org/badge/379600570.svg" alt="DOI"></a></p>
-<p>Thermo Galactic GRAMS SPC files parser.</p>
+</h3>
 
-<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-  <h2>Installation</h2>
-</a>
-<p><code>$ npm i spc-parser</code></p>
-
-<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-  <h2>Usage</h2>
-</a>
-<pre><code class="language-js"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">readFileSync</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;fs&#39;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">join</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;path&#39;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">parse</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;spc-parser&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">arrayBuffer</span><span class="hl-1"> = </span><span class="hl-6">readFileSync</span><span class="hl-1">(</span><span class="hl-6">join</span><span class="hl-1">(</span><span class="hl-2">__dirname</span><span class="hl-1">, </span><span class="hl-3">&#39;spectrum.spc&#39;</span><span class="hl-1">));</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">result</span><span class="hl-1"> = </span><span class="hl-6">parse</span><span class="hl-1">(</span><span class="hl-2">arrayBuffer</span><span class="hl-1">);</span><br/><span class="hl-7">// result is a JSON object containing everything that was parsed</span>
-</code></pre>
-
-<a href="#api-documentation" id="api-documentation" style="color: inherit; text-decoration: none;">
-  <h2><a href="https://cheminfo.github.io/spc-parser/">API Documentation</a></h2>
-</a>
-
-<a href="#credits-and-useful-information" id="credits-and-useful-information" style="color: inherit; text-decoration: none;">
-  <h2>Credits and useful information</h2>
-</a>
-
-<a href="#spc-file-format" id="spc-file-format" style="color: inherit; text-decoration: none;">
-  <h3>SPC file format</h3>
-</a>
-<p><a href="https://en.wikipedia.org/wiki/SPC_file_format">SPC</a> is a file format used in the GRAMS Software Suite for storing all kinds of spectroscopic data, including infrared spectra, Raman spectra and UV/VIS spectra.
+<a id="md:installation" class="tsd-anchor"></a><h2><a href="#md:installation">Installation</a></h2><p><code>$ npm i spc-parser</code></p>
+<a id="md:usage" class="tsd-anchor"></a><h2><a href="#md:usage">Usage</a></h2><pre><code class="language-js"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">readFileSync</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;fs&#39;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">join</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;path&#39;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">parse</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;spc-parser&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">arrayBuffer</span><span class="hl-1"> = </span><span class="hl-6">readFileSync</span><span class="hl-1">(</span><span class="hl-6">join</span><span class="hl-1">(</span><span class="hl-2">__dirname</span><span class="hl-1">, </span><span class="hl-3">&#39;spectrum.spc&#39;</span><span class="hl-1">));</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">result</span><span class="hl-1"> = </span><span class="hl-6">parse</span><span class="hl-1">(</span><span class="hl-2">arrayBuffer</span><span class="hl-1">);</span><br/><span class="hl-7">// result is a JSON object containing everything that was parsed</span>
+</code><button>Copy</button></pre>
+<a id="md:api-documentation" class="tsd-anchor"></a><h2><a href="#md:api-documentation"><a href="https://cheminfo.github.io/spc-parser/">API Documentation</a></a></h2><a id="md:credits-and-useful-information" class="tsd-anchor"></a><h2><a href="#md:credits-and-useful-information">Credits and useful information</a></h2><a id="md:spc-file-format" class="tsd-anchor"></a><h3><a href="#md:spc-file-format">SPC file format</a></h3><p><a href="https://en.wikipedia.org/wiki/SPC_file_format">SPC</a> is a file format used in the GRAMS Software Suite for storing all kinds of spectroscopic data, including infrared spectra, Raman spectra and UV/VIS spectra.
 The data is stored in binary with some parts encoded in ASCII. As such, the file must be viewed in either a hex editor or any compatible spectroscopy software.</p>
 <p>An SPC file is organized in three blocks:</p>
 <ol>
@@ -60,16 +48,13 @@ The data is stored in binary with some parts encoded in ASCII. As such, the file
 <p>The Data block contains the spectrum data and is composed of a subheader for each spectrum, the X values <em>before</em> the subheader if <strong>XY</strong> or <strong>XYY</strong>, else <em>after</em> each subheader if <strong>XYXY</strong>. After the subheader and X values come the Y values, which are read according to the method determined in the Main Header.</p>
 <p>The Log block contains miscellaneous information that varies for each file, with a part written in ASCII and another one in binary.</p>
 <p>Useful files for the specification for the spc-format can be found at <a href="https://github.com/cheminfo/spc-parser/tree/main/docs">the docs folder in the Github repo</a></p>
-
-<a href="#license" id="license" style="color: inherit; text-decoration: none;">
-  <h2>License</h2>
-</a>
-<p><a href="./LICENSE">MIT</a></p>
+<a id="md:license" class="tsd-anchor"></a><h2><a href="#md:license">License</a></h2><p><a href="./LICENSE">MIT</a></p>
 </div></div>
-<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+<div class="col-sidebar">
+<div class="page-menu">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
-<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Settings</h3></summary>
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)" id="icon-chevronDown"></path></svg>Settings</h3></summary>
 <div class="tsd-accordion-details">
 <div class="tsd-filter-visibility">
 <h4 class="uppercase">Member Visibility</h4><form>
@@ -78,18 +63,29 @@ The data is stored in binary with some parts encoded in ASCII. As such, the file
 <li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li>
 <li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div>
 <div class="tsd-theme-toggle">
-<h4 class="uppercase">Theme</h4><select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
-<nav class="tsd-navigation primary">
-<details class="tsd-index-accordion" open><summary class="tsd-accordion-summary">
-<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4.93896 8.531L12 15.591L19.061 8.531L16.939 6.409L12 11.349L7.06098 6.409L4.93896 8.531Z" fill="var(--color-text)"></path></svg> Modules</h3></summary>
+<h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary">
+<h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="#icon-chevronDown"></use></svg>On This Page</h3></summary>
 <div class="tsd-accordion-details">
 <ul>
-<li class="current selected"><a href="modules.html">spc-<wbr/>parser</a>
-<ul></ul></li></ul></div></details></nav>
-<nav class="tsd-navigation secondary menu-sticky">
+<li>
 <ul>
-<li class="tsd-kind-interface"><a href="interfaces/ParseResult.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-256-path"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)" id="icon-256-text"></path></svg>Parse<wbr/>Result</a></li>
-<li class="tsd-kind-type-alias"><a href="types/InputData.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-4194304-path"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)" id="icon-4194304-text"></path></svg>Input<wbr/>Data</a></li>
-<li class="tsd-kind-function"><a href="functions/guessSpectraType.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-function)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6" id="icon-64-path"></rect><path d="M9.39 16V7.24H14.55V8.224H10.446V11.128H14.238V12.112H10.47V16H9.39Z" fill="var(--color-text)" id="icon-64-text"></path></svg>guess<wbr/>Spectra<wbr/>Type</a></li>
-<li class="tsd-kind-function"><a href="functions/parse.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>parse</a></li></ul></nav></div></div>
-<div class="overlay"></div><script src="assets/main.js"></script></body></html>
+<li><a href="#md:spc-parser"><span>spc-<wbr/>parser</span></a></li>
+<li>
+<ul>
+<li><a href="#md:installation"><span>Installation</span></a></li>
+<li><a href="#md:usage"><span>Usage</span></a></li>
+<li><a href="#md:api-documentation"><span>API <wbr/>Documentation</span></a></li>
+<li><a href="#md:credits-and-useful-information"><span>Credits and useful information</span></a></li>
+<li>
+<ul>
+<li><a href="#md:spc-file-format"><span>SPC file format</span></a></li></ul></li>
+<li><a href="#md:license"><span>License</span></a></li></ul></li></ul></li></ul></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)"></path></g></svg><span>spc-<wbr/>parser</span></a>
+<ul class="tsd-small-nested-navigation">
+<li><a href="interfaces/ParseResult.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-256"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-interface)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.51 16V15.016H11.298V8.224H9.51V7.24H14.19V8.224H12.402V15.016H14.19V16H9.51Z" fill="var(--color-text)"></path></g></svg><span>Parse<wbr/>Result</span></a></li>
+<li><a href="types/InputData.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4194304"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-type-alias)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M11.31 16V8.224H8.91V7.24H14.79V8.224H12.39V16H11.31Z" fill="var(--color-text)"></path></g></svg><span>Input<wbr/>Data</span></a></li>
+<li><a href="functions/guessSpectraType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-64"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-function)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.39 16V7.24H14.55V8.224H10.446V11.128H14.238V12.112H10.47V16H9.39Z" fill="var(--color-text)"></path></g></svg><span>guess<wbr/>Spectra<wbr/>Type</span></a></li>
+<li><a href="functions/parse.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-64"></use></svg><span>parse</span></a></li></ul></nav></div></div></div>
+<div class="overlay"></div></body></html>
