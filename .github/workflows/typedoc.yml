@@ -6,14 +6,14 @@ on:
     types: [published]
 
 env:
-  NODE_VERSION: 16.x
+  NODE_VERSION: 18.x
   ENTRY_FILE: 'src/index.ts'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -24,10 +24,9 @@ jobs:
         with:
           entry: ${{ env.ENTRY_FILE }}
       - name: Deploy to GitHub pages
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.BOT_TOKEN }}
           branch: gh-pages
           folder: docs
           clean: true
-
