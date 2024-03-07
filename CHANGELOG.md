@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.0](https://github.com/cheminfo/spc-parser/compare/v0.7.3...v1.0.0) (2024-03-07)
+
+
+### release-as
+
+* v1.0.0 ([ca43661](https://github.com/cheminfo/spc-parser/commit/ca4366125aada4e0ff47332671479a2119ef63f4))
+
+
+### Bug Fixes
+
+* update ml-spectra-processing and dependencies ([d342f60](https://github.com/cheminfo/spc-parser/commit/d342f60437d753799d3a8dc4a10e76bd8503811e))
+
 ## [0.7.3](https://github.com/cheminfo/spc-parser/compare/v0.7.2...v0.7.3) (2023-08-22)
 
 
