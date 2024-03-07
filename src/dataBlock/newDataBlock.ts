@@ -77,10 +77,7 @@ export function getNewY(
   if (subHeader.exponentY === 0) {
     subHeader.exponentY = exponentY;
   }
-  const yFactor = Math.pow(
-    2,
-    subHeader.exponentY - (y16BitPrecision ? 16 : 32),
-  );
+  const yFactor = 2 ** (subHeader.exponentY - (y16BitPrecision ? 16 : 32));
 
   if (y16BitPrecision) {
     for (let j = 0; j < y.length; j++) {
