@@ -40,7 +40,7 @@
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.25",
+    "@types/node": "^20.11.28",
     "cheminfo-build": "^1.2.0",
     "eslint": "^8.57.0",
     "eslint-config-cheminfo-typescript": "^12.2.0",
@@ -50,8 +50,8 @@
     "typescript": "~5.4.2"
   },
   "dependencies": {
-    "cheminfo-types": "^1.7.2",
+    "cheminfo-types": "^1.7.3",
     "iobuffer": "^5.3.2",
-    "ml-spectra-processing": "^14.2.0"
+    "ml-spectra-processing": "^14.2.2"
   }
 }
