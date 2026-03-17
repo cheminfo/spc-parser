@@ -1,4 +1,4 @@
-import { IOBuffer } from 'iobuffer';
+import type { IOBuffer } from 'iobuffer';
 
 export interface MetaData {
   size: number;
@@ -16,10 +16,10 @@ export interface LogBlock {
 }
 
 /**
- *
- * @param  buffer SPC buffer.
- * @param  logOffset Offset of the log (from mainHeader).
- * @return  Object containing log meta, data and text.
+ * Reads the log block from an SPC file.
+ * @param  buffer - SPC buffer.
+ * @param  logOffset - Offset of the log (from mainHeader).
+ * @returns  Object containing log meta, data and text.
  */
 export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
   const logHeader: MetaData = {
@@ -28,13 +28,13 @@ export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
     textOffset: buffer.readUint32(), //Offset to Text section
     binarySize: buffer.readUint32(), //Size of binary log block
     diskArea: buffer.readUint32(), //Size of the disk area
-    reserved: buffer.readChars(44).trim().replace(/\x00/g, ''), //Reserved space
+    reserved: buffer.readChars(44).trim().replaceAll('\u0000', ''), //Reserved space
   };
   const logData = buffer.readChars(logHeader.binarySize);
   buffer.offset = logOffset + logHeader.textOffset;
   const logASCII = buffer
     .readChars(logHeader.size - logHeader.textOffset)
     .trim()
-    .replace(/\x00/g, '');
+    .replaceAll('\u0000', '');
   return { meta: logHeader, data: logData, text: logASCII };
 }

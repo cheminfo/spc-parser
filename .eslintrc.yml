@@ -1,5 +1,0 @@
-extends: cheminfo-typescript
-parserOptions:
-  sourceType: module
-rules:
-  no-control-regex: 0

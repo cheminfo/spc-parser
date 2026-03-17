@@ -1,17 +1,18 @@
-import { FlagParameters, longToDate } from '../headerUtils';
+import { expect, test } from 'vitest';
+
+import { FlagParameters, longToDate } from '../headerUtils.ts';
 
 test('Flag parameters', () => {
   const instance = new FlagParameters(255);
-  expect({ ...instance }).toStrictEqual({
-    y16BitPrecision: true,
-    useExperimentExtension: true,
-    multiFile: true,
-    zValuesRandom: true,
-    zValuesUneven: true,
-    customAxisLabels: true,
-    xy: true,
-    xyxy: true,
-  });
+
+  expect(instance.y16BitPrecision).toBe(true);
+  expect(instance.useExperimentExtension).toBe(true);
+  expect(instance.multiFile).toBe(true);
+  expect(instance.zValuesRandom).toBe(true);
+  expect(instance.zValuesUneven).toBe(true);
+  expect(instance.customAxisLabels).toBe(true);
+  expect(instance.xy).toBe(true);
+  expect(instance.xyxy).toBe(true);
 });
 
 test('Long to date', () => {

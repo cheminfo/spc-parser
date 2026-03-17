@@ -1,7 +1,7 @@
 /**
  * Gives meaning to type codes.
- * @param  xzwType x, z or w type code.
- * @return  String corresponding to the code.
+ * @param  xzwType - x, z or w type code.
+ * @returns  String corresponding to the code.
  */
 export function xzwTypes(xzwType: number): string | number {
   switch (xzwType) {
@@ -73,8 +73,8 @@ export function xzwTypes(xzwType: number): string | number {
 }
 /**
  * Gives meaning to y type codes
- * @param  yType y type code
- * @return  String corresponding to the code
+ * @param  yType - y type code
+ * @returns  String corresponding to the code
  */
 export function yTypes(yType: number): string {
   switch (yType) {
@@ -141,7 +141,7 @@ export function yTypes(yType: number): string {
 
 /**
  * Convert code to experiment type
- * @param code
+ * @param code - experiment type code.
  * @returns type of experiment carried out.
  */
 export function experimentSettings(code: number): string {

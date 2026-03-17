@@ -1,13 +1,13 @@
-import { IOBuffer } from 'iobuffer';
+import type { IOBuffer } from 'iobuffer';
 
-import { xzwTypes, yTypes, experimentSettings } from './types';
-import { FlagParameters, longToDate } from './utility/headerUtils';
+import { experimentSettings, xzwTypes, yTypes } from './types.ts';
+import { FlagParameters, longToDate } from './utility/headerUtils.ts';
 
 /**
  * Old-format File-header parsing.
- * @param buffer spc buffer.
- * @param  prev `{parameters,fileversion}`
- * @return  file metadata
+ * @param buffer - spc buffer.
+ * @param  prev - `{parameters,fileversion}`
+ * @returns  file metadata
  */
 export class TheOldHeader {
   public fileVersion: number;
@@ -47,7 +47,7 @@ export class TheOldHeader {
     this.date = date.toISOString();
     this.resolutionDescription = buffer
       .readChars(8)
-      .replace(/\x00/g, '')
+      .replaceAll('\u0000', '')
       .trim();
     this.peakPointNumber = buffer.readUint16();
     this.scans = buffer.readUint16();
@@ -55,16 +55,16 @@ export class TheOldHeader {
     for (let i = 0; i < 7; i++) {
       this.spare.push(buffer.readFloat32());
     }
-    this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
-    this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
+    this.memo = buffer.readChars(130).replaceAll('\u0000', '').trim();
+    this.xyzLabels = buffer.readChars(30).replaceAll('\u0000', '').trim();
   }
 }
 
 /**
  * New format file-header parsing.
- * @param buffer spc buffer.
- * @param  prev `{parameters,fileversion}`
- * @return  file metadata
+ * @param buffer - spc buffer.
+ * @param  prev - `{parameters,fileversion}`
+ * @returns  file metadata
  */
 export class TheNewHeader {
   public fileVersion: number;
@@ -118,11 +118,11 @@ export class TheNewHeader {
     this.date = longToDate(buffer.readUint32()); //Date: minutes = first 6 bits, hours = 5 next bits, days = 5 next, months = 4 next, years = 12 last
     this.resolutionDescription = buffer
       .readChars(9)
-      .replace(/\x00/g, '')
+      .replaceAll('\u0000', '')
       .trim(); //Resolution description text
     this.sourceInstrumentDescription = buffer
       .readChars(9)
-      .replace(/\x00/g, '')
+      .replaceAll('\u0000', '')
       .trim(); // Source Instrument description text
     this.peakPointNumber = buffer.readUint16(); //Peak point number for interferograms
     this.spare = [];
@@ -131,27 +131,27 @@ export class TheNewHeader {
     }
     if (this.fileVersion === 0x4c) {
       //Untested case because no test files
-      this.spare.reverse();
+      this.spare = this.spare.toReversed();
     }
-    this.memo = buffer.readChars(130).replace(/\x00/g, '').trim();
-    this.xyzLabels = buffer.readChars(30).replace(/\x00/g, '').trim();
+    this.memo = buffer.readChars(130).replaceAll('\u0000', '').trim();
+    this.xyzLabels = buffer.readChars(30).replaceAll('\u0000', '').trim();
     this.logOffset = buffer.readUint32(); //Byte offset to Log Block
     this.modifiedFlag = buffer.readUint32(); //File modification flag (See values in SPC.H)
     this.processingCode = buffer.readUint8(); //Processing code (See GRAMSDDE.H)
     this.calibrationLevel = buffer.readUint8(); //Calibration level + 1
     this.subMethodSampleInjectionNumber = buffer.readUint16(); //Sub-method sample injection number
     this.concentrationFactor = buffer.readFloat32(); //Floating data multiplier concentration factor
-    this.methodFile = buffer.readChars(48).replace(/\x00/g, '').trim(); //Method file
+    this.methodFile = buffer.readChars(48).replaceAll('\u0000', '').trim(); //Method file
     this.zSubIncrement = buffer.readFloat32(); //Z subfile increment for even Z Multifiles
     this.wPlanes = buffer.readUint32();
     this.wPlaneIncrement = buffer.readFloat32();
     this.wAxisUnits = xzwTypes(buffer.readUint8()); //W axis units code
-    this.reserved = buffer.readChars(187).replace(/\x00/g, '').trim(); //Reserved space (Must be zero)
+    this.reserved = buffer.readChars(187).replaceAll('\u0000', '').trim(); //Reserved space (Must be zero)
     if (this.xUnitsType === 0) {
-      this.xUnitsType = this.xyzLabels.substring(0, 10);
+      this.xUnitsType = this.xyzLabels.slice(0, 10);
     }
     if (this.zUnitsType === 0) {
-      this.zUnitsType = this.xyzLabels.substring(20, 30);
+      this.zUnitsType = this.xyzLabels.slice(20, 30);
     }
   }
 }
@@ -160,8 +160,8 @@ export type Header = TheOldHeader | TheNewHeader;
 
 /**
  * File-header parsing - First 512/256 bytes (new/old format).
- * @param buffer SPC buffer.
- * @return File-header object
+ * @param buffer - SPC buffer.
+ * @returns File-header object
  */
 export function fileHeader(buffer: IOBuffer): Header {
   const parameters = new FlagParameters(buffer.readUint8()); //Each bit contains a parameter

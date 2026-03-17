@@ -1,10 +1,12 @@
 import { IOBuffer } from 'iobuffer';
 
-import { newDataBlock } from './dataBlock/newDataBlock';
-import { oldDataBlock } from './dataBlock/oldDataBlock';
-import { Spectrum } from './dataBlock/shared';
-import { fileHeader, Header, TheNewHeader } from './fileHeader';
-import { LogBlock, readLogBlock } from './logBlock';
+import { newDataBlock } from './dataBlock/newDataBlock.ts';
+import { oldDataBlock } from './dataBlock/oldDataBlock.ts';
+import type { Spectrum } from './dataBlock/shared.ts';
+import type { Header } from './fileHeader.ts';
+import { TheNewHeader, fileHeader } from './fileHeader.ts';
+import type { LogBlock } from './logBlock.ts';
+import { readLogBlock } from './logBlock.ts';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 
@@ -16,9 +18,8 @@ export interface ParseResult {
 
 /**
  * Parses an SPC file.
- *
- * @param  buffer SPC file buffer.
- * @return JSON-like object with information contained in the SPC file.
+ * @param  buffer - SPC file buffer.
+ * @returns JSON-like object with information contained in the SPC file.
  */
 export function parse(buffer: InputData): ParseResult {
   const ioBuffer = new IOBuffer(buffer);

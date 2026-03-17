@@ -1,2 +1,2 @@
-export { guessSpectraType } from './utility/guessSpectraType';
-export * from './parse';
+export { guessSpectraType } from './utility/guessSpectraType.ts';
+export * from './parse.ts';

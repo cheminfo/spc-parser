@@ -1,55 +1,78 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { IOBuffer } from 'iobuffer';
+import { describe, expect, it } from 'vitest';
 
-import { fileHeader } from '../../fileHeader';
-import { unitToNano, getRegion, guessSpectraType } from '../guessSpectraType';
+import { fileHeader } from '../../fileHeader.ts';
+import {
+  getRegion,
+  guessSpectraType,
+  unitToNano,
+} from '../guessSpectraType.ts';
 
 describe('Test the Spectra-Type Guess', () => {
   const dataDir = '../../__tests__/data';
+
   it('nir', () => {
     //kubelka-monk is now in "other" as it is a
     //very different type of "ir"
-    const buffer = readFileSync(join(__dirname, dataDir, 'nir.spc'));
+    const buffer = readFileSync(join(import.meta.dirname, dataDir, 'nir.spc'));
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('other');
   });
 
   it('s_evenx', () => {
     //kubelka-monk is now in "other" as it is a
     //very different type of "ir"
-    const buffer = readFileSync(join(__dirname, dataDir, 's_evenx.spc'));
+    const buffer = readFileSync(
+      join(import.meta.dirname, dataDir, 's_evenx.spc'),
+    );
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('ir');
   });
 
   it('ft-ir.spc', () => {
-    const buffer = readFileSync(join(__dirname, dataDir, 'Ft-ir.spc'));
+    const buffer = readFileSync(
+      join(import.meta.dirname, dataDir, 'Ft-ir.spc'),
+    );
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('ir'); //MIR I think (middle range IR.)
   });
 
   it('raman-sion.spc', () => {
-    const buffer = readFileSync(join(__dirname, dataDir, 'raman-sion.spc'));
+    const buffer = readFileSync(
+      join(import.meta.dirname, dataDir, 'raman-sion.spc'),
+    );
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('raman');
   });
 
   it('NDR0002.SPC', () => {
-    const buffer = readFileSync(join(__dirname, dataDir, 'NDR0002.SPC'));
+    const buffer = readFileSync(
+      join(import.meta.dirname, dataDir, 'NDR0002.SPC'),
+    );
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('raman');
   });
+
   it('m_xyxy', () => {
-    const buffer = readFileSync(join(__dirname, dataDir, 'm_xyxy.spc'));
+    const buffer = readFileSync(
+      join(import.meta.dirname, dataDir, 'm_xyxy.spc'),
+    );
     const result = fileHeader(new IOBuffer(buffer));
     const guessedType = guessSpectraType(result);
+
     expect(guessedType).toBe('mass');
   });
 

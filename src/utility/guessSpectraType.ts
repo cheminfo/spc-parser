@@ -1,6 +1,7 @@
-import { Header, TheNewHeader } from '../fileHeader';
+import type { Header } from '../fileHeader.ts';
+import { TheNewHeader } from '../fileHeader.ts';
 
-import { getDataShape } from './getDataShape';
+import { getDataShape } from './getDataShape.ts';
 
 /**
  * For now "ir" is ir-only spectra
@@ -9,35 +10,34 @@ import { getDataShape } from './getDataShape';
 export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 
 /**
- * Inspects properties and tries to classify the spectra
- * For the most common spectra types
- * @param data the parsed data
- * @returns string describing the type of spectra ([[`SpectraType`]]) or "General" if unsure.
+ * Inspects properties and tries to classify the spectra for the most common spectra types.
+ * @param meta - the parsed file header.
+ * @returns string describing the type of spectra or "General" if unsure.
  */
 export function guessSpectraType(meta: Header): SpectraType {
   //function tested with the `fileHeader.test.ts`
   const { xUnitsType: xU, yUnitsType: yU } = meta;
   // for the new file header they define a "experiment type"
-  if (meta instanceof TheNewHeader) {
-    // "General SPC" does not give any information
-    if (!meta.experimentType.startsWith('General SPC')) {
-      const id = meta.experimentType.split(' ')[0];
-      switch (
-        id //find all possible ids in `types.ts` file
-      ) {
-        case 'FT-IR,':
-          return 'ir';
-        case 'NIR':
-          return 'ir';
-        case 'UV-VIS':
-          return 'uv';
-        case 'Mass':
-          return 'mass';
-        case 'Raman':
-          return 'raman';
-        default:
-          return 'other';
-      }
+  if (
+    meta instanceof TheNewHeader && // "General SPC" does not give any information
+    !meta.experimentType.startsWith('General SPC')
+  ) {
+    const id = meta.experimentType.split(' ')[0];
+    switch (
+      id //find all possible ids in `types.ts` file
+    ) {
+      case 'FT-IR,':
+        return 'ir';
+      case 'NIR':
+        return 'ir';
+      case 'UV-VIS':
+        return 'uv';
+      case 'Mass':
+        return 'mass';
+      case 'Raman':
+        return 'raman';
+      default:
+        return 'other';
     }
   }
   // for old header or General SPC
@@ -68,8 +68,9 @@ export function guessSpectraType(meta: Header): SpectraType {
 type Regions = 'uv' | 'ir' | 'other';
 /**
  * Further classify an X axis that is using "wavenumber" as uv or ir.
- * @param data - the parsed file (a jsonlike object)
- * @returns
+ * @param meta - the parsed file header.
+ * @param xUnit - the unit of the X axis.
+ * @returns the region classification.
  */
 export function uvOrIR(
   meta: Header,
@@ -88,7 +89,7 @@ export function uvOrIR(
       sX = unitToNano(sX, xUnit);
       eX = unitToNano(eX, xUnit);
     }
-    const lowerBound = sX <= eX ? sX : eX;
+    const lowerBound = Math.min(sX, eX);
     return getRegion(lowerBound);
   }
 
@@ -96,8 +97,9 @@ export function uvOrIR(
 }
 
 /**
- * @param lb -  lower boundary in _nanometers_
- * @return type of spectra
+ * Determines the spectral region from a wavelength boundary.
+ * @param lb - lower boundary in nanometers.
+ * @returns type of spectra.
  */
 export function getRegion(lb: number): Regions {
   return lb < 150 ? 'other' : lb < 700 ? 'uv' : 'ir';
@@ -108,7 +110,7 @@ export function getRegion(lb: number): Regions {
  * This allows a unique way to determine the spectra region (using nanometers).
  * @param x - value
  * @param from - input unit to convert
- * @return equivalent in nanometers
+ * @returns equivalent in nanometers
  */
 export function unitToNano(x: number, from: 'micrometer' | 'wavenumber') {
   return from === 'micrometer' ? x * 1000 : (1 / x) * 10 ** 7;

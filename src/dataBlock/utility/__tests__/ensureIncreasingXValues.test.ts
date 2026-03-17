@@ -1,9 +1,12 @@
-import { ensureIncreasingXValues } from '../ensureIncreasingXValues';
+import { expect, test } from 'vitest';
+
+import { ensureIncreasingXValues } from '../ensureIncreasingXValues.ts';
 
 test('increasing X array', () => {
   const x = new Float64Array([1, 2, 3]);
   const y = new Float64Array([5, 4, 6]);
   const [oX, oY] = ensureIncreasingXValues(x, y);
+
   expect(oX[0]).toBe(1);
   expect(oY[0]).toBe(5);
 });
@@ -22,6 +25,7 @@ test('decreasing X array', () => {
 test('throw', () => {
   const x = new Float64Array([1, 2, 3, 4]);
   const y = new Float64Array([1, 2]);
+
   expect(() => ensureIncreasingXValues(x, y)).toThrow(
     'length must be the same',
   );
@@ -31,6 +35,7 @@ test('empty x', () => {
   const x = new Float64Array([]);
   const y = new Float64Array([]);
   const [oX, oY] = ensureIncreasingXValues(x, y);
+
   expect(oX).toHaveLength(0);
   expect(oY).toHaveLength(0);
 });

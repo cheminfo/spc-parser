@@ -1,7 +1,6 @@
 /**
  * Gets the parameter in each bit of the flag
- *
- * @param  flag First byte of the main header.
+ * @param  flag - First byte of the main header.
  * @returns  The parameters.
  */
 export class FlagParameters {
@@ -27,8 +26,8 @@ export class FlagParameters {
 
 /**
  * Gets the date encoded in binary in a long number.
- * @param  long Binary date.
- * @return  Date formatted to ISO 8601:2019 convention.
+ * @param  long - Binary date.
+ * @returns  Date formatted to ISO 8601:2019 convention.
  */
 export function longToDate(long: number): string {
   if (long === 0) {

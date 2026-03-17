@@ -1,17 +1,17 @@
-import { IOBuffer } from 'iobuffer';
+import type { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
-import { TheNewHeader } from '../fileHeader';
-import { getDataShape } from '../utility/getDataShape';
+import type { TheNewHeader } from '../fileHeader.ts';
+import { getDataShape } from '../utility/getDataShape.ts';
 
-import { SubHeader, setXYAxis, Spectrum } from './shared';
+import type { Spectrum } from './shared.ts';
+import { SubHeader, setXYAxis } from './shared.ts';
 
 /**
  * Reads the data block of the SPC file.
- *
- * @param buffer spc buffer.
- * @param fileHeader main header.
- * @return Array containing the spectra.
+ * @param buffer - spc buffer.
+ * @param fileHeader - main header.
+ * @returns Array containing the spectra.
  */
 export function newDataBlock(
   buffer: IOBuffer,
@@ -63,6 +63,14 @@ export function newDataBlock(
   return spectra;
 }
 
+/**
+ * Reads Y values from the buffer for new format SPC files.
+ * @param y - output Y array to fill.
+ * @param subHeader - subfile header.
+ * @param fileHeader - main file header.
+ * @param buffer - SPC buffer.
+ * @returns the filled Y array.
+ */
 export function getNewY(
   y: Float64Array,
   subHeader: SubHeader,

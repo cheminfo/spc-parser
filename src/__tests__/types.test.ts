@@ -1,4 +1,6 @@
-import { xzwTypes, yTypes, experimentSettings } from '../types';
+import { expect, test } from 'vitest';
+
+import { experimentSettings, xzwTypes, yTypes } from '../types.ts';
 
 test('xzyTypes', () => {
   expect(xzwTypes(1)).toBe('Wavenumber (cm-1)');

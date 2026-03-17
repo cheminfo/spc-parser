@@ -1,4 +1,4 @@
-import { FlagParameters } from './headerUtils';
+import type { FlagParameters } from './headerUtils.ts';
 /**
  * The new file format records as:
  * - Y. X is implicit (calc from XStart, XEnd, Y.length)
@@ -11,11 +11,13 @@ import { FlagParameters } from './headerUtils';
  */
 export type DataShape = 'Y' | 'XY' | 'YY' | 'XYY' | 'XYXY' | 'exception';
 
-/** Get how the data was stored
- * @param multiFile - whether there are multiple spectra (subfiles) or not.
- * @param xy - uneven x values
- * @param xyxy - multifile with separate x axis
- * @return the shape of the data as a string
+/**
+ * Get how the data was stored.
+ * @param flagParameters - flag parameters from the file header.
+ * @param flagParameters.multiFile - whether there are multiple spectra (subfiles) or not.
+ * @param flagParameters.xy - uneven x values.
+ * @param flagParameters.xyxy - multifile with separate x axis.
+ * @returns the shape of the data as a string.
  */
 export function getDataShape({
   multiFile,

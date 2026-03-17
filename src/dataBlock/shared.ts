@@ -1,9 +1,9 @@
-import { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
-import { IOBuffer } from 'iobuffer';
+import type { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
+import type { IOBuffer } from 'iobuffer';
 
-import { Header } from '../fileHeader';
+import type { Header } from '../fileHeader.ts';
 
-import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues';
+import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues.ts';
 
 /**
  * Use cheminfo type for better UI compatibility
@@ -12,9 +12,8 @@ export type Spectrum = MeasurementXY;
 
 /**
  * Gets the Subfile flags.
- *
- * @param  flag First byte of the subheader.
- * @return The parameters.
+ * @param  flag - First byte of the subheader.
+ * @returns The parameters.
  */
 export class SubFlagParameters {
   public changed: boolean;
@@ -29,9 +28,8 @@ export class SubFlagParameters {
 
 /**
  * Parses the subheader (header of the subfile)
- *
- * @param buffer SPC buffer.
- * @return subheader object
+ * @param buffer - SPC buffer.
+ * @returns subheader object
  */
 export class SubHeader {
   //all formats have the same subheader
@@ -56,16 +54,16 @@ export class SubHeader {
     this.numberPoints = buffer.readUint32();
     this.numberCoAddedScans = buffer.readUint32();
     this.wAxisValue = buffer.readFloat32();
-    this.reserved = buffer.readChars(4).replace(/\x00/g, '').trim();
+    this.reserved = buffer.readChars(4).replaceAll('\u0000', '').trim();
   }
 }
 
 /**
  * Set the X and Y axis (object with labels, values etc.)
- * @param x
- * @param y
- * @param fileHeader
- * @return object with x and y as axis.
+ * @param x - X values array.
+ * @param y - Y values array.
+ * @param fileHeader - main file header.
+ * @returns object with x and y as axis.
  */
 export function setXYAxis(
   x: Float64Array,

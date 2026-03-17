@@ -1,8 +1,9 @@
-/** Ensures x-values are increasing in magnitude. It reverses y if x was reversed.
+/**
+ * Ensures x-values are increasing in magnitude. It reverses y if x was reversed.
  *
- * * Does not mutate arrays
- * * Assumes that X is either increasing or decreasing, not any random order.
- * * Expects x and y to be the same length
+ * Does not mutate arrays
+ * Assumes that X is either increasing or decreasing, not any random order.
+ * Expects x and y to be the same length
  * @param x - array of x values
  * @param y - array of y values
  * @returns [x,y] tuple
@@ -19,11 +20,11 @@ export function ensureIncreasingXValues(
     }
 
     const firstX = x[0];
-    const lastX = x[x.length - 1];
+    const lastX = x[xL - 1];
 
     if (firstX > lastX) {
       //apparently slice(0) faster than slice()
-      return [x.slice(0).reverse(), y.slice(0).reverse()];
+      return [x.slice(0).toReversed(), y.slice(0).toReversed()];
     }
   }
   return [x, y];
