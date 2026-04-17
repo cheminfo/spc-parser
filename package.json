@@ -1,6 +1,6 @@
 {
   "name": "spc-parser",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Thermo Galactic GRAMS SPC files parser",
   "type": "module",
   "exports": {

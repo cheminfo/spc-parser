@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://github.com/cheminfo/spc-parser/compare/v1.0.0...v2.0.0) (2026-04-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Package is now ESM-only (`"type": "module"`). Consumers using CommonJS `require()` must switch to `import`.
+
+### Features
+
+* migrate to ESM with type:module ([f4bfc07](https://github.com/cheminfo/spc-parser/commit/f4bfc07f9516c23160ad34c37bc49ec24111bcf6))
+
+
+### Bug Fixes
+
+* update dependencies ([5227cbd](https://github.com/cheminfo/spc-parser/commit/5227cbddeec3820be5ae121055dcc57f3f95c31e))
+
 ## [1.0.0](https://github.com/cheminfo/spc-parser/compare/v0.7.3...v1.0.0) (2024-03-07)
 
 
