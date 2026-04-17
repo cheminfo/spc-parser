@@ -16,7 +16,6 @@ export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
  */
 export function guessSpectraType(meta: Header): SpectraType {
   //function tested with the `fileHeader.test.ts`
-  const { xUnitsType: xU, yUnitsType: yU } = meta;
   // for the new file header they define a "experiment type"
   if (
     meta instanceof TheNewHeader && // "General SPC" does not give any information
@@ -41,7 +40,7 @@ export function guessSpectraType(meta: Header): SpectraType {
     }
   }
   // for old header or General SPC
-  switch (xU) {
+  switch (meta.xUnitsType) {
     case 'Mass (M/z)':
       return 'mass';
     case 'Raman Shift (cm-1)':
@@ -54,7 +53,7 @@ export function guessSpectraType(meta: Header): SpectraType {
     case 'Nanometers (nm)':
       if (
         [/*'Kubelka-Monk'*/ 'Absorbance', 'Log(1/R)', 'Transmission'].includes(
-          yU,
+          meta.yUnitsType,
         )
       ) {
         return uvOrIR(meta, 'nanometer');
