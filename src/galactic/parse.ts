@@ -4,7 +4,7 @@ import type { IOBuffer } from 'iobuffer';
 import { newDataBlock } from './dataBlock/newDataBlock.ts';
 import { oldDataBlock } from './dataBlock/oldDataBlock.ts';
 import type { Header } from './fileHeader.ts';
-import { TheNewHeader, fileHeader } from './fileHeader.ts';
+import { fileHeader } from './fileHeader.ts';
 import type { LogBlock } from './logBlock.ts';
 import { readLogBlock } from './logBlock.ts';
 
@@ -22,7 +22,7 @@ export interface GalacticParseResult {
 export function parseGalactic(ioBuffer: IOBuffer): GalacticParseResult {
   const meta = fileHeader(ioBuffer);
 
-  if (meta instanceof TheNewHeader) {
+  if (meta.kind === 'new') {
     const spectra = newDataBlock(ioBuffer, meta);
     const logs =
       meta.logOffset !== 0 ? readLogBlock(ioBuffer, meta.logOffset) : null;

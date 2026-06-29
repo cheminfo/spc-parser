@@ -1,5 +1,4 @@
 import type { Header } from '../fileHeader.ts';
-import { TheNewHeader } from '../fileHeader.ts';
 
 import { getDataShape } from './getDataShape.ts';
 
@@ -18,7 +17,7 @@ export function guessSpectraType(meta: Header): SpectraType {
   //function tested with the `fileHeader.test.ts`
   // for the new file header they define a "experiment type"
   if (
-    meta instanceof TheNewHeader && // "General SPC" does not give any information
+    meta.kind === 'new' && // "General SPC" does not give any information
     !meta.experimentType.startsWith('General SPC')
   ) {
     const id = meta.experimentType.split(' ', 1)[0];

@@ -4,52 +4,58 @@ import { xySortX } from 'ml-spectra-processing';
 
 import type { Header } from '../fileHeader.ts';
 
-/**
- * Gets the Subfile flags.
- * @param  flag - First byte of the subheader.
- * @returns The parameters.
- */
-export class SubFlagParameters {
-  public changed: boolean;
-  public noPeakTable: boolean;
-  public modifiedArithmetic: boolean;
-  constructor(flag: number) {
-    this.changed = (flag & 1) !== 0;
-    this.noPeakTable = (flag & 8) !== 0;
-    this.modifiedArithmetic = (flag & 128) !== 0;
-  }
+/** The flags encoded in the first byte of the subheader. */
+export interface SubFlagParameters {
+  changed: boolean;
+  noPeakTable: boolean;
+  modifiedArithmetic: boolean;
 }
 
 /**
- * Parses the subheader (header of the subfile)
- * @param buffer - SPC buffer.
- * @returns subheader object
+ * Gets the Subfile flags.
+ * @param flag - First byte of the subheader.
+ * @returns The parameters.
  */
-export class SubHeader {
-  //all formats have the same subheader
-  public parameters: SubFlagParameters;
-  public exponentY: number;
-  public indexNumber: number;
-  public startingZ: number;
-  public endingZ: number;
-  public noiseValue: number;
-  public numberPoints: number;
-  public numberCoAddedScans: number;
-  public wAxisValue: number;
-  public reserved: string;
+export function parseSubFlagParameters(flag: number): SubFlagParameters {
+  return {
+    changed: (flag & 1) !== 0,
+    noPeakTable: (flag & 8) !== 0,
+    modifiedArithmetic: (flag & 128) !== 0,
+  };
+}
 
-  constructor(buffer: IOBuffer) {
-    this.parameters = new SubFlagParameters(buffer.readUint8());
-    this.exponentY = buffer.readInt8();
-    this.indexNumber = buffer.readUint16();
-    this.startingZ = buffer.readFloat32();
-    this.endingZ = buffer.readFloat32();
-    this.noiseValue = buffer.readFloat32();
-    this.numberPoints = buffer.readUint32();
-    this.numberCoAddedScans = buffer.readUint32();
-    this.wAxisValue = buffer.readFloat32();
-    this.reserved = buffer.readChars(4).replaceAll('\u0000', '').trim();
-  }
+/** The subheader (header of the subfile). All formats share the same subheader. */
+export interface SubHeader {
+  parameters: SubFlagParameters;
+  exponentY: number;
+  indexNumber: number;
+  startingZ: number;
+  endingZ: number;
+  noiseValue: number;
+  numberPoints: number;
+  numberCoAddedScans: number;
+  wAxisValue: number;
+  reserved: string;
+}
+
+/**
+ * Parses the subheader (header of the subfile).
+ * @param buffer - SPC buffer.
+ * @returns subheader object.
+ */
+export function parseSubHeader(buffer: IOBuffer): SubHeader {
+  return {
+    parameters: parseSubFlagParameters(buffer.readUint8()),
+    exponentY: buffer.readInt8(),
+    indexNumber: buffer.readUint16(),
+    startingZ: buffer.readFloat32(),
+    endingZ: buffer.readFloat32(),
+    noiseValue: buffer.readFloat32(),
+    numberPoints: buffer.readUint32(),
+    numberCoAddedScans: buffer.readUint32(),
+    wAxisValue: buffer.readFloat32(),
+    reserved: buffer.readChars(4).replaceAll('\u0000', '').trim(),
+  };
 }
 
 /**

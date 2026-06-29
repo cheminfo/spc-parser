@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest';
 
-import { FlagParameters, longToDate } from '../headerUtils.ts';
+import { longToDate, parseFlagParameters } from '../headerUtils.ts';
 
 test('Flag parameters', () => {
-  const instance = new FlagParameters(255);
+  const instance = parseFlagParameters(255);
 
   expect(instance.y16BitPrecision).toBe(true);
   expect(instance.useExperimentExtension).toBe(true);
