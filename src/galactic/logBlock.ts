@@ -1,6 +1,6 @@
 import type { IOBuffer } from 'iobuffer';
 
-export interface MetaData {
+export interface Metadata {
   size: number;
   memorySize: number;
   textOffset: number;
@@ -10,7 +10,7 @@ export interface MetaData {
 }
 
 export interface LogBlock {
-  meta: MetaData;
+  meta: Metadata;
   data: string;
   text: string;
 }
@@ -22,7 +22,7 @@ export interface LogBlock {
  * @returns  Object containing log meta, data and text.
  */
 export function readLogBlock(buffer: IOBuffer, logOffset: number): LogBlock {
-  const logHeader: MetaData = {
+  const logHeader: Metadata = {
     size: buffer.readUint32(), //Size of the block in bytes
     memorySize: buffer.readUint32(), //Size of the memory rounded up to nearest multiple of 4096
     textOffset: buffer.readUint32(), //Offset to Text section

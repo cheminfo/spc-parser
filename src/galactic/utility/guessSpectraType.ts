@@ -21,7 +21,7 @@ export function guessSpectraType(meta: Header): SpectraType {
     meta instanceof TheNewHeader && // "General SPC" does not give any information
     !meta.experimentType.startsWith('General SPC')
   ) {
-    const id = meta.experimentType.split(' ')[0];
+    const id = meta.experimentType.split(' ', 1)[0];
     switch (
       id //find all possible ids in `types.ts` file
     ) {

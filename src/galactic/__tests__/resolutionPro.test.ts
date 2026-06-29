@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import { expect, test } from 'vitest';
 
-import { parse } from '../parse.ts';
+import { parse } from '../../parse.ts';
 
 test('Resolution pro', () => {
   const buffer = readFileSync(

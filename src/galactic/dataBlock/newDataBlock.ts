@@ -1,10 +1,10 @@
+import type { MeasurementXY } from 'cheminfo-types';
 import type { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import type { TheNewHeader } from '../fileHeader.ts';
 import { getDataShape } from '../utility/getDataShape.ts';
 
-import type { Spectrum } from './shared.ts';
 import { SubHeader, setXYAxis } from './shared.ts';
 
 /**
@@ -16,9 +16,9 @@ import { SubHeader, setXYAxis } from './shared.ts';
 export function newDataBlock(
   buffer: IOBuffer,
   fileHeader: TheNewHeader,
-): Spectrum[] {
+): MeasurementXY[] {
   let x;
-  const spectra: Spectrum[] = [];
+  const spectra: MeasurementXY[] = [];
 
   const dataShape = getDataShape(fileHeader.parameters);
 
