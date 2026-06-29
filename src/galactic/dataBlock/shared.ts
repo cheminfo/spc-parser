@@ -1,14 +1,8 @@
-import type { MeasurementXY, MeasurementXYVariables } from 'cheminfo-types';
+import type { MeasurementXYVariables } from 'cheminfo-types';
 import type { IOBuffer } from 'iobuffer';
+import { xySortX } from 'ml-spectra-processing';
 
 import type { Header } from '../fileHeader.ts';
-
-import { ensureIncreasingXValues } from './utility/ensureIncreasingXValues.ts';
-
-/**
- * Use cheminfo type for better UI compatibility
- */
-export type Spectrum = MeasurementXY;
 
 /**
  * Gets the Subfile flags.
@@ -77,7 +71,7 @@ export function setXYAxis(
     fileHeader.yUnitsType,
   );
 
-  const [oX, oY]: [Float64Array, Float64Array] = ensureIncreasingXValues(x, y);
+  const { x: oX, y: oY } = xySortX({ x, y });
 
   const variables: MeasurementXYVariables = {
     x: {

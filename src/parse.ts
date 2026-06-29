@@ -1,41 +1,72 @@
+import type { MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 
-import { newDataBlock } from './dataBlock/newDataBlock.ts';
-import { oldDataBlock } from './dataBlock/oldDataBlock.ts';
-import type { Spectrum } from './dataBlock/shared.ts';
-import type { Header } from './fileHeader.ts';
-import { TheNewHeader, fileHeader } from './fileHeader.ts';
-import type { LogBlock } from './logBlock.ts';
-import { readLogBlock } from './logBlock.ts';
+import type { Header } from './galactic/fileHeader.ts';
+import type { LogBlock } from './galactic/logBlock.ts';
+import { parseGalactic } from './galactic/parse.ts';
+import { isUVProbeFlat, parseUVProbeFlat } from './uvProbe/parseFlat.ts';
+import { parseUVProbeOle } from './uvProbe/parseOle.ts';
+import type { UvProbeMeta } from './uvProbe/types.ts';
 
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 
 export interface ParseResult {
-  meta: Header;
-  spectra: Spectrum[];
+  meta: Header | UvProbeMeta;
+  spectra: MeasurementXY[];
   logs?: LogBlock | null;
 }
 
+/** OLE2 / Microsoft Compound File Binary magic number. */
+const oleMagic = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
+const galacticVersions = new Set([0x4b, 0x4c, 0x4d]);
+
 /**
- * Parses an SPC file.
- * @param  buffer - SPC file buffer.
- * @returns JSON-like object with information contained in the SPC file.
+ * Parses an SPC file, auto-detecting the format:
+ * Thermo Galactic GRAMS SPC, or Shimadzu UVProbe (OLE2 or flat) `.spc`.
+ * @param buffer - SPC file buffer.
+ * @returns JSON-like object with the spectra and metadata of the file.
  */
 export function parse(buffer: InputData): ParseResult {
-  const ioBuffer = new IOBuffer(buffer);
-  const meta = fileHeader(ioBuffer);
+  const bytes = toBytes(buffer);
 
-  if (meta instanceof TheNewHeader) {
-    //new format
-    const spectra = newDataBlock(ioBuffer, meta);
-    const logs =
-      meta.logOffset !== 0 ? readLogBlock(ioBuffer, meta.logOffset) : null;
-    return { meta, spectra, logs };
-  } else {
-    //old format
-    return {
-      meta,
-      spectra: oldDataBlock(ioBuffer, meta),
-    };
+  if (isOle(bytes)) {
+    return parseUVProbeOle(bytes);
   }
+  if (galacticVersions.has(bytes[1])) {
+    return parseGalactic(new IOBuffer(bytes));
+  }
+  if (isUVProbeFlat(bytes)) {
+    return parseUVProbeFlat(bytes);
+  }
+  throw new Error(
+    'Unsupported SPC file: not an OLE2 compound document, a Thermo Galactic SPC, or a Shimadzu UVProbe flat file',
+  );
+}
+
+/**
+ * Checks for the OLE2 compound-file magic number.
+ * @param bytes - file bytes.
+ * @returns True when the file is an OLE2 compound document.
+ */
+function isOle(bytes: Uint8Array): boolean {
+  if (bytes.length < oleMagic.length) return false;
+  for (let i = 0; i < oleMagic.length; i++) {
+    if (bytes[i] !== oleMagic[i]) return false;
+  }
+  return true;
+}
+
+/**
+ * Normalizes any accepted input into a `Uint8Array` view over its bytes.
+ * @param buffer - the input data.
+ * @returns A `Uint8Array` over the same bytes.
+ */
+function toBytes(buffer: InputData): Uint8Array {
+  if (buffer instanceof IOBuffer) {
+    return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  }
+  if (ArrayBuffer.isView(buffer)) {
+    return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  }
+  return new Uint8Array(buffer);
 }

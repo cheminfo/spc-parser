@@ -1,9 +1,9 @@
+import type { MeasurementXY } from 'cheminfo-types';
 import type { IOBuffer } from 'iobuffer';
 import { createFromToArray } from 'ml-spectra-processing';
 
 import type { TheOldHeader } from '../fileHeader.ts';
 
-import type { Spectrum } from './shared.ts';
 import { SubHeader, setXYAxis } from './shared.ts';
 
 /**
@@ -15,9 +15,9 @@ import { SubHeader, setXYAxis } from './shared.ts';
 export function oldDataBlock(
   buffer: IOBuffer,
   fileHeader: TheOldHeader,
-): Spectrum[] {
+): MeasurementXY[] {
   // either Y or YY fall on the for loop
-  const spectra: Spectrum[] = [];
+  const spectra: MeasurementXY[] = [];
 
   // old format uses always equidistant arrays
   const x: Float64Array = createFromToArray({

@@ -1,92 +1,9 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
-
-import { describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 
 import { parse } from '../parse.ts';
 
-describe('parse', () => {
-  it('test that all are same length arrays of data', () => {
-    const files = readdirSync(join(import.meta.dirname, 'data')).filter(
-      (file) => file !== 'nir.cfl',
-    );
-    for (const f of files) {
-      const r = parse(readFileSync(join(import.meta.dirname, 'data', f)));
-      for (const spectrum of r.spectra) {
-        const {
-          variables: { x, y },
-        } = spectrum;
+test('unrecognized bytes throw the detection guard', () => {
+  const garbage = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
 
-        expect(x.data).toHaveLength(y.data.length);
-      }
-    }
-  });
-
-  it('snapshot for comparison', () => {
-    const result = parse(
-      readFileSync(join(import.meta.dirname, 'data', 'nir.spc')),
-    );
-
-    expect(result).toMatchSnapshot();
-  });
-
-  it('random format throws error', () => {
-    const file = readFileSync(join(import.meta.dirname, 'data', 'nir.cfl'));
-
-    expect(() => parse(file)).toThrow(
-      ' file format: byte 01 must be either 4B, 4C or 4D',
-    );
-  });
-
-  it('ft-ir.spc', () => {
-    const buffer = readFileSync(join(import.meta.dirname, 'data', 'Ft-ir.spc'));
-    const result = parse(buffer);
-
-    expect(result.spectra[0].variables.x).toMatchObject({
-      symbol: 'x',
-      label: 'Wavenumber',
-      units: 'cm-1',
-      isDependent: false,
-    });
-    expect(result.spectra).toHaveLength(1);
-    expect(Object.keys(result.meta)).toHaveLength(31);
-  });
-
-  it('raman-sion.spc', () => {
-    const buffer = readFileSync(
-      join(import.meta.dirname, 'data', 'raman-sion.spc'),
-    );
-    const result = parse(buffer);
-
-    expect(result.spectra[0].variables.x).toMatchObject({
-      symbol: 'x',
-      label: 'Raman Shift',
-      units: 'cm-1',
-      isDependent: false,
-    });
-    expect(result.spectra).toHaveLength(36);
-    expect(Object.keys(result.meta)).toHaveLength(31);
-
-    const dataY = result.spectra[0].variables.y.data;
-
-    expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
-    expect(Math.max(...dataY)).toBe(7594.40869140625);
-  });
-
-  it('NDR0002.SPC', () => {
-    const buffer = readFileSync(
-      join(import.meta.dirname, 'data', 'NDR0002.SPC'),
-    );
-    const result = parse(buffer);
-    const variables = result.spectra[0].variables;
-    const minX = Math.min(...variables.x.data);
-    const minY = Math.min(...variables.y.data);
-    const maxX = Math.max(...variables.x.data);
-    const maxY = Math.max(...variables.y.data);
-
-    expect(minX).toBeCloseTo(88.63693237304688);
-    expect(minY).toBe(0);
-    expect(maxX).toBeCloseTo(4011.202392578125);
-    expect(maxY).toBe(1);
-  });
+  expect(() => parse(garbage.buffer)).toThrow('Unsupported SPC file');
 });

@@ -12,7 +12,7 @@ import {
 } from '../guessSpectraType.ts';
 
 describe('Test the Spectra-Type Guess', () => {
-  const dataDir = '../../__tests__/data';
+  const dataDir = 'data';
 
   it('nir', () => {
     //kubelka-monk is now in "other" as it is a

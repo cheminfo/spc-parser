@@ -10,7 +10,7 @@ import { newDataBlock } from '../newDataBlock.ts';
 import { oldDataBlock } from '../oldDataBlock.ts';
 
 describe('data block parsing test', () => {
-  const dataDir = '../../__tests__/data';
+  const dataDir = 'data';
 
   it('m_xyxy.spc', () => {
     const buffer = new IOBuffer(
