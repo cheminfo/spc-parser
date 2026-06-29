@@ -1,6 +1,6 @@
 # spc-parser
 
-Thermo Galactic GRAMS SPC files parser.
+Parser for `.spc` spectroscopy files: Thermo Galactic GRAMS SPC and Shimadzu UVProbe (OLE2 and flat). The format is auto-detected.
 
 <h3 align="center">
 
@@ -24,14 +24,17 @@ Thermo Galactic GRAMS SPC files parser.
 
 `$ npm i spc-parser`
 
+This package is ESM-only. It requires Node.js ≥ 20.19, ≥ 22.12, or any 24.x or later, or a bundler. CommonJS consumers must `import` it (no `require`).
+
 ## Usage
 
 ```js
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { parse } from 'spc-parser';
 
-const arrayBuffer = readFileSync(join(__dirname, 'spectrum.spc'));
+const arrayBuffer = readFileSync(join(import.meta.dirname, 'spectrum.spc'));
 
 const result = parse(arrayBuffer);
 // result is a JSON object containing everything that was parsed

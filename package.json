@@ -1,7 +1,7 @@
 {
   "name": "spc-parser",
   "version": "2.0.0",
-  "description": "Thermo Galactic GRAMS SPC files parser",
+  "description": "Parser for Thermo Galactic GRAMS SPC and Shimadzu UVProbe .spc files",
   "type": "module",
   "exports": {
     ".": "./lib/index.js"
@@ -13,12 +13,12 @@
   "scripts": {
     "build": "npm run tsc && cheminfo-build --entry lib/index.js --root SPCParser",
     "check-types": "tsc --noEmit",
-    "clean": "rimraf lib lib-esm",
-    "eslint": "eslint src",
-    "eslint-fix": "npm run eslint -- --fix",
+    "clean": "rimraf coverage lib",
+    "eslint": "eslint .",
+    "eslint-fix": "eslint . --fix",
     "prepack": "npm run tsc",
-    "prettier": "prettier --check src",
-    "prettier-write": "prettier --write src",
+    "prettier": "prettier --check .",
+    "prettier-write": "prettier --write .",
     "test": "npm run test-only && npm run check-types && npm run eslint && npm run prettier",
     "test-only": "vitest run --coverage",
     "tsc": "npm run clean && npm run tsc-build",
