@@ -5,7 +5,8 @@ import { createFromToArray } from 'ml-spectra-processing';
 import type { TheNewHeader } from '../fileHeader.ts';
 import { getDataShape } from '../utility/getDataShape.ts';
 
-import { SubHeader, setXYAxis } from './shared.ts';
+import type { SubHeader } from './shared.ts';
+import { parseSubHeader, setXYAxis } from './shared.ts';
 
 /**
  * Reads the data block of the SPC file.
@@ -39,7 +40,7 @@ export function newDataBlock(
 
   for (let i = 0; i < fileHeader.spectra; i++) {
     // here Y is set (runs only once for a single spectra.)
-    const subFileHeader = new SubHeader(buffer);
+    const subFileHeader = parseSubHeader(buffer);
 
     // set X for the remaining cases if neccesary
     if (dataShape === 'XYXY' || dataShape === 'exception') {

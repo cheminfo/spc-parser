@@ -49,7 +49,7 @@ describe('parse', () => {
       isDependent: false,
     });
     expect(result.spectra).toHaveLength(1);
-    expect(Object.keys(result.meta)).toHaveLength(31);
+    expect(Object.keys(result.meta)).toHaveLength(32);
   });
 
   it('raman-sion.spc', () => {
@@ -65,7 +65,7 @@ describe('parse', () => {
       isDependent: false,
     });
     expect(result.spectra).toHaveLength(36);
-    expect(Object.keys(result.meta)).toHaveLength(31);
+    expect(Object.keys(result.meta)).toHaveLength(32);
 
     const dataY = result.spectra[0].variables.y.data;
 

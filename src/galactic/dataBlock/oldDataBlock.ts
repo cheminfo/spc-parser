@@ -4,7 +4,8 @@ import { createFromToArray } from 'ml-spectra-processing';
 
 import type { TheOldHeader } from '../fileHeader.ts';
 
-import { SubHeader, setXYAxis } from './shared.ts';
+import type { SubHeader } from './shared.ts';
+import { parseSubHeader, setXYAxis } from './shared.ts';
 
 /**
  * Reads a file's data block (old SPC format)
@@ -31,7 +32,7 @@ export function oldDataBlock(
     buffer.offset + fileHeader.numberPoints < buffer.length;
     i++
   ) {
-    const subFileHeader = new SubHeader(buffer);
+    const subFileHeader = parseSubHeader(buffer);
     const y = getOldY(
       new Float64Array(x.length),
       subFileHeader,

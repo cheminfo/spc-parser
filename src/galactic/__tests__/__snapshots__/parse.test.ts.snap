@@ -37,7 +37,7 @@ SUBFILE18 = 5/3/1995, 9:29:44, "18        "
 SUBFILE19 = 5/3/1995, 9:29:44, "19        " 
 SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
   },
-  "meta": TheNewHeader {
+  "meta": {
     "calibrationLevel": 0,
     "concentrationFactor": 0,
     "date": "0000-00-00T00:00:00.00Z",
@@ -45,12 +45,13 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
     "experimentType": "General SPC (could be anything)",
     "exponentY": 4,
     "fileVersion": 75,
+    "kind": "new",
     "logOffset": 57152,
     "memo": "NIR Spectra Example",
     "methodFile": "",
     "modifiedFlag": 0,
     "numberPoints": 700,
-    "parameters": FlagParameters {
+    "parameters": {
       "customAxisLabels": false,
       "multiFile": true,
       "useExperimentExtension": false,
@@ -90,14 +91,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
   },
   "spectra": [
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 1,
         "exponentY": 4,
         "indexNumber": 0,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -1526,14 +1527,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 2,
         "exponentY": -128,
         "indexNumber": 1,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -2962,14 +2963,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 3,
         "exponentY": -128,
         "indexNumber": 2,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -4398,14 +4399,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 4,
         "exponentY": -128,
         "indexNumber": 3,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -5834,14 +5835,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 5,
         "exponentY": -128,
         "indexNumber": 4,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -7270,14 +7271,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 6,
         "exponentY": -128,
         "indexNumber": 5,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -8706,14 +8707,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 7,
         "exponentY": -128,
         "indexNumber": 6,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -10142,14 +10143,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 8,
         "exponentY": -128,
         "indexNumber": 7,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -11578,14 +11579,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 9,
         "exponentY": -128,
         "indexNumber": 8,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -13014,14 +13015,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 10,
         "exponentY": -128,
         "indexNumber": 9,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -14450,14 +14451,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 11,
         "exponentY": -128,
         "indexNumber": 10,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -15886,14 +15887,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 12,
         "exponentY": -128,
         "indexNumber": 11,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -17322,14 +17323,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 13,
         "exponentY": -128,
         "indexNumber": 12,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -18758,14 +18759,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 14,
         "exponentY": -128,
         "indexNumber": 13,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -20194,14 +20195,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 15,
         "exponentY": -128,
         "indexNumber": 14,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -21630,14 +21631,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 16,
         "exponentY": -128,
         "indexNumber": 15,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -23066,14 +23067,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 17,
         "exponentY": -128,
         "indexNumber": 16,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -24502,14 +24503,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 18,
         "exponentY": -128,
         "indexNumber": 17,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -25938,14 +25939,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 19,
         "exponentY": -128,
         "indexNumber": 18,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
@@ -27374,14 +27375,14 @@ SUBFILE20 = 5/3/1995, 9:29:44, "20        "",
       },
     },
     {
-      "meta": SubHeader {
+      "meta": {
         "endingZ": 20,
         "exponentY": -128,
         "indexNumber": 19,
         "noiseValue": 0,
         "numberCoAddedScans": 4,
         "numberPoints": 0,
-        "parameters": SubFlagParameters {
+        "parameters": {
           "changed": false,
           "modifiedArithmetic": false,
           "noPeakTable": false,
