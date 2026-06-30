@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/cheminfo/spc-parser/compare/v2.0.0...v2.1.0) (2026-06-29)
+
+
+### Features
+
+* add uvprobe parser ([#45](https://github.com/cheminfo/spc-parser/issues/45)) ([dd6bc69](https://github.com/cheminfo/spc-parser/commit/dd6bc693e7ba15441b11e303c8a72fdce4d10fd4))
+
 ## [2.0.0](https://github.com/cheminfo/spc-parser/compare/v1.0.0...v2.0.0) (2026-04-17)
 
 
