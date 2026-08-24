@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/cheminfo/spc-parser/compare/v2.1.0...v2.1.1) (2026-08-24)
+
+
+### Bug Fixes
+
+* decode the MS-DOS date layout written by Renishaw WiRE ([af31420](https://github.com/cheminfo/spc-parser/commit/af3142063f2466911aec03cf2e5bd80a10d0a553))
+
 ## [2.1.0](https://github.com/cheminfo/spc-parser/compare/v2.0.0...v2.1.0) (2026-06-29)
 
 
