@@ -80,13 +80,14 @@ function parseOldHeader(buffer: IOBuffer, prev: HeaderOptions): TheOldHeader {
   const endingX = buffer.readFloat32();
   const xUnitsType = xzwTypes(buffer.readUint8());
   const yUnitsType = yTypes(buffer.readUint8());
-  const date = new Date();
   const zTypeYear = buffer.readUint16(); //Unrelated to Z axis
-  date.setUTCFullYear(zTypeYear % 4096); // TODO: might be wrong
-  date.setUTCMonth(Math.max(buffer.readUint8() - 1, 0));
-  date.setUTCDate(buffer.readUint8());
-  date.setUTCHours(buffer.readUint8());
-  date.setUTCMinutes(buffer.readUint8());
+  const month = buffer.readUint8();
+  const day = buffer.readUint8();
+  const hour = buffer.readUint8();
+  const minute = buffer.readUint8();
+  const date = new Date(0);
+  date.setUTCFullYear(zTypeYear % 4096, Math.max(month - 1, 0), day); // TODO: might be wrong
+  date.setUTCHours(hour, minute, 0, 0);
   const resolutionDescription = buffer
     .readChars(8)
     .replaceAll('\u0000', '')

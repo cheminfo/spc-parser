@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { xMinMaxValues } from 'ml-spectra-processing';
 import { describe, expect, it } from 'vitest';
 
 import { parse } from '../../parse.ts';
@@ -8,7 +9,7 @@ import { parse } from '../../parse.ts';
 describe('parse', () => {
   it('test that all are same length arrays of data', () => {
     const files = readdirSync(join(import.meta.dirname, 'data')).filter(
-      (file) => file !== 'nir.cfl',
+      (file) => file.toLowerCase().endsWith('.spc'),
     );
     for (const f of files) {
       const r = parse(readFileSync(join(import.meta.dirname, 'data', f)));
@@ -68,9 +69,10 @@ describe('parse', () => {
     expect(Object.keys(result.meta)).toHaveLength(32);
 
     const dataY = result.spectra[0].variables.y.data;
+    const { min, max } = xMinMaxValues(dataY);
 
-    expect(Math.min(...dataY)).toBeCloseTo(1870.6690673828125);
-    expect(Math.max(...dataY)).toBe(7594.40869140625);
+    expect(min).toBeCloseTo(1870.6690673828125);
+    expect(max).toBe(7594.40869140625);
   });
 
   it('NDR0002.SPC', () => {
@@ -79,10 +81,8 @@ describe('parse', () => {
     );
     const result = parse(buffer);
     const variables = result.spectra[0].variables;
-    const minX = Math.min(...variables.x.data);
-    const minY = Math.min(...variables.y.data);
-    const maxX = Math.max(...variables.x.data);
-    const maxY = Math.max(...variables.y.data);
+    const { min: minX, max: maxX } = xMinMaxValues(variables.x.data);
+    const { min: minY, max: maxY } = xMinMaxValues(variables.y.data);
 
     expect(minX).toBeCloseTo(88.63693237304688);
     expect(minY).toBe(0);
