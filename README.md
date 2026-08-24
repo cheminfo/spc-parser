@@ -40,6 +40,17 @@ const result = parse(arrayBuffer);
 // result is a JSON object containing everything that was parsed
 ```
 
+### Exports
+
+| Export                   | Description                                                                                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parse(buffer)`          | Parses an `.spc` file, auto-detecting the format. Accepts an `ArrayBuffer`, a typed array / `DataView`, a Node.js `Buffer`, or an `IOBuffer`. Returns a `ParseResult`. |
+| `guessSpectraType(meta)` | Classifies a parsed Galactic `Header` as `'ir' \| 'uv' \| 'raman' \| 'mass' \| 'other'`.                                                                               |
+
+`ParseResult` has three properties: `meta` (the Galactic `Header` or the Shimadzu `UvProbeMeta`), `spectra` (an array of `MeasurementXY` from `cheminfo-types`) and `logs` (the Galactic log block, `null` or absent when the file has none).
+
+`parse` throws when the buffer is neither an OLE2 compound document, a Thermo Galactic SPC, nor a Shimadzu UVProbe flat file.
+
 ## [API Documentation](https://cheminfo.github.io/spc-parser/)
 
 ## Credits and useful information
