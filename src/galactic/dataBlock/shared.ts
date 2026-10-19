@@ -1,10 +1,14 @@
 import type { MeasurementXYVariables } from 'cheminfo-types';
 import type { IOBuffer } from 'iobuffer';
-import { xySortX } from 'ml-spectra-processing';
 
+import { decodeText } from '../../utility/decodeText.ts';
 import type { Header } from '../fileHeader.ts';
 
-/** The flags encoded in the first byte of the subheader. */
+import { applyXOrder, getXOrder } from './xOrder.ts';
+
+/**
+ * The flags encoded in the first byte of the subheader.
+ */
 export interface SubFlagParameters {
   changed: boolean;
   noPeakTable: boolean;
@@ -24,7 +28,9 @@ export function parseSubFlagParameters(flag: number): SubFlagParameters {
   };
 }
 
-/** The subheader (header of the subfile). All formats share the same subheader. */
+/**
+ * The subheader (header of the subfile). All formats share the same subheader.
+ */
 export interface SubHeader {
   parameters: SubFlagParameters;
   exponentY: number;
@@ -36,16 +42,70 @@ export interface SubHeader {
   numberCoAddedScans: number;
   wAxisValue: number;
   reserved: string;
+  /**
+   * Raw `subflgs` byte (undefined bits are written by some software).
+   */
+  flags: number;
+}
+
+/**
+ * Metadata of one spectrum: the raw subheader and how its Y values were read.
+ */
+export interface SpectrumMeta extends SubHeader {
+  /**
+   * Exponent actually used for the Y values (`-128` for float values).
+   * `exponentY` keeps the raw `subexp`.
+   */
+  exponent: number;
+  /**
+   * Y values were stored as IEEE float32.
+   */
+  isFloat: boolean;
+  /**
+   * 0-based position of the subfile in the file (`indexNumber` is the raw
+   * `subindx`, a 16-bit value that wraps).
+   */
+  index: number;
+  /**
+   * Interpreted Z value (multifiles only; see `zSpacing` on the header).
+   * @default undefined
+   */
+  z?: number;
+  /**
+   * End of the Z interval (`subnext`) for ordered or random Z.
+   * @default undefined
+   */
+  zEnd?: number;
+  /**
+   * Interpreted W value (4D files only).
+   * @default undefined
+   */
+  w?: number;
+  /**
+   * 0-based W plane (4D files whose planes divide the subfiles evenly).
+   * @default undefined
+   */
+  plane?: number;
+  /**
+   * Peak-pick noise level, when `subnois` is set (high byte not 0).
+   * @default undefined
+   */
+  noise?: number;
 }
 
 /**
  * Parses the subheader (header of the subfile).
  * @param buffer - SPC buffer.
+ * @param textEncoding - fallback encoding of `subresv` when it is not UTF-8.
  * @returns subheader object.
  */
-export function parseSubHeader(buffer: IOBuffer): SubHeader {
+export function parseSubHeader(
+  buffer: IOBuffer,
+  textEncoding = 'windows-1252',
+): SubHeader {
+  const flags = buffer.readUint8();
   return {
-    parameters: parseSubFlagParameters(buffer.readUint8()),
+    parameters: parseSubFlagParameters(flags),
     exponentY: buffer.readInt8(),
     indexNumber: buffer.readUint16(),
     startingZ: buffer.readFloat32(),
@@ -54,43 +114,54 @@ export function parseSubHeader(buffer: IOBuffer): SubHeader {
     numberPoints: buffer.readUint32(),
     numberCoAddedScans: buffer.readUint32(),
     wAxisValue: buffer.readFloat32(),
-    reserved: buffer.readChars(4).replaceAll('\u0000', '').trim(),
+    reserved: decodeText(buffer.readBytes(4), { encoding: textEncoding }),
+    flags,
   };
 }
 
 /**
- * Set the X and Y axis (object with labels, values etc.)
- * @param x - X values array.
- * @param y - Y values array.
+ * Set the X and Y axis (object with labels, values etc.). The order of X is
+ * computed once per X array, so the spectra of a common-X file share it, and
+ * `fileHeader.xDirection` records it.
+ * @param x - X values array, possibly shared by several spectra (not modified).
+ * @param y - Y values array, owned by the spectrum (it may be reversed in place).
  * @param fileHeader - main file header.
+ * @param shouldSortX - whether to sort the spectrum by increasing X.
+ * @param isXOwned - X was read for this spectrum only, so it is taken over
+ * instead of copied.
  * @returns object with x and y as axis.
  */
 export function setXYAxis(
   x: Float64Array,
   y: Float64Array,
   fileHeader: Header,
+  shouldSortX = true,
+  isXOwned = false,
 ) {
-  const xAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-    fileHeader.xUnitsType as string,
-  );
-  const yAxis = /(?<label>.*?) ?[([](?<units>.*)[)\]]/.exec(
-    fileHeader.yUnitsType,
-  );
-
-  const { x: oX, y: oY } = xySortX({ x, y });
+  const { x: xAxis, y: yAxis } = fileHeader.axes;
+  const xOrder = getXOrder(x);
+  if (fileHeader.xDirection === undefined) {
+    fileHeader.xDirection = xOrder.direction;
+  } else if (fileHeader.xDirection !== xOrder.direction) {
+    fileHeader.xDirection = 'unordered';
+  }
+  const { x: oX, y: oY } = applyXOrder(x, y, xOrder, {
+    shouldSortX,
+    isXOwned,
+  });
 
   const variables: MeasurementXYVariables = {
     x: {
       symbol: 'x',
-      label: xAxis?.groups?.label || (fileHeader.xUnitsType as string),
-      units: xAxis?.groups?.units || '',
+      label: xAxis.label,
+      units: xAxis.units,
       data: oX,
       isDependent: false,
     },
     y: {
       symbol: 'y',
-      label: yAxis?.groups?.label || fileHeader.yUnitsType,
-      units: yAxis?.groups?.units || '',
+      label: yAxis.label,
+      units: yAxis.units,
       data: oY,
       isDependent: true,
     },

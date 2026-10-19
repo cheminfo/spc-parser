@@ -17,9 +17,9 @@ test('xzyTypes', () => {
   expect(xzwTypes(12)).toBe('Years');
   expect(xzwTypes(13)).toBe('Raman Shift (cm-1)');
   expect(xzwTypes(14)).toBe('eV');
-  expect(xzwTypes(15)).toBe(0);
+  expect(xzwTypes(15)).toBe('Text labels');
   expect(xzwTypes(16)).toBe('Diode Number');
-  expect(xzwTypes(17)).toBe('Channel ');
+  expect(xzwTypes(17)).toBe('Channel');
   expect(xzwTypes(18)).toBe('Degrees');
   expect(xzwTypes(19)).toBe('Temperature (F)');
   expect(xzwTypes(20)).toBe('Temperature (C)');
@@ -34,7 +34,8 @@ test('xzyTypes', () => {
   expect(xzwTypes(29)).toBe('Millimeters (mm)');
   expect(xzwTypes(30)).toBe('Hours');
   expect(xzwTypes(255)).toBe('Double interferogram');
-  expect(xzwTypes(5248)).toBe('Arbitrary');
+  expect(xzwTypes(0)).toBe('Arbitrary');
+  expect(xzwTypes(5248)).toBe('Unknown (code 5248)');
 });
 
 test('yTypes', () => {
@@ -66,7 +67,8 @@ test('yTypes', () => {
   expect(yTypes(129)).toBe('Reflectance');
   expect(yTypes(130)).toBe('Arbitrary or Single Beam with Valley Peaks');
   expect(yTypes(131)).toBe('Emission');
-  expect(yTypes(177718)).toBe('Reference Arbitrary Energy');
+  expect(yTypes(255)).toBe('Reference Arbitrary Energy');
+  expect(yTypes(177718)).toBe('Unknown (code 177718)');
 });
 
 test('experimentSettings', () => {
@@ -95,5 +97,8 @@ test('experimentSettings', () => {
   expect(experimentSettings(12)).toBe('Fluorescence Spectrum');
   expect(experimentSettings(13)).toBe('Atomic Spectrum');
   expect(experimentSettings(14)).toBe('Chromatography Diode Array Spectra');
-  expect(experimentSettings(1428)).toBe('General SPC (could be anything)');
+  expect(experimentSettings(0)).toBe('General SPC (could be anything)');
+  expect(experimentSettings(0, true)).toBe('General Chromatogram');
+  expect(experimentSettings(6)).toBe('Unknown (code 6)');
+  expect(experimentSettings(1428)).toBe('Unknown (code 1428)');
 });

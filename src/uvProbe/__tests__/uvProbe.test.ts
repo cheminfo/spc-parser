@@ -1,35 +1,43 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { expect, test } from 'vitest';
+import { assert, expect, test } from 'vitest';
 import { parseXY } from 'xy-parser';
 
 import { parse } from '../../parse.ts';
 import type { UvProbeMeta } from '../types.ts';
 
-const dataDir = join(import.meta.dirname, 'data');
+const dataDirectory = join(import.meta.dirname, 'data');
 
 function readData(name: string) {
-  return readFileSync(join(dataDir, name));
+  return readFileSync(join(dataDirectory, name));
 }
 
-/** Reference export rounded to 2 (wavelength) / 3 (absorbance) decimals. */
+/**
+ * Reference export rounded to 2 (wavelength) / 3 (absorbance) decimals.
+ */
 const reference = parseXY(readData('uvprobe-reference.txt'));
 
 test('flat and OLE describe the same spectrum', () => {
   const flat = parse(readData('uvprobe-flat.spc'));
   const ole = parse(readData('uvprobe-ole.spc'));
 
-  const flatY = flat.spectra[0].variables.y.data;
-  const oleY = ole.spectra[0].variables.y.data;
+  const flatSpectrum = flat.spectra[0];
+  const oleSpectrum = ole.spectra[0];
+  assert(flatSpectrum && oleSpectrum);
+  const flatY = flatSpectrum.variables.y.data;
+  const oleY = oleSpectrum.variables.y.data;
 
   expect(flatY).toStrictEqual(oleY);
 
-  const flatX = flat.spectra[0].variables.x.data;
-  const oleX = ole.spectra[0].variables.x.data;
+  const flatX = flatSpectrum.variables.x.data;
+  const oleX = oleSpectrum.variables.x.data;
   let maxXError = 0;
   for (let i = 0; i < flatX.length; i++) {
-    maxXError = Math.max(maxXError, Math.abs(flatX[i] - oleX[i]));
+    maxXError = Math.max(
+      maxXError,
+      Math.abs((flatX[i] as number) - (oleX[i] as number)),
+    );
   }
 
   expect(maxXError).toBeLessThan(1e-6);
@@ -47,7 +55,9 @@ test.each([
   expect(meta.numberPoints).toBe(1501);
   expect(spectra).toHaveLength(1);
 
-  const { x, y } = spectra[0].variables;
+  const spectrum = spectra[0];
+  assert(spectrum);
+  const { x, y } = spectrum.variables;
 
   expect(x.units).toBe('nm');
   expect(y.label).toBe('Absorbance');
@@ -59,8 +69,14 @@ test.each([
   let maxXError = 0;
   let maxYError = 0;
   for (let i = 0; i < reference.x.length; i++) {
-    maxXError = Math.max(maxXError, Math.abs(x.data[i] - reference.x[i]));
-    maxYError = Math.max(maxYError, Math.abs(y.data[i] - reference.y[i]));
+    maxXError = Math.max(
+      maxXError,
+      Math.abs((x.data[i] as number) - (reference.x[i] as number)),
+    );
+    maxYError = Math.max(
+      maxYError,
+      Math.abs((y.data[i] as number) - (reference.y[i] as number)),
+    );
   }
 
   expect(maxXError).toBeLessThan(1e-2);
@@ -83,7 +99,7 @@ test('flat metadata', () => {
   const meta = parse(readData('uvprobe-flat.spc')).meta as UvProbeMeta;
 
   expect(meta.kind).toBe('flat');
-  expect(meta.date).toBe('2026-04-22T11:36:51.000Z');
+  expect(meta.date).toBe('2026-04-22T11:36:51.000');
   expect(meta.title).toBeUndefined();
 });
 
@@ -92,11 +108,11 @@ test('OLE metadata', () => {
 
   expect(meta.kind).toBe('ole');
   expect(meta.title).toBe('200 uM HCHO DNPH');
-  expect(meta.date).toBe('2026-04-22T11:36:51.000Z');
-  expect(meta.properties['Instrument Properties']['Instrument Type']).toBe(
+  expect(meta.date).toBe('2026-04-22T11:36:51.000');
+  expect(meta.properties['Instrument Properties']?.['Instrument Type']).toBe(
     'UV-2600 Series',
   );
   expect(
-    meta.properties['Measurement Properties']['Wavelength Range (nm.)'],
+    meta.properties['Measurement Properties']?.['Wavelength Range (nm.)'],
   ).toBe('300.00 to 600.00');
 });

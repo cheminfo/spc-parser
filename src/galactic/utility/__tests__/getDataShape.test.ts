@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
 import { getDataShape } from '../getDataShape.ts';
-import { parseFlagParameters } from '../headerUtils.ts';
+import { parseFlagParameters } from '../headerUtilities.ts';
 
 test('Data shape', () => {
   const y = parseFlagParameters(0b00000000);

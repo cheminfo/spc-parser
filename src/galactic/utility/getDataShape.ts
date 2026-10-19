@@ -1,4 +1,4 @@
-import type { FlagParameters } from './headerUtils.ts';
+import type { FlagParameters } from './headerUtilities.ts';
 /**
  * The new file format records as:
  * - Y. X is implicit (calc from XStart, XEnd, Y.length)
@@ -24,18 +24,23 @@ export function getDataShape({
   xy,
   xyxy,
 }: FlagParameters): DataShape {
-  /* single file */
+  /*
+  single file
+  */
   if (!multiFile) {
     // Y or XY,
     return !xy ? 'Y' : xyxy ? 'exception' : 'XY';
   }
 
-  /* then multifile */
+  /*
+  then multifile
+  */
   if (!xy) {
-    /* even X - equidistant */
+    /*
+    even X - equidistant
+    */
     return 'YY';
-  } else {
-    // uneven x
-    return !xyxy ? 'XYY' : 'XYXY';
   }
+  // uneven x
+  return !xyxy ? 'XYY' : 'XYXY';
 }

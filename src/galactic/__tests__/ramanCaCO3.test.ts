@@ -7,25 +7,32 @@ import {
   xyInterpolateLinear,
   xySortX,
 } from 'ml-spectra-processing';
-import { expect, test } from 'vitest';
+import { assert, expect, test } from 'vitest';
 import { parseXY } from 'xy-parser';
 
 import { parse } from '../../parse.ts';
 import type { TheNewHeader } from '../fileHeader.ts';
 import { guessSpectraType } from '../utility/guessSpectraType.ts';
 
-const dataDir = join(import.meta.dirname, 'data');
+const dataDirectory = join(import.meta.dirname, 'data');
 
-const result = parse(readFileSync(join(dataDir, 'raman-caco3.spc')));
+const result = parse(readFileSync(join(dataDirectory, 'raman-caco3.spc')));
+
+function getVariables() {
+  const spectrum = result.spectra[0];
+  assert(spectrum);
+  return spectrum.variables;
+}
 
 /**
  * WiRE writes the SPC on an evenly spaced wavenumber grid, while the `.txt`
  * export keeps the native, unevenly spaced one, so the two are only comparable
  * once the reference is interpolated onto the SPC grid.
  */
-const reference = xySortX(
-  parseXY(readFileSync(join(dataDir, 'raman-caco3-reference.txt'))),
+const referenceText = readFileSync(
+  join(dataDirectory, 'raman-caco3-reference.txt'),
 );
+const reference = xySortX(parseXY(referenceText));
 
 test('header of the WiRE Raman export', () => {
   const meta = result.meta as TheNewHeader;
@@ -68,7 +75,7 @@ test('acquisition parameters from the log block', () => {
 test('spectrum is on an evenly spaced wavenumber grid', () => {
   expect(result.spectra).toHaveLength(1);
 
-  const { x, y } = result.spectra[0].variables;
+  const { x, y } = getVariables();
 
   expect(x.label).toBe('Raman Shift');
   expect(x.units).toBe('cm-1');
@@ -81,12 +88,12 @@ test('spectrum is on an evenly spaced wavenumber grid', () => {
   expect(x.data[0]).toBe(60.44921875);
   expect(x.data.at(-1)).toBe(1318.962890625);
 
-  const step = x.data[1] - x.data[0];
+  const step = (x.data[1] as number) - (x.data[0] as number);
   let maxStepError = 0;
   for (let i = 1; i < x.data.length; i++) {
     maxStepError = Math.max(
       maxStepError,
-      Math.abs(x.data[i] - x.data[i - 1] - step),
+      Math.abs((x.data[i] as number) - (x.data[i - 1] as number) - step),
     );
   }
 
@@ -94,7 +101,7 @@ test('spectrum is on an evenly spaced wavenumber grid', () => {
 });
 
 test('intensity statistics', () => {
-  const { y } = result.spectra[0].variables;
+  const { y } = getVariables();
   const { min, max } = xMinMaxValues(y.data);
 
   expect(min).toBe(8048.451171875);
@@ -103,7 +110,7 @@ test('intensity statistics', () => {
 });
 
 test('matches the reference text export', () => {
-  const { x, y } = result.spectra[0].variables;
+  const { x, y } = getVariables();
 
   expect(reference.x).toHaveLength(1015);
   expect(reference.x[0]).toBe(60.449219);
@@ -119,7 +126,10 @@ test('matches the reference text export', () => {
 
   let maxError = 0;
   for (let i = 0; i < y.data.length; i++) {
-    maxError = Math.max(maxError, Math.abs(y.data[i] - interpolated[i]));
+    maxError = Math.max(
+      maxError,
+      Math.abs((y.data[i] as number) - (interpolated[i] as number)),
+    );
   }
 
   expect(maxError / spc.max).toBeLessThan(1e-5);

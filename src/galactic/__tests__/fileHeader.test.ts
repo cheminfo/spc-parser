@@ -2,39 +2,36 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { IOBuffer } from 'iobuffer';
-import { describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 
 import type { TheNewHeader, TheOldHeader } from '../fileHeader.ts';
 import { fileHeader } from '../fileHeader.ts';
 
-describe('mainHeader parsing test', () => {
-  it('m_xyxy.spc', () => {
-    const mxyxy = fileHeader(
-      new IOBuffer(readFileSync(join(import.meta.dirname, 'data/m_xyxy.spc'))),
-    ) as TheNewHeader;
+function readHeader(name: string) {
+  const bytes = readFileSync(join(import.meta.dirname, 'data', name));
+  return fileHeader(new IOBuffer(bytes));
+}
 
-    expect(mxyxy.parameters.multiFile).toBe(true);
-    expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
-    expect(mxyxy.zUnitsType).toBe('Minutes');
-    expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
-    expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
-  });
+test('m_xyxy.spc', () => {
+  const mxyxy = readHeader('m_xyxy.spc') as TheNewHeader;
 
-  it('RAMAN.SPC', () => {
-    const raman = fileHeader(
-      new IOBuffer(readFileSync(join(import.meta.dirname, 'data/RAMAN.SPC'))),
-    ) as TheNewHeader;
+  expect(mxyxy.parameters.multiFile).toBe(true);
+  expect(mxyxy.xUnitsType).toBe('Mass (M/z)');
+  expect(mxyxy.zUnitsType).toBe('Minutes');
+  expect(mxyxy.date).toMatch(/1986-01-09T08:47/);
+  expect(mxyxy.memo).toMatch(/^Multiple [^]*X & Y arrays/);
+});
 
-    expect(raman.date).toMatch(/1994-08-26T16:45/);
-    expect(raman.xyzLabels).toMatch(/Rmn Intensity/);
-  });
+test('RAMAN.SPC', () => {
+  const raman = readHeader('RAMAN.SPC') as TheNewHeader;
 
-  it('m_ordz', () => {
-    const mOrdZ = fileHeader(
-      new IOBuffer(readFileSync(join(import.meta.dirname, 'data/m_ordz.spc'))),
-    ) as TheOldHeader;
+  expect(raman.date).toMatch(/1994-08-26T16:45/);
+  expect(raman.xyzLabels).toMatch(/Rmn Intensity/);
+});
 
-    expect(mOrdZ.fileVersion).toBe(0x4d);
-    expect(mOrdZ.memo).toMatch(/^Multiple [^]*ordered Z spacing/);
-  });
+test('m_ordz', () => {
+  const mOrdZ = readHeader('m_ordz.spc') as TheOldHeader;
+
+  expect(mOrdZ.fileVersion).toBe(0x4d);
+  expect(mOrdZ.memo).toMatch(/^Multiple [^]*ordered Z spacing/);
 });

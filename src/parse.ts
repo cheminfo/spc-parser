@@ -1,59 +1,105 @@
 import type { MeasurementXY } from 'cheminfo-types';
 import { IOBuffer } from 'iobuffer';
 
+import { identifyForeign } from './detect/identifyForeign.ts';
+import { isGalactic } from './detect/isGalactic.ts';
 import type { Header } from './galactic/fileHeader.ts';
 import type { LogBlock } from './galactic/logBlock.ts';
 import { parseGalactic } from './galactic/parse.ts';
+import type { ParseContext, ParseOptions } from './utility/ParseContext.ts';
+import { createParseContext } from './utility/ParseContext.ts';
+import { SpcParserError } from './utility/SpcParserError.ts';
+import { hasSignature } from './utility/bytes.ts';
+import { warnNaiveDate } from './utility/naiveDate.ts';
 import { isUVProbeFlat, parseUVProbeFlat } from './uvProbe/parseFlat.ts';
 import { parseUVProbeOle } from './uvProbe/parseOle.ts';
 import type { UvProbeMeta } from './uvProbe/types.ts';
 
+export type { ParseOptions } from './utility/ParseContext.ts';
+export type { SpcParserErrorCode } from './utility/SpcParserError.ts';
+export { SpcParserError } from './utility/SpcParserError.ts';
+
 export type InputData = ArrayBufferLike | ArrayBufferView | IOBuffer | Buffer;
 
+/**
+ * What `parse` returns.
+ */
 export interface ParseResult {
+  /**
+   * File-level metadata: the Galactic header, or the UVProbe metadata.
+   */
   meta: Header | UvProbeMeta;
+  /**
+   * The spectra of the file, in file order.
+   */
   spectra: MeasurementXY[];
+  /**
+   * Galactic log block, `null` when the file has none. Absent for UVProbe files.
+   * @default undefined
+   */
   logs?: LogBlock | null;
+  /**
+   * Non-fatal anomalies (truncation, clamped log, inconsistent header, ...).
+   * Always present.
+   */
+  warnings: string[];
 }
 
-/** OLE2 / Microsoft Compound File Binary magic number. */
+/**
+ * OLE2 / Microsoft Compound File Binary magic number.
+ */
 const oleMagic = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1];
-const galacticVersions = new Set([0x4b, 0x4c, 0x4d]);
 
 /**
  * Parses an SPC file, auto-detecting the format:
  * Thermo Galactic GRAMS SPC, or Shimadzu UVProbe (OLE2 or flat) `.spc`.
  * @param buffer - SPC file buffer.
+ * @param options - parsing options.
  * @returns JSON-like object with the spectra and metadata of the file.
+ * @throws {SpcParserError} With code `UNSUPPORTED_FORMAT` when the format is not
+ * recognised (the message names known foreign formats, and a file shorter
+ * than 32 bytes is never recognised), or `TRUNCATED` when a Galactic file
+ * (at least 32 bytes) ends before the data its header announces.
+ * @throws {TypeError} When `options.encoding` is not a supported encoding.
  */
-export function parse(buffer: InputData): ParseResult {
+export function parse(
+  buffer: InputData,
+  options: ParseOptions = {},
+): ParseResult {
+  const context = createParseContext(options);
   const bytes = toBytes(buffer);
 
-  if (isOle(bytes)) {
-    return parseUVProbeOle(bytes);
+  if (hasSignature(bytes, oleMagic)) {
+    return finish(parseUVProbeOle(bytes, context), context);
   }
-  if (galacticVersions.has(bytes[1])) {
-    return parseGalactic(new IOBuffer(bytes));
+  if (isGalactic(bytes)) {
+    return finish(parseGalactic(new IOBuffer(bytes), context), context);
   }
   if (isUVProbeFlat(bytes)) {
-    return parseUVProbeFlat(bytes);
+    return finish(parseUVProbeFlat(bytes, context), context);
   }
-  throw new Error(
-    'Unsupported SPC file: not an OLE2 compound document, a Thermo Galactic SPC, or a Shimadzu UVProbe flat file',
+  const foreign = identifyForeign(bytes);
+  throw new SpcParserError(
+    'UNSUPPORTED_FORMAT',
+    foreign
+      ? `Unsupported SPC file: detected ${foreign}`
+      : 'Unsupported SPC file: not an OLE2 compound document, a Thermo Galactic SPC, or a Shimadzu UVProbe flat file (headerless data such as a Bruker EPR .spc cannot be identified)',
   );
 }
 
 /**
- * Checks for the OLE2 compound-file magic number.
- * @param bytes - file bytes.
- * @returns True when the file is an OLE2 compound document.
+ * Attaches the warnings to a parsed file, after reporting dates that name no
+ * instant.
+ * @param result - what the format reader produced.
+ * @param context - shared parse state.
+ * @returns The complete result.
  */
-function isOle(bytes: Uint8Array): boolean {
-  if (bytes.length < oleMagic.length) return false;
-  for (let i = 0; i < oleMagic.length; i++) {
-    if (bytes[i] !== oleMagic[i]) return false;
-  }
-  return true;
+function finish(
+  result: Omit<ParseResult, 'warnings'>,
+  context: ParseContext,
+): ParseResult {
+  warnNaiveDate(result, context);
+  return { ...result, warnings: context.warnings };
 }
 
 /**

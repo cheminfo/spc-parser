@@ -2,7 +2,61 @@
 
 exports[`OLE metadata snapshot 1`] = `
 {
-  "date": "2026-04-22T11:36:51.000Z",
+  "datasets": [
+    {
+      "datasetName": "RawData",
+      "date": "2026-04-22T11:36:51.000",
+      "instrumentName": "LRESE-UV2600",
+      "kind": "ole",
+      "measuringModeCode": 2,
+      "model": "01639",
+      "numberPoints": 1501,
+      "organization": "EPFL",
+      "path": "DataStorage1/DataSetGroup/DataSet1",
+      "properties": {
+        "Attachment Properties": {
+          "Attachment": "None",
+        },
+        "Instrument Properties": {
+          "Accumulation time": "0,1 sec.",
+          "Detector Unit": "Direct",
+          "Instrument Type": "UV-2600 Series",
+          "Light Source Change Wavelength": "323,0 nm",
+          "Measuring Mode": "Absorbance",
+          "S/R Exchange": "Normal",
+          "Slit Width": "5,0",
+          "Stair Correction": "ON",
+        },
+        "Measurement Properties": {
+          "Auto Sampling Interval": "Enabled",
+          "Sampling Interval": "0,2",
+          "Scan Mode": "Single",
+          "Scan Speed": "Fast",
+          "Wavelength Range (nm.)": "300.00 to 600.00",
+        },
+        "Operation": {
+          "Average": "Disabled",
+          "InterPolate": "Disabled",
+          "Points": "4",
+          "Threshold": "0,0010000",
+        },
+        "Sample Preparation Properties": {
+          "Additional Information": "",
+          "Dilution": "",
+          "Path Length": "",
+          "Volume": "",
+          "Weight": "",
+        },
+      },
+      "serialNumber": "A116955",
+      "series": "UV-2600 Series",
+      "software": "UVProbe",
+      "softwareVersion": "2.62",
+      "storageName": "Storage 113434",
+      "title": "200 uM HCHO DNPH",
+    },
+  ],
+  "date": "2026-04-22T11:36:51.000",
   "kind": "ole",
   "numberPoints": 1501,
   "properties": {
@@ -46,7 +100,15 @@ exports[`OLE metadata snapshot 1`] = `
 
 exports[`flat metadata snapshot 1`] = `
 {
-  "date": "2026-04-22T11:36:51.000Z",
+  "date": "2026-04-22T11:36:51.000",
+  "header": {
+    "displayMax": 100,
+    "displayMin": 0,
+    "familyFlags": 0,
+    "modeCode": 1,
+    "samplingCode": 3,
+    "speedCode": 0,
+  },
   "kind": "flat",
   "numberPoints": 1501,
   "properties": {},

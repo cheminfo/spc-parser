@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { xMinMaxValues } from 'ml-spectra-processing';
-import { expect, test } from 'vitest';
+import { assert, expect, test } from 'vitest';
 
 import { parse } from '../../parse.ts';
 
@@ -15,7 +15,9 @@ test('Resolution pro', () => {
 
   expect(result.spectra).toHaveLength(1);
 
-  const variables = result.spectra[0].variables;
+  const spectrum = result.spectra[0];
+  assert(spectrum);
+  const variables = spectrum.variables;
   const { min, max } = xMinMaxValues(variables.y.data);
 
   expect(min).toBe(3);

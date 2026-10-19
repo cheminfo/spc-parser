@@ -1,146 +1,169 @@
 import * as CFB from 'cfb';
+import type { MeasurementXY, NumberArray } from 'cheminfo-types';
 
-import { buildVariables } from './buildVariables.ts';
-import { parsePageText } from './pageTexts.ts';
+import type { ParseContext } from '../utility/ParseContext.ts';
+import { SpcParserError } from '../utility/SpcParserError.ts';
+
+import { listDatasets, readDataset } from './datasets.ts';
 import type { UvProbeResult } from './parseFlat.ts';
-import type { UvProbeMeta } from './types.ts';
-
-/** Days between the OLE automation epoch (1899-12-30) and the Unix epoch. */
-const oleDateEpochOffset = 25569;
-const millisecondsPerDay = 86400000;
+import type { UvProbeDatasetMeta, UvProbeMeta } from './types.ts';
 
 /**
  * Parses the OLE2 compound-document Shimadzu UVProbe `.spc` variant.
  *
- * Wavelength and absorbance are stored as `float64` arrays in the `X Data.1`
- * and `Y Data.1` streams; metadata lives in the `PageTextsN` and
- * `DataSetHistory` streams.
+ * Every `DataStorageK/DataSetGroup/DataSetJ` storage is one spectrum, returned
+ * in numeric storage then dataset order. Wavelength and ordinate are `float64`
+ * arrays in the `X Data.1` and `Y Data.1` streams, the measuring mode is in
+ * `Data Header.1`, and metadata lives in `DataSetHeaderInfo`,
+ * `DataSetHistory` and the dataset's `MethodStorage/PageTextsN` streams.
+ * The file-level `meta` describes the first dataset.
  * @param bytes - the whole file as bytes.
- * @returns The spectrum and its metadata.
+ * @param context - shared parse state (encoding and warnings).
+ * @returns The spectra and their metadata.
  */
-export function parseUVProbeOle(bytes: Uint8Array): UvProbeResult {
-  const container = CFB.read(bytes, { type: 'buffer' });
-
-  const x = readDoubles(findStream(container, 'X Data.1'));
-  const y = readDoubles(findStream(container, 'Y Data.1'));
-  if (x.length !== y.length) {
-    throw new Error('UVProbe OLE: X and Y streams have different lengths');
+export function parseUVProbeOle(
+  bytes: Uint8Array,
+  context: ParseContext,
+): UvProbeResult {
+  const container = readContainer(bytes);
+  const streams = collectStreams(container);
+  const locations = listDatasets(streams.keys());
+  if (locations.length === 0) {
+    throw new SpcParserError('UNSUPPORTED_FORMAT', describeOle(container));
   }
 
-  const history = tryStream(container, 'DataSetHistory');
+  const spectra: MeasurementXY[] = [];
+  const datasets: UvProbeDatasetMeta[] = [];
+  const references = new Map<number, ScanSpan>();
+  for (const location of locations) {
+    const dataset = readDataset(streams, location, context);
+    if (!dataset) continue;
+    datasets.push(dataset.meta);
+    spectra.push({ meta: dataset.meta, variables: dataset.variables });
+    const span = getScanSpan(dataset.meta, dataset.variables.x.data);
+    const reference = references.get(location.storage);
+    if (!reference) references.set(location.storage, span);
+    else checkInterrupted(span, reference, context);
+  }
+  const first = datasets[0];
+  if (!first) {
+    throw new SpcParserError(
+      'UNSUPPORTED_FORMAT',
+      'Unsupported SPC file: UVProbe OLE document without any readable dataset',
+    );
+  }
+
   const meta: UvProbeMeta = {
     kind: 'ole',
-    numberPoints: x.length,
-    title: history && readTitle(history),
-    date: history && readDate(history),
-    properties: readProperties(container),
+    numberPoints: first.numberPoints,
+    ...(first.title !== undefined && { title: first.title }),
+    ...(first.date !== undefined && { date: first.date }),
+    properties: first.properties,
+    datasets,
   };
-
-  return { meta, spectra: [{ meta, variables: buildVariables(x, y) }] };
+  return { meta, spectra };
 }
 
 /**
- * Reads a stream as a `Float64Array` of little-endian doubles.
- * @param content - raw stream bytes.
- * @returns The decoded values.
+ * Maps every stream of the container by its path below the root storage.
+ * @param container - the parsed OLE container.
+ * @returns Stream contents keyed by relative path, in directory order.
  */
-function readDoubles(content: Uint8Array): Float64Array {
-  const count = Math.floor(content.length / 8);
-  const view = new DataView(
-    content.buffer,
-    content.byteOffset,
-    content.byteLength,
-  );
-  const values = new Float64Array(count);
-  for (let i = 0; i < count; i++) {
-    values[i] = view.getFloat64(i * 8, true);
+function collectStreams(container: CFB.CFB$Container): Map<string, Uint8Array> {
+  const streams = new Map<string, Uint8Array>();
+  for (let i = 0; i < container.FullPaths.length; i++) {
+    const entry = container.FileIndex[i];
+    const path = container.FullPaths[i];
+    if (entry?.type !== 2 || !entry.content || !path) continue;
+    const relative = path.slice(path.indexOf('/') + 1);
+    const { content } = entry;
+    streams.set(
+      relative,
+      content instanceof Uint8Array ? content : Uint8Array.from(content),
+    );
   }
-  return values;
+  return streams;
 }
 
 /**
- * Collects every `PageTextsN` stream into property sections keyed by title.
- * @param container - the parsed OLE container.
- * @returns Sections of key/value properties.
+ * Reads the OLE2 container, reporting unreadable documents as unsupported.
+ * @param bytes - the whole file as bytes.
+ * @returns The parsed container.
  */
-function readProperties(
-  container: CFB.CFB$Container,
-): Record<string, Record<string, string>> {
-  const properties: Record<string, Record<string, string>> = {};
-  for (const entry of container.FileIndex) {
-    if (/^PageTexts\d+$/.test(entry.name) && entry.content) {
-      const { title, properties: sectionProperties } = parsePageText(
-        toUint8Array(entry.content),
-      );
-      properties[title] = sectionProperties;
-    }
+function readContainer(bytes: Uint8Array): CFB.CFB$Container {
+  try {
+    return CFB.read(bytes, { type: 'buffer' });
+  } catch (error) {
+    throw new SpcParserError(
+      'UNSUPPORTED_FORMAT',
+      `Unsupported SPC file: unreadable OLE2 compound document (${(error as Error).message})`,
+    );
   }
-  return properties;
 }
 
 /**
- * Extracts the sample title from the history stream.
- * @param history - raw `DataSetHistory` bytes.
- * @returns The sample title, or undefined.
- */
-function readTitle(history: Uint8Array): string | undefined {
-  let text = '';
-  for (const byte of history) text += String.fromCodePoint(byte);
-  const match = /Created new data set:\s*(?<name>.*?)\s*-\s*RawData/.exec(text);
-  return match?.groups?.name;
-}
-
-/**
- * Reads the acquisition date stored as an OLE automation date in the history stream.
- * @param history - raw `DataSetHistory` bytes.
- * @returns ISO date string, or undefined.
- */
-function readDate(history: Uint8Array): string | undefined {
-  if (history.length < 16) return undefined;
-  const view = new DataView(
-    history.buffer,
-    history.byteOffset,
-    history.byteLength,
-  );
-  const serial = view.getFloat64(8, true);
-  if (!Number.isFinite(serial) || serial <= 0) return undefined;
-  const milliseconds = Math.round(
-    (serial - oleDateEpochOffset) * millisecondsPerDay,
-  );
-  return new Date(milliseconds).toISOString();
-}
-
-/**
- * Finds a required stream by name.
+ * Describes an OLE2 document that holds no UVProbe spectrum.
  * @param container - the parsed OLE container.
- * @param name - stream name.
- * @returns The stream bytes.
+ * @returns The error message.
  */
-function findStream(container: CFB.CFB$Container, name: string): Uint8Array {
-  const content = tryStream(container, name);
-  if (!content) throw new Error(`UVProbe OLE: missing stream "${name}"`);
-  return content;
+function describeOle(container: CFB.CFB$Container): string {
+  const isKinetics = container.FullPaths.some(
+    (path) => path.includes('/DataStg') || path.endsWith('/DataArrayStm'),
+  );
+  return isKinetics
+    ? 'Unsupported SPC file: detected a Shimadzu UVProbe Kinetics (.kin) document'
+    : 'Unsupported SPC file: OLE2 compound document without UVProbe spectrum streams';
 }
 
 /**
- * Finds an optional stream by name.
- * @param container - the parsed OLE container.
- * @param name - stream name.
- * @returns The stream bytes, or undefined when absent.
+ * Wavelength span of a dataset and the sampling interval it was measured with.
  */
-function tryStream(
-  container: CFB.CFB$Container,
-  name: string,
-): Uint8Array | undefined {
-  const entry = CFB.find(container, name);
-  return entry?.content ? toUint8Array(entry.content) : undefined;
+interface ScanSpan {
+  path: string;
+  low: number;
+  high: number;
+  interval: string | undefined;
 }
 
 /**
- * Normalizes cfb stream content to a `Uint8Array`.
- * @param content - cfb stream content.
- * @returns The content as a `Uint8Array`.
+ * Reads the wavelength span of a dataset.
+ * @param meta - the dataset metadata.
+ * @param x - the wavelengths, in any order.
+ * @returns The span.
  */
-function toUint8Array(content: number[] | Uint8Array): Uint8Array {
-  return content instanceof Uint8Array ? content : Uint8Array.from(content);
+function getScanSpan(meta: UvProbeDatasetMeta, x: NumberArray): ScanSpan {
+  const first = x[0] ?? NaN;
+  const last = x.at(-1) ?? NaN;
+  return {
+    path: meta.path,
+    low: Math.min(first, last),
+    high: Math.max(first, last),
+    interval: meta.properties['Measurement Properties']?.['Sampling Interval'],
+  };
+}
+
+/**
+ * Warns when a dataset looks like an interrupted scan: UVProbe scans from
+ * the high wavelength down and rewrites the method range of a stopped scan,
+ * so the sign is a span that ends above the first dataset of the same
+ * storage, measured with the same sampling interval from the same start.
+ * @param span - the dataset to check.
+ * @param reference - the first dataset of the same storage.
+ * @param context - receives the warning.
+ */
+function checkInterrupted(
+  span: ScanSpan,
+  reference: ScanSpan,
+  context: ParseContext,
+): void {
+  if (
+    span.interval !== undefined &&
+    span.interval === reference.interval &&
+    span.high === reference.high &&
+    span.low > reference.low
+  ) {
+    context.warn(
+      `UVProbe dataset ${span.path} looks like an interrupted scan: it spans ${span.low} to ${span.high} nm, ${reference.path} spans ${reference.low} to ${reference.high} nm`,
+    );
+  }
 }

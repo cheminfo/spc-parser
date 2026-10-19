@@ -1,3 +1,4 @@
+import type { UvProbeMeta } from '../../uvProbe/types.ts';
 import type { Header } from '../fileHeader.ts';
 
 import { getDataShape } from './getDataShape.ts';
@@ -9,55 +10,56 @@ import { getDataShape } from './getDataShape.ts';
 export type SpectraType = 'ir' | 'uv' | 'raman' | 'mass' | 'other';
 
 /**
- * Inspects properties and tries to classify the spectra for the most common spectra types.
- * @param meta - the parsed file header.
- * @returns string describing the type of spectra or "General" if unsure.
+ * Spectrum types given by the experiment codes (`fexper`) that tell one.
  */
-export function guessSpectraType(meta: Header): SpectraType {
-  //function tested with the `fileHeader.test.ts`
-  // for the new file header they define a "experiment type"
-  if (
-    meta.kind === 'new' && // "General SPC" does not give any information
-    !meta.experimentType.startsWith('General SPC')
-  ) {
-    const id = meta.experimentType.split(' ', 1)[0];
-    switch (
-      id //find all possible ids in `types.ts` file
-    ) {
-      case 'FT-IR,':
-        return 'ir';
-      case 'NIR':
-        return 'ir';
-      case 'UV-VIS':
-        return 'uv';
-      case 'Mass':
-        return 'mass';
-      case 'Raman':
-        return 'raman';
-      default:
-        return 'other';
-    }
+const experimentTypes = new Map<number, SpectraType>([
+  [4, 'ir'],
+  [5, 'ir'],
+  [7, 'uv'],
+  [9, 'mass'],
+  [11, 'raman'],
+]);
+
+/**
+ * Y codes (absorbance, log(1/R), transmission) whose nanometer X axis can be
+ * classified by its range.
+ */
+const opticalYCodes = new Set([2, 10, 128]);
+
+/**
+ * Inspects properties and tries to classify the spectra for the most common spectra types.
+ * Shimadzu UVProbe files (`kind` `'ole'` or `'flat'`) are always `'uv'`.
+ * @param meta - the parsed file header (`result.meta`).
+ * @returns string describing the type of spectra or "other" if unsure.
+ */
+export function guessSpectraType(meta: Header | UvProbeMeta): SpectraType {
+  return meta.kind === 'new' || meta.kind === 'old'
+    ? guessGalacticType(meta)
+    : 'uv';
+}
+
+/**
+ * Classifies a Galactic file from its experiment, X and Y codes.
+ * @param meta - the parsed Galactic header.
+ * @returns The spectrum type, or "other" if unsure.
+ */
+function guessGalacticType(meta: Header): SpectraType {
+  const { experiment, x, y } = meta.codes;
+  // Codes 1 to 14 name a technique; 0 (general), 6 and others do not.
+  if (experiment >= 1 && experiment <= 14 && experiment !== 6) {
+    return experimentTypes.get(experiment) ?? 'other';
   }
-  // for old header or General SPC
-  switch (meta.xUnitsType) {
-    case 'Mass (M/z)':
+  switch (x) {
+    case 9:
       return 'mass';
-    case 'Raman Shift (cm-1)':
+    case 13:
       return 'raman';
-    case 'Micrometers (um)':
+    case 2:
       return uvOrIR(meta, 'micrometer');
-    case 'Wavenumber (cm-1)': {
+    case 1:
       return uvOrIR(meta, 'wavenumber');
-    }
-    case 'Nanometers (nm)':
-      if (
-        [/*'Kubelka-Monk'*/ 'Absorbance', 'Log(1/R)', 'Transmission'].includes(
-          meta.yUnitsType,
-        )
-      ) {
-        return uvOrIR(meta, 'nanometer');
-      }
-      return 'other';
+    case 3:
+      return opticalYCodes.has(y) ? uvOrIR(meta, 'nanometer') : 'other';
     default:
       return 'other';
   }
@@ -78,16 +80,16 @@ export function uvOrIR(
   const dataShape = getDataShape(meta.parameters);
 
   //xyxy and exception won't normally get here anyways (raman or ms normally.)
-  const analyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
+  const isAnalyze = ['Y', 'YY', 'XY', 'XYY'].includes(dataShape);
 
-  if (analyze) {
-    let sX = meta.startingX;
-    let eX = meta.endingX;
+  if (isAnalyze) {
+    let startX = meta.startingX;
+    let endX = meta.endingX;
     if (xUnit !== 'nanometer') {
-      sX = unitToNano(sX, xUnit);
-      eX = unitToNano(eX, xUnit);
+      startX = unitToNano(startX, xUnit);
+      endX = unitToNano(endX, xUnit);
     }
-    const lowerBound = Math.min(sX, eX);
+    const lowerBound = Math.min(startX, endX);
     return getRegion(lowerBound);
   }
 
