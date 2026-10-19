@@ -1,6 +1,6 @@
 {
   "name": "spc-parser",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "Parser for Thermo Galactic GRAMS SPC and Shimadzu UVProbe .spc files",
   "type": "module",
   "exports": {

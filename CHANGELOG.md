@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/cheminfo/spc-parser/compare/v2.1.1...v3.0.0) (2026-10-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* `logs.data` is removed in favour of `logs.binary` and `logs.disk`; wall-clock dates carry no offset unless `timeZone` is set; Y values and the number of UVProbe spectra change; `parse` throws `SpcParserError` and returns `warnings`. See the migration notes in the README.
+
+### Features
+
+* auto-detect the format, and make dates and exponents correct ([038a8a8](https://github.com/cheminfo/spc-parser/commit/038a8a8018b6a14beccbe15886eff7d766c90134))
+
 ## [2.1.1](https://github.com/cheminfo/spc-parser/compare/v2.1.0...v2.1.1) (2026-08-24)
 
 
