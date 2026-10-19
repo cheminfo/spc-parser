@@ -28,7 +28,20 @@
     "type": "git",
     "url": "git+https://github.com/cheminfo/spc-parser.git"
   },
-  "keywords": [],
+  "keywords": [
+    "spc",
+    "galactic",
+    "grams",
+    "thermo",
+    "shimadzu",
+    "uvprobe",
+    "spectroscopy",
+    "spectra",
+    "parser",
+    "infrared",
+    "raman",
+    "uv-vis"
+  ],
   "author": "Benjamin Yiu",
   "license": "MIT",
   "bugs": {
