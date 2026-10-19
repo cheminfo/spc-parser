@@ -10,7 +10,6 @@ import { formatZonedDate, validateTimeZone } from '../timeZone.ts';
  * @param day - the day.
  * @param hour - the hour.
  * @param minute - the minute.
- * @param second - the second.
  * @returns The fields.
  */
 function fields(
@@ -19,9 +18,8 @@ function fields(
   day: number,
   hour: number,
   minute = 0,
-  second = 0,
 ): DateFields {
-  return { year, month, day, hour, minute, second };
+  return { year, month, day, hour, minute, second: 0 };
 }
 
 test('a zone that observes DST gets the offset of that date', () => {

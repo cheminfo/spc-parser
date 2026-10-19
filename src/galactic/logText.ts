@@ -109,12 +109,12 @@ export function parseLogText(text: string): ParsedLogText {
 /**
  * Builds a history entry from the groups of an audit line.
  * @param groups - named groups of {@link historyPattern}.
- * @param section - the enclosing section, if any.
+ * @param section - the enclosing section, `''` when there is none.
  * @returns The history entry.
  */
 function toHistoryEntry(
   groups: Record<string, string | undefined>,
-  section: string | undefined,
+  section = '',
 ): LogHistoryEntry {
   const { year = '', month, day, time, letter } = groups;
   let fullYear = year;
@@ -125,7 +125,7 @@ function toHistoryEntry(
   return {
     date: `${fullYear}-${month}-${day}T${time}:00.000`,
     ...(letter !== undefined && { letter }),
-    description: letter === undefined ? (section ?? '') : description.trim(),
+    description: letter === undefined ? section : description.trim(),
     ...(program !== undefined && { program }),
     ...(user !== undefined && { user: user.trim() }),
   };

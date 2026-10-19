@@ -1,5 +1,7 @@
 // Ordering the X of a common-X map: per spectrum (xySortX on each subfile)
 // against once per file (direction or permutation computed once).
+// Each variant is its own function closing over its own X, so the four cases
+// never share a call site and cannot pollute each other's inline caches.
 // Run with `node benchmark/sortX.js`.
 import { stdout } from 'node:process';
 
@@ -26,10 +28,10 @@ for (let i = 0; i < spectraCount; i++) {
 
 /**
  * Previous behaviour: every spectrum is checked and sorted on its own.
- * @param {Float64Array} x - the common X.
  * @returns {number} a checksum.
  */
-function perSpectrumDescending(x) {
+function perSpectrumDescending() {
+  const x = descendingX;
   let checksum = 0;
   for (const y of ys) {
     const sorted = xySortX({ x, y });
@@ -40,10 +42,10 @@ function perSpectrumDescending(x) {
 
 /**
  * Previous behaviour, own copy for the unordered case.
- * @param {Float64Array} x - the common X.
  * @returns {number} a checksum.
  */
-function perSpectrumUnordered(x) {
+function perSpectrumUnordered() {
+  const x = unorderedX;
   let checksum = 0;
   for (const y of ys) {
     const sorted = xySortX({ x, y });
@@ -55,10 +57,10 @@ function perSpectrumUnordered(x) {
 /**
  * New behaviour: the direction is computed once, each spectrum is a copy
  * (reversed when X decreases).
- * @param {Float64Array} x - the common X.
  * @returns {number} a checksum.
  */
-function oncePerFileDescending(x) {
+function oncePerFileDescending() {
+  const x = descendingX;
   const direction = xIsMonotonic(x);
   let checksum = 0;
   for (const source of ys) {
@@ -75,10 +77,10 @@ function oncePerFileDescending(x) {
 
 /**
  * New behaviour: the permutation is computed once and applied to each Y.
- * @param {Float64Array} x - the common X.
  * @returns {number} a checksum.
  */
-function oncePerFileUnordered(x) {
+function oncePerFileUnordered() {
+  const x = unorderedX;
   const order = xGetSortOrder(x);
   let checksum = 0;
   for (const source of ys) {
@@ -124,22 +126,22 @@ const map = buildMap();
 new Benchmark.Suite()
   .add(
     'descending X, xySortX per spectrum',
-    () => perSpectrumDescending(descendingX),
+    () => perSpectrumDescending(),
     options,
   )
   .add(
     'descending X, direction once per file',
-    () => oncePerFileDescending(descendingX),
+    () => oncePerFileDescending(),
     options,
   )
   .add(
     'unordered X, xySortX per spectrum',
-    () => perSpectrumUnordered(unorderedX),
+    () => perSpectrumUnordered(),
     options,
   )
   .add(
     'unordered X, permutation once per file',
-    () => oncePerFileUnordered(unorderedX),
+    () => oncePerFileUnordered(),
     options,
   )
   .add('parse 1681 x 1024 map (src)', () => parse(map), options)
@@ -153,10 +155,10 @@ new Benchmark.Suite()
   .run();
 
 const checksums = [
-  perSpectrumDescending(descendingX),
-  oncePerFileDescending(descendingX),
-  perSpectrumUnordered(unorderedX),
-  oncePerFileUnordered(unorderedX),
+  perSpectrumDescending(),
+  oncePerFileDescending(),
+  perSpectrumUnordered(),
+  oncePerFileUnordered(),
   parse(map).spectra[5].variables.y.data[0],
 ];
 stdout.write(`checksums ${checksums.join(' ')}\n`);
