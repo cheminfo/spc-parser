@@ -36,7 +36,7 @@ const result = parse(arrayBuffer);
 
 Version 3 changes the output where 2.x was wrong or incomplete. **Y values and the number of spectra can both change, so re-read anything derived from a 2.x result.**
 
-- `logs.data` is removed: use `logs.binary` and `logs.disk` (`Uint8Array`). Old-format files have `logs: null`.
+- `logs.data` is removed. Despite the name it was never the log's data: it held the **binary** area only, decoded as a string, and dropped the **disk** area — `wplanes.spc`, whose log is 5884 disk bytes and nothing else, came back empty. The two areas are now `logs.binary` and `logs.disk`, both `Uint8Array` (see [The log block](#the-log-block)). Old-format files have `logs: null`.
 - Dates stored without a time zone (spec packed date, LabSpec, old format, Shimadzu flat, UVProbe OLE) no longer claim UTC: they are offset-less ISO strings, and pass `timeZone` to turn them into real instants (see [Dates](#dates)). Only Renishaw WiRE MS-DOS and Unix dates keep `Z`. `date`, `dateLayout` and `zpdIndex` are omitted when absent.
 - **Y values change where 2.x misread a subfile exponent.** In a multifile a subfile exponent of 0 is a real exponent, not an absent one, and a float file exponent wins over the 16-bit flag. Measured on the fixtures: `m_evenz.spc` and `DEMO_3D.SPC` were 2x too small, and subfile 39 of `LC_DIODE_ARRAY.SPC` 64x too small. `meta.exponent` is the exponent used, `meta.exponentY` the raw `subexp`.
 - UVProbe OLE files return one spectrum per dataset, in storage then dataset order. 2.x returned whichever dataset the container listed first and silently dropped the rest, so both `spectra[0]` and its Y values can differ; the Y label follows the measuring mode (Absorbance, Transmittance or Reflectance).
@@ -153,7 +153,20 @@ Two layouts are already real instants and are **never** shifted by `timeZone`:
 
 Each `spectrum.meta` keeps the raw subheader (`exponentY` is the raw `subexp`, `startingZ`, `wAxisValue`, …) and adds `exponent` (the exponent actually used), `isFloat`, `index`, `flags`, and when defined `z`, `zEnd`, `w`, `plane`, `noise`, plus `date` and `title` from the `SUBFILEx` log keys.
 
-`logs` holds `meta` (the LOGSTC fields), `text` (decoded and cut at its first NUL), `lines`, `entries [{key, value, section?}]`, `history [{date, letter?, description, program?, user?}]`, `binary` and `disk` (`Uint8Array` copies clamped to the file) and, for NMR files, `imaginary` (a `Float64Array` in the order of `y`, reversed with it when a decreasing X is sorted).
+#### The log block
+
+A log block is four consecutive regions, each sized by a field of its 64-byte `LOGSTC` header. The two byte areas are separate fields of the format, not two views of the same bytes: GRAMS loaded one into memory and left the other on disk, which is where their names come from.
+
+| Region | Size field   | What it holds                                         |
+| ------ | ------------ | ----------------------------------------------------- |
+| header | —            | the `LOGSTC` fields, as `logs.meta`                   |
+| binary | `logbins`    | `logs.binary`. For NMR, the imaginary part as float32 |
+| disk   | `logdsks`    | `logs.disk`. Never loaded by GRAMS                    |
+| text   | at `logtxto` | `logs.text`, and the entries parsed from it           |
+
+A file normally uses one area or the other: `NMR_FID.SPC` has 65536 binary bytes (16384 float32 values, one per Y point) and no disk area, while `wplanes.spc` has no binary area and 5884 disk bytes.
+
+So `logs` holds `meta` (the `LOGSTC` fields), `text` (decoded and cut at its first NUL), `lines`, `entries [{key, value, section?}]`, `history [{date, letter?, description, program?, user?}]`, `binary` and `disk` (`Uint8Array` copies clamped to the file) and, for NMR files, `imaginary` (a `Float64Array` decoded from `binary`, in the order of `y`, reversed with it when a decreasing X is sorted).
 
 ### UVProbe metadata
 
