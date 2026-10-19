@@ -1,12 +1,6 @@
-<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>spc-parser</title><meta name="description" content="Documentation for spc-parser"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">spc-parser</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>spc-parser</h1></div><div class="tsd-panel tsd-typography"><h1 id="spc-parser" class="tsd-anchor-link">spc-parser<a href="#spc-parser" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<!DOCTYPE html><html class="default" lang="en" data-base="./"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>spc-parser</title><meta name="description" content="Documentation for spc-parser"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script><script async src="assets/hierarchy.js" id="tsd-hierarchy-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><a href="index.html" class="title">spc-parser</a><div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/><ul role="listbox" id="tsd-search-results"></ul><div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h1>spc-parser</h1></div><div class="tsd-panel tsd-typography"><h1 id="spc-parser" class="tsd-anchor-link">spc-parser<a href="#spc-parser" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1>
 <p>Parser for <code>.spc</code> spectroscopy files: Thermo Galactic GRAMS SPC and Shimadzu UVProbe (OLE2 and flat). The format is auto-detected.</p>
 <h3 align="center">
-  <a href="https://www.zakodium.com">
-    <img src="https://www.zakodium.com/brand/zakodium-logo-white.svg" width="50" alt="Zakodium logo" />
-  </a>
-  <p>
-    Maintained by <a href="https://www.zakodium.com">Zakodium</a>
-  </p>
 <p><a href="https://www.npmjs.com/package/spc-parser"><img src="https://img.shields.io/npm/v/spc-parser.svg" alt="NPM version"></a>
 <a href="https://github.com/cheminfo/spc-parser/actions?query=workflow%3A%22Node.js+CI%22"><img src="https://github.com/cheminfo/spc-parser/workflows/Node.js%20CI/badge.svg?branch=main" alt="build status"></a>
 <a href="https://codecov.io/gh/cheminfo/spc-parser"><img src="https://img.shields.io/codecov/c/github/cheminfo/spc-parser.svg" alt="Test coverage"></a>
@@ -20,6 +14,57 @@
 <pre><code class="js"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">readFileSync</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;node:fs&#39;</span><span class="hl-1">;</span><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">join</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;node:path&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">parse</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;spc-parser&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">arrayBuffer</span><span class="hl-1"> = </span><span class="hl-6">readFileSync</span><span class="hl-1">(</span><span class="hl-6">join</span><span class="hl-1">(</span><span class="hl-0">import</span><span class="hl-1">.</span><span class="hl-2">meta</span><span class="hl-1">.</span><span class="hl-2">dirname</span><span class="hl-1">, </span><span class="hl-3">&#39;spectrum.spc&#39;</span><span class="hl-1">));</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">result</span><span class="hl-1"> = </span><span class="hl-6">parse</span><span class="hl-1">(</span><span class="hl-2">arrayBuffer</span><span class="hl-1">);</span><br/><span class="hl-7">// result is a JSON object containing everything that was parsed</span>
 </code><button type="button">Copy</button></pre>
 
+<h3 id="migrating-from-2x" class="tsd-anchor-link">Migrating from 2.x<a href="#migrating-from-2x" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Version 3 changes the output where 2.x was wrong or incomplete. <strong>Y values and the number of spectra can both change, so re-read anything derived from a 2.x result.</strong></p>
+<ul>
+<li><code>logs.data</code> is removed. Despite the name it was never the log's data: it held the <strong>binary</strong> area only, decoded as a string, and dropped the <strong>disk</strong> area — <code>wplanes.spc</code>, whose log is 5884 disk bytes and nothing else, came back empty. The two areas are now <code>logs.binary</code> and <code>logs.disk</code>, both <code>Uint8Array</code> (see <a href="#the-log-block">The log block</a>). Old-format files have <code>logs: null</code>.</li>
+<li>Dates stored without a time zone (spec packed date, LabSpec, old format, Shimadzu flat, UVProbe OLE) no longer claim UTC: they are offset-less ISO strings, and pass <code>timeZone</code> to turn them into real instants (see <a href="#dates">Dates</a>). Only Renishaw WiRE MS-DOS and Unix dates keep <code>Z</code>. <code>date</code>, <code>dateLayout</code> and <code>zpdIndex</code> are omitted when absent.</li>
+<li><strong>Y values change where 2.x misread a subfile exponent.</strong> In a multifile a subfile exponent of 0 is a real exponent, not an absent one, and a float file exponent wins over the 16-bit flag. Measured on the fixtures: <code>m_evenz.spc</code> and <code>DEMO_3D.SPC</code> were 2x too small, and subfile 39 of <code>LC_DIODE_ARRAY.SPC</code> 64x too small. <code>meta.exponent</code> is the exponent used, <code>meta.exponentY</code> the raw <code>subexp</code>.</li>
+<li>UVProbe OLE files return one spectrum per dataset, in storage then dataset order. 2.x returned whichever dataset the container listed first and silently dropped the rest, so both <code>spectra[0]</code> and its Y values can differ; the Y label follows the measuring mode (Absorbance, Transmittance or Reflectance).</li>
+<li>Axis labels come from the code tables and, when they apply, the custom labels; unknown codes read <code>Unknown (code N)</code>.</li>
+<li>Header text (memo, resolution, source, …) is cut at its first NUL and decoded as UTF-8, else with the <code>encoding</code> option.</li>
+<li>With the default <code>sortX: true</code>, <code>logs.imaginary</code> is reversed together with a decreasing X.</li>
+<li><code>parse</code> throws <code>SpcParserError</code> (not a bare <code>Error</code> or <code>RangeError</code>) and returns <code>warnings</code>, which is always an array.</li>
+<li>Files that crashed with a <code>RangeError</code> in 2.x now parse: a log area past the end of the file, a log after an XYXY directory, and a gap before <code>flogoff</code>.</li>
+<li>Without <code>timeZone</code>, a file whose date is a wall-clock reading adds one warning saying so and how to resolve it. Passing <code>timeZone</code> silences it.</li>
+</ul>
+<h3 id="options" class="tsd-anchor-link">Options<a href="#options" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>encoding</code></td>
+<td><code>'windows-1252'</code></td>
+<td>Encoding of text that is not valid UTF-8 (header memo and labels, log text, UVProbe text), e.g. <code>'gbk'</code> or <code>'shift_jis'</code>. Valid UTF-8 is always decoded as such.</td>
+</tr>
+<tr>
+<td><code>strict</code></td>
+<td><code>false</code></td>
+<td>Throw a <code>SpcParserError</code> with code <code>'STRICT'</code> on the first anomaly instead of adding it to <code>warnings</code>.</td>
+</tr>
+<tr>
+<td><code>sortX</code></td>
+<td><code>true</code></td>
+<td>Return every spectrum sorted by increasing X. With <code>false</code>, the file order is kept (for Galactic files, <code>meta.xDirection</code> tells which it is).</td>
+</tr>
+<tr>
+<td><code>timeZone</code></td>
+<td><em>(none)</em></td>
+<td>Zone the instrument's clock was set to, as an IANA name (<code>'Europe/Zurich'</code>), a fixed offset (<code>'+01:00'</code>) or <code>'UTC'</code>. Makes wall-clock dates real instants — see <a href="#dates">Dates</a>.</td>
+</tr>
+<tr>
+<td><code>logger</code></td>
+<td><em>(none)</em></td>
+<td>A <code>cheminfo-types</code> <code>LightLogger</code> (<code>console</code>, a <code>FifoLogger</code>, …) that receives every anomaly as it is found, in addition to <code>warnings</code>.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="exports" class="tsd-anchor-link">Exports<a href="#exports" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <table>
 <thead>
@@ -30,17 +75,228 @@
 </thead>
 <tbody>
 <tr>
-<td><code>parse(buffer)</code></td>
+<td><code>parse(buffer, options)</code></td>
 <td>Parses an <code>.spc</code> file, auto-detecting the format. Accepts an <code>ArrayBuffer</code>, a typed array / <code>DataView</code>, a Node.js <code>Buffer</code>, or an <code>IOBuffer</code>. Returns a <code>ParseResult</code>.</td>
 </tr>
 <tr>
+<td><code>SpcParserError</code></td>
+<td>Error class thrown by <code>parse</code>, with a <code>code</code> of <code>'UNSUPPORTED_FORMAT'</code>, <code>'TRUNCATED'</code> or <code>'STRICT'</code>.</td>
+</tr>
+<tr>
+<td><code>getLogValue(logs, key)</code></td>
+<td>Value of a Galactic log key (case-insensitive, first match), or <code>undefined</code>.</td>
+</tr>
+<tr>
 <td><code>guessSpectraType(meta)</code></td>
-<td>Classifies a parsed Galactic <code>Header</code> as <code>'ir' | 'uv' | 'raman' | 'mass' | 'other'</code>.</td>
+<td>Classifies <code>result.meta</code> as <code>'ir' | 'uv' | 'raman' | 'mass' | 'other'</code> from the raw Galactic codes; UVProbe results are <code>'uv'</code>.</td>
+</tr>
+<tr>
+<td>types</td>
+<td><code>ParseOptions</code> (<code>encoding</code>, <code>strict</code>, <code>sortX</code>, <code>timeZone</code>, <code>logger</code>), <code>ParseResult</code>, <code>Header</code>, <code>TheNewHeader</code>, <code>TheOldHeader</code>, <code>GalacticSpectrumMeta</code>, <code>UvProbeMeta</code>, <code>UvProbeDatasetMeta</code>, <code>ShimadzuFlatHeader</code>, <code>Axes</code>, <code>Axis</code>, <code>HeaderCodes</code>, <code>CustomLabels</code>, <code>DateLayout</code>, <code>XDirection</code>, <code>ZSpacing</code>, <code>SpectraType</code>, <code>LogBlock</code>, <code>LogMetadata</code>, <code>LogEntry</code>, <code>LogHistoryEntry</code>, <code>SpcParserErrorCode</code>, …</td>
 </tr>
 </tbody>
 </table>
-<p><code>ParseResult</code> has three properties: <code>meta</code> (the Galactic <code>Header</code> or the Shimadzu <code>UvProbeMeta</code>), <code>spectra</code> (an array of <code>MeasurementXY</code> from <code>cheminfo-types</code>) and <code>logs</code> (the Galactic log block, <code>null</code> or absent when the file has none).</p>
-<p><code>parse</code> throws when the buffer is neither an OLE2 compound document, a Thermo Galactic SPC, nor a Shimadzu UVProbe flat file.</p>
+<h3 id="_" class="tsd-anchor-link"><code>ParseResult</code><a href="#_" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>meta</code></td>
+<td>The Galactic <code>Header</code> (<code>kind</code> <code>'new'</code> or <code>'old'</code>) or the Shimadzu <code>UvProbeMeta</code> (<code>kind</code> <code>'ole'</code> or <code>'flat'</code>).</td>
+</tr>
+<tr>
+<td><code>spectra</code></td>
+<td>Array of <code>MeasurementXY</code> (<code>cheminfo-types</code>). Each spectrum owns its <code>x</code> and <code>y</code> <code>Float64Array</code>s, and <code>spectrum.meta</code> holds its own metadata: cast it to <code>GalacticSpectrumMeta</code> for Galactic files and to <code>UvProbeDatasetMeta</code> (OLE) or <code>UvProbeMeta</code> (flat) for UVProbe files.</td>
+</tr>
+<tr>
+<td><code>logs</code></td>
+<td>Galactic log block, or <code>null</code> when the file has none (always <code>null</code> for the old format; absent for UVProbe).</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td>Non-fatal anomalies found while parsing, always an array. Each message is written for a human; the data that could be read is still returned.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="errors" class="tsd-anchor-link">Errors<a href="#errors" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p><code>parse</code> throws a <code>SpcParserError</code> for files it cannot read, never a raw <code>RangeError</code>. An unsupported <code>encoding</code> or <code>timeZone</code> option throws a <code>TypeError</code> before the file is read.</p>
+<table>
+<thead>
+<tr>
+<th><code>code</code></th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UNSUPPORTED_FORMAT</code></td>
+<td>The buffer is not a Galactic SPC, a UVProbe OLE2 document or a Shimadzu flat file. The message starts with <code>Unsupported SPC file</code> and names the detected format when it is known (see <a href="#rejected-formats">Rejected formats</a>).</td>
+</tr>
+<tr>
+<td><code>TRUNCATED</code></td>
+<td>A Galactic file shorter than its header (512 bytes, 256 for the old format) or without one complete subfile. A buffer under 32 bytes is too short to be recognised and gets <code>UNSUPPORTED_FORMAT</code>.</td>
+</tr>
+<tr>
+<td><code>STRICT</code></td>
+<td>Any warning, when <code>strict: true</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="warnings" class="tsd-anchor-link">Warnings<a href="#warnings" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Warnings cover, among others:</p>
+<ul>
+<li>truncation: <code>Subfile k of n is truncated; m complete subfiles returned</code>, trailing bytes after the last old-format subfile;</li>
+<li>inconsistent headers: <code>fnsub</code> without the multifile flag or <code>fnsub</code> 0 in a multifile, TXYXYS without TXVALS, <code>fwplanes</code> not dividing the number of subfiles, an XYXY directory pointing outside the file, a Wasatch <code>subnpts</code> twice too large;</li>
+<li>Y encoding: float32 subfiles in an integer file, TSPREC ignored for float data;</li>
+<li>dates: <code>fdate 0x… is not a valid date; date ignored</code>, <code>fdate 0x… decoded as a Unix timestamp</code>;</li>
+<li>the log block: offset beyond the end of the file, block or text clamped to the file, a log recovered although <code>flogoff</code> is 0;</li>
+<li>UVProbe: datasets without data, X/Y length mismatches, an unknown measuring mode, truncated streams, an interrupted scan (a dataset that stops above the first dataset of its storage, with the same start and sampling interval), an invalid Shimadzu flat date.</li>
+<li>time zones: a date that is a wall-clock reading while no <code>timeZone</code> was given (once per file, see <a href="#dates">Dates</a>).</li>
+</ul>
+<h3 id="dates" class="tsd-anchor-link">Dates<a href="#dates" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p><strong>An SPC file records the wall clock the operator saw, and never its offset.</strong> The instrument writes <code>08:54</code> because that is what the lab machine's clock read; nothing in the file says which zone that was. So a decoded date cannot name an instant on its own, and by default <code>meta.date</code> carries no offset:</p>
+<pre><code class="js"><span class="hl-6">parse</span><span class="hl-1">(</span><span class="hl-2">buffer</span><span class="hl-1">).</span><span class="hl-2">meta</span><span class="hl-1">.</span><span class="hl-2">date</span><span class="hl-1">; </span><span class="hl-7">// &#39;1995-10-28T08:54:00.000&#39;</span>
+</code><button type="button">Copy</button></pre>
+
+<p>That string is <strong>not</strong> an instant. <code>new Date()</code> reads it as the <em>reader's</em> local time, so a lab PC in Zurich and a UTC server disagree about what it means — and a Tokyo CI runner lands on the previous day. Never pass it to <code>new Date()</code>.</p>
+<p>Because that is easy to miss, such a file adds one warning naming the fix, and <code>strict: true</code> turns it into a <code>SpcParserError</code>:</p>
+<pre><code><span class="hl-5">A</span><span class="hl-1"> </span><span class="hl-2">date</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> </span><span class="hl-4">this</span><span class="hl-1"> </span><span class="hl-2">file</span><span class="hl-1"> </span><span class="hl-2">is</span><span class="hl-1"> </span><span class="hl-2">a</span><span class="hl-1"> </span><span class="hl-2">wall</span><span class="hl-1">-</span><span class="hl-2">clock</span><span class="hl-1"> </span><span class="hl-2">reading</span><span class="hl-1"> </span><span class="hl-0">with</span><span class="hl-1"> </span><span class="hl-2">no</span><span class="hl-1"> </span><span class="hl-2">time</span><span class="hl-1"> </span><span class="hl-2">zone</span><span class="hl-1">, </span><span class="hl-2">so</span><span class="hl-1"> </span><span class="hl-2">it</span><span class="hl-1"> </span><span class="hl-2">names</span><span class="hl-1"> </span><span class="hl-2">no</span><span class="hl-1"> </span><span class="hl-8">instant</span><span class="hl-1">: </span><span class="hl-2">reading</span><span class="hl-1"> </span><span class="hl-2">it</span><br/><span class="hl-0">with</span><span class="hl-1"> </span><span class="hl-3">`new Date()`</span><span class="hl-1"> </span><span class="hl-2">applies</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-2">reader</span><span class="hl-3">&#39;s own zone, which differs between a lab machine and a UT</span><span class="hl-9">C</span><br/><span class="hl-2">server</span><span class="hl-1">. </span><span class="hl-2">Pass</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-3">`timeZone`</span><span class="hl-1"> </span><span class="hl-2">option</span><span class="hl-1"> </span><span class="hl-2">set</span><span class="hl-1"> </span><span class="hl-2">to</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-2">zone</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-2">instrument</span><span class="hl-1"> </span><span class="hl-2">clock</span><span class="hl-1"> </span><span class="hl-2">was</span><span class="hl-1"> </span><span class="hl-2">on</span><span class="hl-1">, </span><span class="hl-2">such</span><span class="hl-1"> </span><span class="hl-0">as</span><br/><span class="hl-1">{ </span><span class="hl-8">timeZone</span><span class="hl-1">: </span><span class="hl-3">&#39;Europe/Zurich&#39;</span><span class="hl-1"> }, </span><span class="hl-2">or</span><span class="hl-1"> { </span><span class="hl-8">timeZone</span><span class="hl-1">: </span><span class="hl-3">&#39;UTC&#39;</span><span class="hl-1"> } </span><span class="hl-2">to</span><span class="hl-1"> </span><span class="hl-2">keep</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-2">strings</span><span class="hl-1"> </span><span class="hl-2">version</span><span class="hl-1"> </span><span class="hl-10">2</span><span class="hl-1"> </span><span class="hl-2">produced</span><span class="hl-1">.</span><br/><span class="hl-3">`meta.dateLayout`</span><span class="hl-1"> </span><span class="hl-2">says</span><span class="hl-1"> </span><span class="hl-2">which</span><span class="hl-1"> </span><span class="hl-2">layout</span><span class="hl-1"> </span><span class="hl-2">the</span><span class="hl-1"> </span><span class="hl-2">date</span><span class="hl-1"> </span><span class="hl-2">came</span><span class="hl-1"> </span><span class="hl-2">from</span><span class="hl-1">.</span>
+</code><button>Copy</button></pre>
+
+<p>It is reported once per file, never for a date that already names an instant, and not at all once <code>timeZone</code> is set.</p>
+<p>Give <code>timeZone</code> the zone the instrument's clock was set to and every date becomes an instant that is the same everywhere:</p>
+<pre><code class="js"><span class="hl-6">parse</span><span class="hl-1">(</span><span class="hl-2">buffer</span><span class="hl-1">, { </span><span class="hl-2">timeZone:</span><span class="hl-1"> </span><span class="hl-3">&#39;Europe/Zurich&#39;</span><span class="hl-1"> }).</span><span class="hl-2">meta</span><span class="hl-1">.</span><span class="hl-2">date</span><span class="hl-1">;</span><br/><span class="hl-7">// &#39;1995-10-28T08:54:00.000+01:00&#39;  -&gt;  1995-10-28T07:54:00.000Z</span>
+</code><button type="button">Copy</button></pre>
+
+<p>The wall-clock digits never change; only the offset is added. Daylight saving is resolved for the date in question, so a summer and a winter file in the same zone get different offsets. <code>timeZone: 'UTC'</code> reproduces the strings 2.x emitted.</p>
+<p>Two layouts are already real instants and are <strong>never</strong> shifted by <code>timeZone</code>:</p>
+<table>
+<thead>
+<tr>
+<th><code>meta.dateLayout</code></th>
+<th>Meaning</th>
+<th>Ends with <code>Z</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spec</code>, <code>labspec</code>, <code>old</code></td>
+<td>wall clock, offset unknown</td>
+<td>only with <code>timeZone</code></td>
+</tr>
+<tr>
+<td><code>msdos</code></td>
+<td>Renishaw WiRE writes this field in UTC</td>
+<td>always</td>
+</tr>
+<tr>
+<td><code>unix</code></td>
+<td>a <code>time_t</code>, which is UTC</td>
+<td>always</td>
+</tr>
+</tbody>
+</table>
+<p><code>meta.dateLayout</code> is the way to tell the two apart. The same applies to the per-spectrum dates from the <code>SUBFILEx</code> log keys, the Shimadzu flat date and the UVProbe OLE dates, which are all wall-clock readings.</p>
+<h3 id="galactic-metadata" class="tsd-anchor-link">Galactic metadata<a href="#galactic-metadata" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p><code>meta</code> keeps every raw header field (<code>exponentY</code>, <code>numberPoints</code>, <code>startingX</code>, <code>memo</code>, <code>logOffset</code>, …) and adds:</p>
+<ul>
+<li><code>codes {experiment, x, y, z, w, post, processing}</code>: the raw enumerated codes;</li>
+<li><code>axes {x, y, z, w}: {label, units, code, custom}</code>: the label and units of each axis, from the code tables and, when the file enables them (TALABS/ZTEXTL) or the code is 0, the custom labels. <code>xUnitsType</code>, <code>yUnitsType</code>, <code>zUnitsType</code> and <code>wAxisUnits</code> are the code-table texts; unknown codes give <code>Unknown (code N)</code>;</li>
+<li><code>customLabels {x, y, z}</code> and <code>customLabelsApplied</code>; <code>memoFragments</code> (readable text found after the memo's NUL);</li>
+<li><code>date</code>, <code>dateLayout</code> (<code>'spec'</code>, <code>'labspec'</code>, <code>'msdos'</code>, <code>'unix'</code> or <code>'old'</code>) and <code>rawDate</code>. Dates without a time zone are local ISO strings (<code>2016-02-19T16:46:00.000</code>); only MS-DOS (Renishaw WiRE) and Unix dates end with <code>Z</code>. <code>date</code> is <code>undefined</code> when absent or invalid;</li>
+<li><code>modifications [{letter, description}]</code>, <code>postingLabel</code>, <code>processingLabels</code>, <code>invertedPeaks</code>, <code>drawAsSticks</code>, <code>isChromatogram</code>, <code>zpdIndex</code>;</li>
+<li><code>xDirection</code> (<code>'increasing'</code>, <code>'decreasing'</code> or <code>'unordered'</code>, as stored in the file), <code>zSpacing</code> (<code>'even'</code>, <code>'ordered'</code> or <code>'random'</code>, multifiles), <code>planeSize</code> (4D files), <code>directoryOffset</code> and <code>directory</code> (XYXY files with a valid subfile directory);</li>
+<li>old format only: <code>spectra</code> (computed from the file size) and <code>trailingText</code>.</li>
+</ul>
+<p>Each <code>spectrum.meta</code> keeps the raw subheader (<code>exponentY</code> is the raw <code>subexp</code>, <code>startingZ</code>, <code>wAxisValue</code>, …) and adds <code>exponent</code> (the exponent actually used), <code>isFloat</code>, <code>index</code>, <code>flags</code>, and when defined <code>z</code>, <code>zEnd</code>, <code>w</code>, <code>plane</code>, <code>noise</code>, plus <code>date</code> and <code>title</code> from the <code>SUBFILEx</code> log keys.</p>
+<h4 id="the-log-block" class="tsd-anchor-link">The log block<a href="#the-log-block" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4>
+<p>A log block is four consecutive regions, each sized by a field of its 64-byte <code>LOGSTC</code> header. The two byte areas are separate fields of the format, not two views of the same bytes: GRAMS loaded one into memory and left the other on disk, which is where their names come from.</p>
+<table>
+<thead>
+<tr>
+<th>Region</th>
+<th>Size field</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>header</td>
+<td>—</td>
+<td>the <code>LOGSTC</code> fields, as <code>logs.meta</code></td>
+</tr>
+<tr>
+<td>binary</td>
+<td><code>logbins</code></td>
+<td><code>logs.binary</code>. For NMR, the imaginary part as float32</td>
+</tr>
+<tr>
+<td>disk</td>
+<td><code>logdsks</code></td>
+<td><code>logs.disk</code>. Never loaded by GRAMS</td>
+</tr>
+<tr>
+<td>text</td>
+<td>at <code>logtxto</code></td>
+<td><code>logs.text</code>, and the entries parsed from it</td>
+</tr>
+</tbody>
+</table>
+<p>A file normally uses one area or the other: <code>NMR_FID.SPC</code> has 65536 binary bytes (16384 float32 values, one per Y point) and no disk area, while <code>wplanes.spc</code> has no binary area and 5884 disk bytes.</p>
+<p>So <code>logs</code> holds <code>meta</code> (the <code>LOGSTC</code> fields), <code>text</code> (decoded and cut at its first NUL), <code>lines</code>, <code>entries [{key, value, section?}]</code>, <code>history [{date, letter?, description, program?, user?}]</code>, <code>binary</code> and <code>disk</code> (<code>Uint8Array</code> copies clamped to the file) and, for NMR files, <code>imaginary</code> (a <code>Float64Array</code> decoded from <code>binary</code>, in the order of <code>y</code>, reversed with it when a decreasing X is sorted).</p>
+<h3 id="uvprobe-metadata" class="tsd-anchor-link">UVProbe metadata<a href="#uvprobe-metadata" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul>
+<li>OLE2 files return one spectrum per dataset. <code>meta</code> describes the first dataset (<code>numberPoints</code>, <code>title</code>, <code>date</code>, <code>properties</code>) and lists all of them in <code>datasets</code>. Each <code>spectrum.meta</code> holds its dataset's <code>storageName</code>, <code>datasetName</code>, <code>measuringModeCode</code>, <code>operator</code>, <code>organization</code>, <code>software</code>, <code>softwareVersion</code>, <code>instrumentName</code>, <code>series</code>, <code>model</code>, <code>serialNumber</code>, <code>date</code>, <code>title</code> and <code>properties</code>. The Y label follows the measuring mode (Absorbance, Transmittance or Reflectance).</li>
+<li>Flat files return one spectrum; <code>meta.header</code> holds the raw codes <code>familyFlags</code>, <code>modeCode</code>, <code>speedCode</code>, <code>samplingCode</code>, <code>displayMax</code> and <code>displayMin</code>. The Y label stays Absorbance.</li>
+</ul>
+<h3 id="supported-variants" class="tsd-anchor-link">Supported variants<a href="#supported-variants" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Galactic new format, little-endian (<code>0x4B</code>)</td>
+<td>Y, XY, XYY and XYXY (with or without the subfile directory), 16-bit, 32-bit and float Y</td>
+</tr>
+<tr>
+<td>Galactic new format, big-endian (<code>0x4C</code>)</td>
+<td>same layouts</td>
+</tr>
+<tr>
+<td>Galactic old format (<code>0x4D</code>, Spectra Calc / Lab Calc)</td>
+<td>single and multifile, 16- and 32-bit Y</td>
+</tr>
+<tr>
+<td>Multifiles with even, ordered or random Z, and 4D W planes</td>
+<td><code>z</code>, <code>w</code> and <code>plane</code> per spectrum</td>
+</tr>
+<tr>
+<td>Galactic log block</td>
+<td>text, key/value entries, audit history, binary and disk areas, NMR imaginary data</td>
+</tr>
+<tr>
+<td>Shimadzu UVProbe OLE2 documents</td>
+<td>every dataset, localized (e.g. GBK) text with the <code>encoding</code> option</td>
+</tr>
+<tr>
+<td>Shimadzu UVProbe flat <code>.spc</code></td>
+<td>fixed 120-byte header</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rejected-formats" class="tsd-anchor-link">Rejected formats<a href="#rejected-formats" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>These files also use the <code>.spc</code> extension. They are recognized and rejected with <code>UNSUPPORTED_FORMAT</code> and a message naming the format: EDAX/AMETEK EDS or XRF spectra, ORTEC/EG&amp;G gamma spectra, ASD FieldSpec spectra, Becker &amp; Hickl TCSPC photon streams, Bruker EPR <code>.par</code> parameter files, Shimadzu RF-5300 fluorescence spectra, UVProbe Kinetics (<code>.kin</code>) documents, gzip / R RDS objects, an unidentified encrypted family, and plain text (XY data). Headerless Bruker EPR <code>.spc</code> data cannot be identified and gets the generic message.</p>
+<h3 id="test-fixtures" class="tsd-anchor-link">Test fixtures<a href="#test-fixtures" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<p>Every fixture is listed with its source, license and SHA-256 in the <code>PROVENANCE.md</code> files next to it (<code>src/galactic/__tests__/data/corpus/</code>, <code>src/uvProbe/__tests__/data/corpus/</code> and <code>src/__tests__/data/</code>). <code>src/__tests__/regression.test.ts</code> parses all of them. Set <code>SPC_CORPUS_DIR</code> to also run <code>src/__tests__/corpus.test.ts</code> over a local collection of files.</p>
 <h2 id="api-documentation" class="tsd-anchor-link"><a href="https://cheminfo.github.io/spc-parser/">API Documentation</a><a href="#api-documentation" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <h2 id="credits-and-useful-information" class="tsd-anchor-link">Credits and useful information<a href="#credits-and-useful-information" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <h3 id="spc-file-format" class="tsd-anchor-link">SPC file format<a href="#spc-file-format" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3>
@@ -55,7 +311,12 @@ The data is stored in binary with some parts encoded in ASCII. As such, the file
 <p>The File Header contains information about the whole file, such as how values are read, the type of format (Old, New LSB, New MSB), the structure of the data block (<strong>XY</strong>, <strong>XYY</strong> or <strong>XYXY</strong>) and the number of spectra.</p>
 <p>The Data block contains the spectrum data and is composed of a subheader for each spectrum, the X values <em>before</em> the subheader if <strong>XY</strong> or <strong>XYY</strong>, else <em>after</em> each subheader if <strong>XYXY</strong>. After the subheader and X values come the Y values, which are read according to the method determined in the Main Header.</p>
 <p>The Log block contains miscellaneous information that varies for each file, with a part written in ASCII and another one in binary.</p>
-<p>Useful files for the specification for the spc-format can be found at <a href="https://github.com/cheminfo/spc-parser/tree/main/docs">the docs folder in the Github repo</a></p>
+<p>The format details this parser implements are written up in <a href="media/galactic-spec.md">docs/galactic-spec.md</a> and <a href="media/non-galactic-formats.md">docs/non-galactic-formats.md</a>. Other useful files are in <a href="https://github.com/cheminfo/spc-parser/tree/main/docs">the docs folder</a>.</p>
 <h2 id="license" class="tsd-anchor-link">License<a href="#license" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2>
 <p><a href="media/LICENSE">MIT</a></p>
-</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#spc-parser"><span>spc-<wbr/>parser</span></a><ul><li><a href="#installation"><span>Installation</span></a></li><li><a href="#usage"><span>Usage</span></a></li><li><ul><li><a href="#exports"><span>Exports</span></a></li></ul></li><li><a href="#api-documentation"><span>API <wbr/>Documentation</span></a></li><li><a href="#credits-and-useful-information"><span>Credits and useful information</span></a></li><li><ul><li><a href="#spc-file-format"><span>SPC file format</span></a></li></ul></li><li><a href="#license"><span>License</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">spc-parser</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>
+<p>The test fixtures are third-party instrument files under their own licences
+(MIT, CC-BY-4.0, GPL-3.0, LGPL-3.0, NIST public domain). They are excluded from
+the published package; see <a href="media/NOTICE.md">NOTICE.md</a> for the attributions and the
+<code>PROVENANCE.md</code> of each fixture folder for the per-file URL, licence and
+SHA-256.</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="assets/icons.svg#icon-chevronDown"></use></svg><h3>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#spc-parser"><span>spc-<wbr/>parser</span></a><ul><li><a href="#installation"><span>Installation</span></a></li><li><a href="#usage"><span>Usage</span></a></li><li><ul><li><a href="#migrating-from-2x"><span>Migrating from 2.x</span></a></li><li><a href="#options"><span>Options</span></a></li><li><a href="#exports"><span>Exports</span></a></li><li><a href="#_"><span></span></a></li><li><a href="#errors"><span>Errors</span></a></li><li><a href="#warnings"><span>Warnings</span></a></li><li><a href="#dates"><span>Dates</span></a></li><li><a href="#galactic-metadata"><span>Galactic metadata</span></a></li><li><ul><li><a href="#the-log-block"><span>The log block</span></a></li></ul></li><li><a href="#uvprobe-metadata"><span>UV<wbr/>Probe metadata</span></a></li><li><a href="#supported-variants"><span>Supported variants</span></a></li><li><a href="#rejected-formats"><span>Rejected formats</span></a></li><li><a href="#test-fixtures"><span>Test fixtures</span></a></li></ul></li><li><a href="#api-documentation"><span>API <wbr/>Documentation</span></a></li><li><a href="#credits-and-useful-information"><span>Credits and useful information</span></a></li><li><ul><li><a href="#spc-file-format"><span>SPC file format</span></a></li></ul></li><li><a href="#license"><span>License</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html">spc-parser</a><ul class="tsd-small-nested-navigation" id="tsd-nav-container"><li>Loading...</li></ul></nav></div></div></div><footer></footer><div class="overlay"></div></body></html>
