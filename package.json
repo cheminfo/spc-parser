@@ -1,7 +1,7 @@
 {
   "name": "spc-parser",
   "version": "3.0.0",
-  "description": "Parser for Thermo Galactic GRAMS SPC and Shimadzu UVProbe .spc files",
+  "description": "Parser for Thermo Galactic GRAMS SPC, Shimadzu UVProbe .spc and PerkinElmer .sp files",
   "type": "module",
   "exports": {
     ".": "./lib/index.js"
@@ -35,6 +35,8 @@
     "thermo",
     "shimadzu",
     "uvprobe",
+    "perkinelmer",
+    "sp",
     "spectroscopy",
     "spectra",
     "parser",
@@ -52,7 +54,8 @@
     "cfb": "^1.2.2",
     "cheminfo-types": "^1.16.0",
     "iobuffer": "^6.0.1",
-    "ml-spectra-processing": "^14.35.1"
+    "ml-spectra-processing": "^14.35.1",
+    "xy-parser": "^6.0.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.1",
@@ -65,7 +68,6 @@
     "prettier": "^3.9.8",
     "rimraf": "^6.1.3",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.1",
-    "xy-parser": "^6.0.1"
+    "vitest": "^5.0.1"
   }
 }

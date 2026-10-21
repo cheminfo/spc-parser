@@ -31,7 +31,7 @@ export type ParseSummary =
 /**
  * Extensions of the files the regression suite parses.
  */
-export const parsedExtensions = /\.(?:spc|cgm|kin|par|cfl)$/i;
+export const parsedExtensions = /\.(?:spc|sp|asc|cgm|kin|par|cfl)$/i;
 
 /**
  * Lists recursively the files of every `__tests__/data` folder below a root.

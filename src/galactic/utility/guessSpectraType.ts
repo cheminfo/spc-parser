@@ -1,3 +1,4 @@
+import type { PerkinElmerMeta } from '../../perkinElmer/types.ts';
 import type { UvProbeMeta } from '../../uvProbe/types.ts';
 import type { Header } from '../fileHeader.ts';
 
@@ -21,6 +22,14 @@ const experimentTypes = new Map<number, SpectraType>([
 ]);
 
 /**
+ * Spectrum types given by the X units of a PerkinElmer file.
+ */
+const perkinElmerTypes = new Map<string, SpectraType>([
+  ['nm', 'uv'],
+  ['cm-1', 'ir'],
+]);
+
+/**
  * Y codes (absorbance, log(1/R), transmission) whose nanometer X axis can be
  * classified by its range.
  */
@@ -28,14 +37,22 @@ const opticalYCodes = new Set([2, 10, 128]);
 
 /**
  * Inspects properties and tries to classify the spectra for the most common spectra types.
- * Shimadzu UVProbe files (`kind` `'ole'` or `'flat'`) are always `'uv'`.
+ * Shimadzu UVProbe files (`kind` `'ole'` or `'flat'`) are always `'uv'`;
+ * PerkinElmer files (`kind` `'pepe'` or `'peds'`) are classified by the units
+ * of their X axis.
  * @param meta - the parsed file header (`result.meta`).
  * @returns string describing the type of spectra or "other" if unsure.
  */
-export function guessSpectraType(meta: Header | UvProbeMeta): SpectraType {
-  return meta.kind === 'new' || meta.kind === 'old'
-    ? guessGalacticType(meta)
-    : 'uv';
+export function guessSpectraType(
+  meta: Header | UvProbeMeta | PerkinElmerMeta,
+): SpectraType {
+  if (meta.kind === 'new' || meta.kind === 'old') {
+    return guessGalacticType(meta);
+  }
+  if (meta.kind === 'pepe' || meta.kind === 'peds') {
+    return perkinElmerTypes.get(meta.xUnits.toLowerCase()) ?? 'other';
+  }
+  return 'uv';
 }
 
 /**

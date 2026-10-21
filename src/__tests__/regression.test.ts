@@ -20,7 +20,7 @@ function fixtureKey(path: string): string {
 }
 
 test('the regression suite finds every committed fixture', () => {
-  expect(fixtures).toHaveLength(50);
+  expect(fixtures).toHaveLength(54);
 });
 
 test('every committed fixture parses or throws an SpcParserError', () => {

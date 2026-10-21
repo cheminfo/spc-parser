@@ -22,6 +22,12 @@ export type { SpectraType } from './galactic/utility/guessSpectraType.ts';
 export { guessSpectraType } from './galactic/utility/guessSpectraType.ts';
 export * from './parse.ts';
 export type {
+  PerkinElmerAsciiSpectrumMeta,
+  PerkinElmerHistoryRecord,
+  PerkinElmerMeta,
+  PerkinElmerSpectrumMeta,
+} from './perkinElmer/types.ts';
+export type {
   ShimadzuFlatHeader,
   UvProbeDatasetMeta,
   UvProbeMeta,
