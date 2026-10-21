@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/cheminfo/spc-parser/compare/v3.0.0...v3.1.0) (2026-10-21)
+
+
+### Features
+
+* read PerkinElmer .sp files (PEPE binary and PEDS ASCII) ([41066f5](https://github.com/cheminfo/spc-parser/commit/41066f551e381d9707f47cbbe30cd73563b6aeb1))
+
 ## [3.0.0](https://github.com/cheminfo/spc-parser/compare/v2.1.1...v3.0.0) (2026-10-19)
 
 
